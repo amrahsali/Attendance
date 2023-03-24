@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/add_staff"
+        android:icon="@drawable/ic_round_note_add_24"
+        android:title="Add staff" />
+
+    <item
+        android:id="@+id/add_student"
+        android:icon="@drawable/ic_round_people_24"
+        android:title="Add student" />
+
+
+
+    <item
+        android:id="@+id/navigation_record"
+        android:icon="@drawable/ic_round_event_note_24"
+        android:title="View records" />
+
+    <item
+        android:id="@+id/navigation_exams"
+        android:icon="@drawable/ic_round_note_add_24"
+        android:title="Examination" />
+
+    <item
+        android:id="@+id/navigation_courses"
+        android:icon="@drawable/ic_round_note_add_24"
+        android:title="Courses " />
+
+
+</menu>

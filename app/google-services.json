@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "735089711704",
+    "project_id": "attendance-fcdad",
+    "storage_bucket": "attendance-fcdad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735089711704:android:0221230fca39d444bfc82d",
+        "android_client_info": {
+          "package_name": "com.example.attendance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735089711704-h6ppf9tsf58uo3dc8oqvtjr7tkfb4jkn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyCRJt3U1Y0BtySy3bC9qNEmSOcLRouEk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735089711704-h6ppf9tsf58uo3dc8oqvtjr7tkfb4jkn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
