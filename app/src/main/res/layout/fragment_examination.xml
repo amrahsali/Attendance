@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".ExaminationActivity">
+    tools:context=".ExaminationFragment">
     <TextView
         android:paddingTop="10dp"
         android:gravity="center"
@@ -30,19 +30,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="330dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center"
-            android:elevation="6dp"
-            android:layout_marginTop="8dp"
-            app:cardCornerRadius="10dp">
-
-            <LinearLayout
-                android:padding="10dp"
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="330dp"
+                android:layout_height="70dp"
                 android:layout_gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="60dp">
+                android:elevation="6dp"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="10dp">
+
+                <LinearLayout
+                    android:padding="10dp"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
 
 
                     <TextView
@@ -56,22 +56,22 @@
                         android:text="View student profile"/>
 
 
-            </LinearLayout>
+                </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="330dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:elevation="6dp"
-            android:layout_marginTop="8dp"
-            app:cardCornerRadius="10dp">
-
-            <LinearLayout
-                android:padding="10dp"
-                android:layout_width="match_parent"
+            </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="330dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_height="60dp">
+                android:elevation="6dp"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="10dp">
+
+                <LinearLayout
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_height="60dp">
 
 
                     <TextView
@@ -85,22 +85,22 @@
                         android:text="Student biometric verification"/>
 
 
-            </LinearLayout>
+                </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="330dp"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:elevation="6dp"
-            android:layout_marginTop="8dp"
-            app:cardCornerRadius="10dp">
+            </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="330dp"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:elevation="6dp"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="10dp">
 
-            <LinearLayout
-                android:padding="10dp"
-                android:layout_width="match_parent"
-                android:gravity="center"
-                android:layout_height="60dp">
+                <LinearLayout
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:layout_height="60dp">
 
 
                     <TextView
@@ -114,23 +114,23 @@
                         android:text="View exams card"/>
 
 
-            </LinearLayout>
+                </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="330dp"
-            android:layout_height="wrap_content"
-            android:elevation="6dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            app:cardCornerRadius="10dp">
+            </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="330dp"
+                android:layout_height="wrap_content"
+                android:elevation="6dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="10dp">
 
-            <LinearLayout
-                android:padding="10dp"
-                android:background="@color/blue"
-                android:layout_width="match_parent"
-                android:gravity="center"
-                android:layout_height="60dp">
+                <LinearLayout
+                    android:padding="10dp"
+                    android:background="@color/blue"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:layout_height="60dp">
 
 
                     <TextView
@@ -143,9 +143,9 @@
                         android:text="start"/>
 
 
-            </LinearLayout>
+                </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.card.MaterialCardView>
 
 
         </LinearLayout>
@@ -153,6 +153,7 @@
 
 
     </com.google.android.material.card.MaterialCardView>
+
 
 
 </LinearLayout>

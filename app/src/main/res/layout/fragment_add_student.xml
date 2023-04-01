@@ -4,11 +4,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="20dp"
     android:orientation="vertical"
-    android:gravity="center"
-    tools:context=".First_screen">
+    tools:context=".Add_studentFragment">
+
+    <LinearLayout
+        android:gravity="end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
 
+        <androidx.cardview.widget.CardView
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:tint="@color/blue"
+                android:src="@drawable/ic_round_person_24" />
+
+        </androidx.cardview.widget.CardView>
+
+
+
+
+    </LinearLayout>
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="12dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+
+    </LinearLayout>
     <TextView
         android:paddingTop="10dp"
         android:gravity="center"
@@ -16,7 +49,7 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textSize="20dp"
-        android:text="Add staff "/>
+        android:text="Add Student "/>
 
 
     <com.google.android.material.card.MaterialCardView
@@ -42,21 +75,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="10dp"
-                android:hint="Add staff image "/>
+                android:hint="Add student image "/>
 
         </LinearLayout>
 
+
+
     </com.google.android.material.card.MaterialCardView>
-
-
-
-    <Space
+    <TextView
         android:layout_width="wrap_content"
-        android:layout_height="30dp"/>
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:textSize="20sp"
+        android:hint="student Data "/>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="360dp"
-        android:layout_height="400dp"
+        android:layout_height="wrap_content"
         android:elevation="6dp"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
@@ -67,7 +102,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:padding="20dp"
             android:orientation="vertical">
 
@@ -128,51 +163,32 @@
                     android:layout_height="50dp"
                     android:drawableTint="@color/blue"
                     android:background="@null"
-                    android:drawableStart="@drawable/ic_sharp_local_phone_24"
+                    android:drawableStart="@drawable/ic_round_library_books_24"
                     android:drawablePadding="10dp"
-                    android:hint="Mobile Number"/>
+                    android:hint="Matric Number"/>
 
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <EditText
-                    android:id="@+id/email"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:drawableTint="@color/blue"
-                    android:background="@null"
-                    android:drawableStart="@drawable/ic_round_email_24"
-                    android:drawablePadding="10dp"
-                    android:hint="Email"/>
-
-            </LinearLayout>
-
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
-                <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="15dp"/>
-                <Button
-                    android:id="@+id/loginbtn"
-                    android:layout_width="match_parent"
-                    android:backgroundTint="@color/blue"
-                    android:layout_height="50dp"
-                    android:text="Staff Log in"
-                    />
             </LinearLayout>
 
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
 
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="15dp"/>
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/stdt_printbtn"
+        android:layout_width="360dp"
+        android:backgroundTint="@color/blue"
+        android:layout_height="wrap_content"
+        android:text="Register print"
+        />
+
+</LinearLayout>
 </LinearLayout>
