@@ -8,13 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+public class CoursesFragment extends Fragment {
 
-public class Add_staff_Fragment extends Fragment {
-
-
-    public Add_staff_Fragment() {
+    public CoursesFragment() {
         // Required empty public constructor
     }
+
 
 
     @Override
@@ -27,6 +26,6 @@ public class Add_staff_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_staff_, container, false);
+        return inflater.inflate(R.layout.fragment_courses, container, false);
     }
 }

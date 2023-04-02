@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/home"
+        android:icon="@drawable/person_foreground"
+        android:title="Home " />
+    <item
         android:id="@+id/add_staff"
         android:icon="@drawable/ic_round_note_add_24"
         android:title="Add staff" />
@@ -10,7 +14,6 @@
         android:id="@+id/add_student"
         android:icon="@drawable/ic_round_people_24"
         android:title="Add student" />
-
 
 
     <item
@@ -27,6 +30,8 @@
         android:id="@+id/navigation_courses"
         android:icon="@drawable/ic_round_note_add_24"
         android:title="Courses " />
+
+
 
 
 </menu>

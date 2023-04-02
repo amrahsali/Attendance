@@ -13,14 +13,21 @@
         android:theme="@style/Theme.Attendance"
         tools:targetApi="31">
         <activity
-            android:name=".View_recordActivity"
+            android:name=".ScanActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".ExaminationActivity"
+            android:name=".RecordFragment"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".ExaminationFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -33,16 +40,15 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
         <activity
-            android:name=".Staff_profileActivity"
+            android:name=".StaffProfileActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".Add_studentActivity"
+            android:name=".Add_studentFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -54,14 +60,13 @@
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
-        </activity>
-        <activity
-            android:name=".First_screen"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+        </activity> <!-- <activity -->
+        <!-- android:name=".Login" -->
+        <!-- android:exported="false"> -->
+        <!-- <meta-data -->
+        <!-- android:name="android.app.lib_name" -->
+        <!-- android:value="" /> -->
+        <!-- </activity> -->
         <activity
             android:name=".MainActivity"
             android:exported="false">

@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class Login extends AppCompatActivity {
 
-    Button button;
+    Button button, staffLogin;
     private EditText userNameEdt, passwordEdt;
     private FirebaseAuth mAuth;
     private ProgressBar loadingPB;
@@ -40,6 +40,16 @@ public class Login extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         loadingPB = findViewById(R.id.idPBLoading);
         button = findViewById(R.id.loginbtn);
+        staffLogin = findViewById(R.id.staff_loginbtn);
+
+        staffLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Login.this, ScanActivity.class);
+                i.putExtra("origin","login");
+                startActivity(i);
+            }
+        });
 
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -84,6 +94,7 @@ public class Login extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+        mAuth = FirebaseAuth.getInstance();
         // in on start method checking if
         // the user is already sign in.
         FirebaseUser user = mAuth.getCurrentUser();

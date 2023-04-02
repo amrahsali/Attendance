@@ -6,15 +6,17 @@
     android:layout_height="match_parent"
     android:padding="30dp"
     android:orientation="vertical"
-    tools:context=".Staff_profileActivity">
+    tools:context=".StaffProfileActivity">
 
 
     <TextView
+        android:id="@+id/staff_name"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:hint="Staff profile "/>
+        android:textSize="25sp"
+        android:hint="Welcome!"
+        android:textStyle="bold"/>
 
 
 
@@ -23,6 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView
+                android:id="@+id/staff_profile"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/ic_round_person_24"
@@ -32,177 +35,194 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <EditText
+        android:orientation="vertical">
+        <TextView
 
             android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:drawableTint="@color/blue"
-            android:background="@null"
-            android:inputType="text"
-            android:textSize="25sp"
-            android:drawableStart="@drawable/ic_round_home_24"
+            android:textSize="20sp"
+            android:text="Zarradeen Pinder"
             android:drawablePadding="10dp"
-            android:hint="Name"/>
-    </LinearLayout>
+            app:drawableStartCompat="@drawable/ic_round_home_24" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <EditText
-            android:id="@+id/faculty"
+        <TextView
+
+            android:id="@+id/department"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:drawableTint="@color/blue"
-            android:background="@null"
-            android:textSize="25sp"
-            android:drawableStart="@drawable/ic_round_school_24"
+            android:textSize="20sp"
+            android:text="Computer Sciencee"
             android:drawablePadding="10dp"
-            android:hint="Department"/>
+            app:drawableStartCompat="@drawable/ic_round_school_24" />
 
     </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_margin="20dp"
-        android:orientation="horizontal">
-
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="6dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="10dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/ic_round_add_circle_outline_24"
-                app:tint="@color/blue" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:layout_margin="20dp"
+            android:orientation="horizontal">
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="10dp"
-                android:hint="Take Attendance "/>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:elevation="8dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="10dp"
+                app:cardPreventCornerOverlap="false">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/take_attendance_btn"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:src="@drawable/ic_round_add_circle_outline_24"
+                        app:tint="@color/blue" />
 
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="10dp"
+                        android:hint="Take Attendance "/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <Space
+                android:layout_width="80dp"
+                android:layout_height="0dp" />
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:elevation="8dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="10dp"
+                app:cardPreventCornerOverlap="false">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/add_student_btn"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:src="@drawable/ic_round_add_circle_outline_24"
+                        app:tint="@color/blue" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="10dp"
+                        android:hint="Add student  "/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-        <Space
-            android:layout_width="80dp"
-            android:layout_height="0dp" />
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="6dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="10dp">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/ic_round_add_circle_outline_24"
-                app:tint="@color/blue" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:layout_margin="20dp"
+            android:orientation="horizontal"
+            >
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:elevation="8dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="10dp"
+                app:cardPreventCornerOverlap="false">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/viewrecords_btn"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:src="@drawable/ic_round_add_circle_outline_24"
+                        app:tint="@color/blue" />
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="10dp"
-                android:hint="Add student  "/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="10dp"
+                        android:hint="View records "/>
 
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <Space
+                android:layout_width="80dp"
+                android:layout_height="0dp" />
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:elevation="8dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="10dp"
+                app:cardPreventCornerOverlap="false">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/examination_btn"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:src="@drawable/ic_round_add_circle_outline_24"
+                        app:tint="@color/blue" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="10dp"
+                        android:hint="Examination"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-    </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_margin="20dp"
-        android:orientation="horizontal">
 
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="6dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="10dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/ic_round_add_circle_outline_24"
-                app:tint="@color/blue" />
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="10dp"
-                android:hint="View records "/>
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-        <Space
-            android:layout_width="80dp"
-            android:layout_height="0dp" />
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="6dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="10dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/ic_round_add_circle_outline_24"
-                app:tint="@color/blue" />
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="10dp"
-                android:hint="Examination"/>
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
 
 
 </LinearLayout>

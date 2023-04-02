@@ -1,68 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:gravity="center"
-    tools:context=".Add_staff_Fragment">
+    android:padding="10dp"
+    tools:context=".RecordFragment">
 
-    <TextView
-        android:paddingTop="10dp"
-        android:gravity="center"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="20dp"
-        android:text="Add staff "/>
+        android:orientation="vertical"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/ic_round_person_24"
+            app:tint="@color/blue" />
 
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="320dp"
-        android:layout_height="150dp"
-        android:elevation="6dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="10dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/ic_round_add_circle_outline_24"
-                app:tint="@color/blue" />
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="10dp"
-                android:hint="Add staff image "/>
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-
-
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"/>
-
+    </LinearLayout>
     <com.google.android.material.card.MaterialCardView
         android:layout_width="360dp"
-        android:layout_height="400dp"
+        android:layout_height="wrap_content"
         android:elevation="6dp"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
         app:cardCornerRadius="10dp">
-
-
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -86,7 +50,6 @@
                     android:drawablePadding="10dp"
                     android:hint="name"/>
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -115,7 +78,6 @@
                     android:drawableStart="@drawable/ic_sharp_class_24"
                     android:drawablePadding="10dp"
                     android:hint="Department"/>
-
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -127,50 +89,24 @@
                     android:layout_height="50dp"
                     android:drawableTint="@color/blue"
                     android:background="@null"
-                    android:drawableStart="@drawable/ic_sharp_local_phone_24"
+                    android:drawableStart="@drawable/ic_round_library_books_24"
                     android:drawablePadding="10dp"
-                    android:hint="Mobile Number"/>
+                    android:hint="Courses"/>
 
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <EditText
-                    android:id="@+id/email"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:drawableTint="@color/blue"
-                    android:background="@null"
-                    android:drawableStart="@drawable/ic_round_email_24"
-                    android:drawablePadding="10dp"
-                    android:hint="Email"/>
-
-            </LinearLayout>
-
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
-                <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="15dp"/>
-                <Button
-                    android:id="@+id/loginbtn"
-                    android:layout_width="match_parent"
-                    android:backgroundTint="@color/blue"
-                    android:layout_height="50dp"
-                    android:text="Create Staff"
-                    />
-            </LinearLayout>
-
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
+    <Button
+        android:id="@+id/loginbtn"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/blue"
+        android:layout_height="50dp"
+        android:text="Update Profile"
+        />
+
+
 </LinearLayout>

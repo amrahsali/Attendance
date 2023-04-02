@@ -1,18 +1,15 @@
 package com.example.attendance;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.fragment.app.Fragment;
 
-public class Add_staff_Fragment extends Fragment {
+public class AdminHomeFragment extends Fragment {
 
-
-    public Add_staff_Fragment() {
+    public AdminHomeFragment() {
         // Required empty public constructor
     }
 
@@ -27,6 +24,7 @@ public class Add_staff_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_staff_, container, false);
+        return inflater.inflate(R.layout.fragment_admin_home, container, false);
+
     }
 }
