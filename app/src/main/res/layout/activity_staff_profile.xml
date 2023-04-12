@@ -14,8 +14,9 @@
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="serif"
         android:textSize="25sp"
-        android:hint="Welcome!"
+        android:text="Welcome!"
         android:textStyle="bold"/>
 
 

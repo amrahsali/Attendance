@@ -3,6 +3,7 @@ package com.example.attendance;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -62,7 +63,7 @@ public class Login extends AppCompatActivity {
                 String password = passwordEdt.getText().toString();
                 // on below line validating the text input.
                 if (TextUtils.isEmpty(email) && TextUtils.isEmpty(password)) {
-                    Toast.makeText(Login.this, "Please enter your credentials..", Toast.LENGTH_SHORT);
+                    Toast.makeText(Login.this, "Please enter your credentials..", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 // on below line we are calling a sign in method and passing email and password to it.
@@ -102,7 +103,7 @@ public class Login extends AppCompatActivity {
             // if the user is not null then we are
             // opening a main activity on below line.
             Intent i = new Intent(Login.this, MainActivity.class);
-            finish();
+//            finish();
         }
     }
 

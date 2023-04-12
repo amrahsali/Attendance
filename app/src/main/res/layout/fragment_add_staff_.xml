@@ -31,11 +31,13 @@
             android:orientation="vertical"
             android:gravity="center">
             <ImageView
+                android:id="@+id/userprofile"
+                android:src="@drawable/ic_round_add_circle_outline_24"
+                android:gravity="center"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/ic_round_add_circle_outline_24"
-                app:tint="@color/blue" />
-
+                android:layout_gravity="center"
+                android:scaleType="fitCenter"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -74,6 +76,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
+
                 <EditText
 
                     android:id="@+id/username"
