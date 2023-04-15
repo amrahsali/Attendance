@@ -170,7 +170,7 @@
                     android:layout_width="match_parent"
                     android:backgroundTint="@color/blue"
                     android:layout_height="50dp"
-                    android:text="Create Staff"
+                    android:text="register print"
                     />
             </LinearLayout>
 

@@ -103,7 +103,7 @@ public class Login extends AppCompatActivity {
             // if the user is not null then we are
             // opening a main activity on below line.
             Intent i = new Intent(Login.this, MainActivity.class);
-//            finish();
+            startActivity(i);
         }
     }
 
