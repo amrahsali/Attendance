@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity  {
         vNV = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
 
-        setSupportActionBar(toolbar);
+       // setSupportActionBar(toolbar);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, layDL, toolbar, R.string.nav_open, R.string.nav_close);
 

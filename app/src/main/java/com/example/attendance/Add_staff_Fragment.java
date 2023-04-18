@@ -3,6 +3,8 @@ package com.example.attendance;
 import static android.app.Activity.RESULT_OK;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -21,9 +23,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,12 +44,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
+import java.util.Objects;
 
 
 public class Add_staff_Fragment extends Fragment {
@@ -54,10 +61,13 @@ public class Add_staff_Fragment extends Fragment {
     Button  create_staff;
     EditText username, phoneNumber, faculty, department, emailad;
     ImageView profileimg;
+    private ProgressBar loadingPB;
     int SELECT_PICTURE = 200;
     Uri selectedImageUri, imageuri;
     DatabaseReference databaseReference;
     FirebaseDatabase firebaseDatabase;
+    private StorageReference mStorageref;
+    private String courseID;
     TextView name,email;
 
 
@@ -90,8 +100,9 @@ public class Add_staff_Fragment extends Fragment {
         profileimg = view.findViewById(R.id.userprofile);
         emailad = view.findViewById(R.id.email);
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Farmers");
+        databaseReference = firebaseDatabase.getReference("Staff");
 
+        mStorageref = FirebaseStorage.getInstance().getReference("Upload Photos");
 
         // Read from the database
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -137,114 +148,87 @@ public class Add_staff_Fragment extends Fragment {
         //get user profile
         FirebaseUser user = mAuth.getCurrentUser();
 
-        assert user != null;
-        Query query = databaseReference.orderByChild("email").equalTo(user.getEmail());
 
-        //Toast.makeText(getActivity(), firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    String name = "" + dataSnapshot1.child("fullname").getValue();
-                    String emaill = "" + dataSnapshot1.child("email").getValue();
-                    String image = "" + dataSnapshot1.child("image").getValue();
-                    String phone = "" + dataSnapshot1.child("phone").getValue();
-                    username.setText(name);
-                    emailad.setText(emaill);
-                    phoneNumber.setText(phone);
-                    try {
-                        Glide.with(getActivity()).load(image).into(profileimg);
-                    } catch (Exception e) {
 
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
         // displaying a toast message on user update profile.
         create_staff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = username.getText().toString();
-                String email = emailad.getText().toString();
-                String phone = phoneNumber.getText().toString();
-                Drawable drawable = profileimg.getDrawable();
-                Bitmap bitmap = null;
-                if (drawable instanceof BitmapDrawable) {
-                    bitmap = ((BitmapDrawable) drawable).getBitmap();
-                } else {
-                    bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-                    Canvas canvas = new Canvas(bitmap);
-                    drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-                    drawable.draw(canvas);
-                }
+
+
+                loadingPB.setVisibility(View.VISIBLE);
+
+
+                // on below line we are calling a add value event
+                // to pass data to firebase database.
+                final String timestamp = String.valueOf(System.currentTimeMillis());
+                String filepathname = "Staff/" + "staff" + timestamp;
+                Bitmap bitmap = ((BitmapDrawable) profileimg.getDrawable()).getBitmap();
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
                 byte[] data = byteArrayOutputStream.toByteArray();
 
-
-                if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(phone) && drawable != null && bitmap != null) {
-
-                    final String timestamp = String.valueOf(System.currentTimeMillis());
-                    String filepathname = "Profile/" + "images" + timestamp;
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-
-                    StorageReference storageReference1 = FirebaseStorage.getInstance().getReference().child(filepathname);
-                    storageReference1.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            //getting the url of image uploaded
-                            Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                            while (!uriTask.isSuccessful()) ;
-                            String downloadUri = uriTask.getResult().toString();
-                            if (uriTask.isSuccessful()) {
-
-                                String fulname = username.getText().toString();
-                                String emailaddress = emailad.getText().toString();
-                                String phoneNumberData = phoneNumber.getText().toString();
-
-                                // Toast.makeText(getContext(), "Profile updated", Toast.LENGTH_LONG).show();
-
-                                // updating our image url into the realtime database
-                                HashMap<String, Object> hashMap = new HashMap<>();
-                                hashMap.put("image", downloadUri.toString());
-                                hashMap.put("name", fulname);
-                                hashMap.put("phone", phoneNumberData);
-                                hashMap.put("email", emailaddress);
+                StorageReference storageReference1 = FirebaseStorage.getInstance().getReference().child(filepathname);
+                storageReference1.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // getting the url of image uploaded
+                        Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                        while (!uriTask.isSuccessful()) ;
+                        String downloadUri = uriTask.getResult().toString();
+                        if (uriTask.isSuccessful()) {
 
 
-                                databaseReference.child(user.getUid()).updateChildren(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d(TAG, "Profile updated.");
-                                        Toast.makeText(getContext(), "Profile Updated", Toast.LENGTH_SHORT).show();
-                                        Intent i = new Intent(getContext(), ScanActivity.class);
-                                        startActivity(i);
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        //loadingPB.setVisibility(View.GONE);
-                                        Toast.makeText(getActivity(), "Failed", Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                            }
+
+                String name = username.getText().toString();
+                String email = emailad.getText().toString();
+                String phone = phoneNumber.getText().toString();
+               // String department = department.getText().toString();
+                // String faculty = faculty.getText().toString();
+
+                Uri staffImage = imageuri;
+                String Uid = mAuth.getUid();
+                String staffImageUri = staffImage.toString();
+                            getActivity().getContentResolver().takePersistableUriPermission(imageuri, (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
+                //String courseImg = productImgBtn.getText().toString();
+                            courseID = name;
+                            // on below line we are passing all data to our modal class.
+                            StaffRVModal courseRVModal = new StaffRVModal(courseID, name, email, phone, downloadUri, Uid);
+
+                            databaseReference.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    // on below line we are setting data in our firebase database.
+                                    databaseReference.child(courseID).setValue(courseRVModal);
+                                    // displaying a toast message.
+                                    Toast.makeText(getActivity(), "Product Added..", Toast.LENGTH_SHORT).show();
+                                    // starting a main activity.
+                                    startActivity(new Intent(getActivity(), MainActivity.class));
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    // displaying a failure message on below line.
+                                    Toast.makeText(getActivity(), "Failed to add Product..", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
-                    });
-                }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        loadingPB.setVisibility(View.GONE);
+                        Toast.makeText(getActivity(), "Failed", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
             }
         });
-
         return view;
-
     }
 
-    //this function is triggered when user
+    // this function is triggered when user
     // selects the image from the imageChooser
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -260,11 +244,78 @@ public class Add_staff_Fragment extends Fragment {
                     // update the preview image in the layout
 
                     imageuri = data.getData();
-                    Picasso.get().load(imageuri).into(profileimg);
+                    Picasso.get().load(imageuri).into((Target) create_staff);
                     //IVPreviewImage.setImageURI(selectedImageUri);
                 }
             }
         }
     }
 
+    private String getFileExtension(Uri uri){
+        ContentResolver cr = getActivity().getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cr.getType(uri));
+
+    }
+
+    private void uploadfile() {
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setTitle("Uploading");
+        progressDialog.show();
+
+
+        if (imageuri !=null){
+            StorageReference  filereference  = mStorageref.child(System.currentTimeMillis()+
+                    "."+getFileExtension(imageuri));
+
+            filereference.putFile(imageuri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+
+                            Toast.makeText(getActivity(), "Upload Successfully", Toast.LENGTH_SHORT).show();
+                            Upload upload = new Upload(Objects.requireNonNull(mAuth.getCurrentUser()).getUid(),taskSnapshot.getMetadata().getReference().getDownloadUrl()
+                                    .toString());
+                            progressDialog.show();
+
+
+
+
+                            String   uploadId = databaseReference.push().getKey();
+                            databaseReference.child(uploadId).setValue(upload);
+                            progressDialog.setCanceledOnTouchOutside(false);
+                            progressDialog.dismiss();
+
+
+
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0*taskSnapshot.getBytesTransferred())/taskSnapshot.getTotalByteCount();
+                            progressDialog.setCanceledOnTouchOutside(false);
+                            progressDialog.setMessage("Uploaded  " +(int)progress+"%");
+
+
+
+                        }
+                    });
+
+        }else
+            Toast.makeText(getActivity(), "Please Select a Image", Toast.LENGTH_SHORT).show();
+
+
+
+
+
+    }
 }
