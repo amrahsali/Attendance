@@ -244,7 +244,7 @@ public class Add_staff_Fragment extends Fragment {
                     // update the preview image in the layout
 
                     imageuri = data.getData();
-                    Picasso.get().load(imageuri).into((Target) create_staff);
+                    Picasso.get().load(imageuri).into(profileimg);
                     //IVPreviewImage.setImageURI(selectedImageUri);
                 }
             }
