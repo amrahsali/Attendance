@@ -69,14 +69,12 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:padding="10dp"
-            android:layout_margin="20dp"
             android:orientation="horizontal">
 
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="130dp"
                 android:layout_weight="1"
                 android:elevation="8dp"
                 android:layout_gravity="center"
@@ -112,7 +110,7 @@
                 android:layout_height="0dp" />
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="130dp"
                 android:layout_weight="1"
                 android:elevation="8dp"
                 android:layout_gravity="center"
@@ -147,14 +145,12 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:padding="10dp"
-            android:layout_margin="20dp"
             android:orientation="horizontal"
             >
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="130dp"
                 android:layout_weight="1"
                 android:elevation="8dp"
                 android:layout_gravity="center"
@@ -190,7 +186,7 @@
                 android:layout_height="0dp" />
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="130dp"
                 android:layout_weight="1"
                 android:elevation="8dp"
                 android:layout_gravity="center"

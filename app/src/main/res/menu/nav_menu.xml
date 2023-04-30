@@ -7,7 +7,7 @@
         android:title="Home " />
     <item
         android:id="@+id/add_staff"
-        android:icon="@drawable/ic_round_note_add_24"
+        android:icon="@drawable/ic_round_person_24"
         android:title="Add staff" />
 
     <item
@@ -28,7 +28,7 @@
 
     <item
         android:id="@+id/navigation_courses"
-        android:icon="@drawable/ic_round_note_add_24"
+        android:icon="@drawable/ic_round_library_books_24"
         android:title="Courses " />
 
 
