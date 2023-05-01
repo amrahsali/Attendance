@@ -59,7 +59,7 @@ public class Add_staff_Fragment extends Fragment {
 
     private FirebaseAuth mAuth;
     Button  create_staff;
-    EditText username, phoneNumber, faculty, department, emailad;
+    EditText username, phoneNumber, emailad, department1, faculty1;
     ImageView profileimg;
     private ProgressBar loadingPB;
     int SELECT_PICTURE = 200;
@@ -94,8 +94,8 @@ public class Add_staff_Fragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_add_staff_, container, false);
         create_staff = view.findViewById(R.id.loginbtn);
         username = view.findViewById(R.id.username);
-        faculty = view.findViewById(R.id.faculty);
-        department = view.findViewById(R.id.department);
+        faculty1 = view.findViewById(R.id.faculty);
+        department1 = view.findViewById(R.id.department);
         phoneNumber = view.findViewById(R.id.mobile_np);
         profileimg = view.findViewById(R.id.userprofile);
         emailad = view.findViewById(R.id.email);
@@ -103,23 +103,6 @@ public class Add_staff_Fragment extends Fragment {
         databaseReference = firebaseDatabase.getReference("Staff");
 
         mStorageref = FirebaseStorage.getInstance().getReference("Upload Photos");
-
-        // Read from the database
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
-                Log.d(TAG, "Value is: " + value);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
 
 
 
@@ -157,9 +140,7 @@ public class Add_staff_Fragment extends Fragment {
             public void onClick(View v) {
 
 
-                loadingPB.setVisibility(View.VISIBLE);
-
-
+               // loadingPB.setVisibility(View.VISIBLE);
                 // on below line we are calling a add value event
                 // to pass data to firebase database.
                 final String timestamp = String.valueOf(System.currentTimeMillis());
@@ -184,8 +165,8 @@ public class Add_staff_Fragment extends Fragment {
                 String name = username.getText().toString();
                 String email = emailad.getText().toString();
                 String phone = phoneNumber.getText().toString();
-               // String department = department.getText().toString();
-                // String faculty = faculty.getText().toString();
+                String department = department1.getText().toString();
+                 String faculty = faculty1.getText().toString();
 
                 Uri staffImage = imageuri;
                 String Uid = mAuth.getUid();
@@ -194,7 +175,7 @@ public class Add_staff_Fragment extends Fragment {
                 //String courseImg = productImgBtn.getText().toString();
                             courseID = name;
                             // on below line we are passing all data to our modal class.
-                            StaffRVModal courseRVModal = new StaffRVModal(courseID, name, email, phone, downloadUri, Uid);
+                            StaffRVModal courseRVModal = new StaffRVModal(courseID, name, email, phone, downloadUri, Uid, faculty, department );
 
                             databaseReference.addValueEventListener(new ValueEventListener() {
                                 @Override
@@ -210,6 +191,7 @@ public class Add_staff_Fragment extends Fragment {
                                 public void onCancelled(@NonNull DatabaseError error) {
                                     // displaying a failure message on below line.
                                     Toast.makeText(getActivity(), "Failed to add Product..", Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG, "onCancelled: ",error.toException() );
                                 }
                             });
                         }

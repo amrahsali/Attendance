@@ -6,16 +6,14 @@ import android.os.Parcelable;
 public class StaffRVModal implements Parcelable {
     // creating variables for our different fields.
     private String productName;
-    private String productDescription;
     private String department;
     private String faculty;
     private String productImg;
     private String productId;
     private String userID;
+    private String phone;
+    private String email;
 
-    public StaffRVModal(String courseID, String name, String email, String phone, String downloadUri, String uid) {
-
-    }
 
     public String getProductId() {
         return productId;
@@ -33,10 +31,11 @@ public class StaffRVModal implements Parcelable {
     protected StaffRVModal(Parcel in) {
         productName = in.readString();
         productId = in.readString();
-        productDescription = in.readString();
         department = in.readString();
         faculty = in.readString();
         productImg = in.readString();
+        phone = in.readString();
+        email = in.readString();
     }
 
     public static final Creator<StaffRVModal> CREATOR = new Creator<StaffRVModal>() {
@@ -60,21 +59,6 @@ public class StaffRVModal implements Parcelable {
         this.productName = productName;
     }
 
-    public String getProductDescription() {
-        return productDescription;
-    }
-
-    public void setProductDescription(String productDescription) {
-        this.productDescription = productDescription;
-    }
-
-    public String getProductPrice() {
-        return department;
-    }
-
-    public void setProductPrice(String productPrice) {
-        this.department = productPrice;
-    }
 
     public String getFaculty() {
         return faculty;
@@ -84,8 +68,20 @@ public class StaffRVModal implements Parcelable {
         this.faculty = faculty;
     }
 
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
     public String getProductImg() {
         return productImg;
+    }
+
+    public void setProductImg(String productImg) {
+        this.productImg = productImg;
     }
 
     public void setUserID(String userId) {
@@ -96,18 +92,24 @@ public class StaffRVModal implements Parcelable {
         return userID;
     }
 
-    public void setProductImg(String productImg) {
-        this.productImg = productImg;
+    public void setEmail(String email) {
+            this.email = email;
     }
 
-    public StaffRVModal(String productId, String productName, String productDescription, String productPrice, String productfaculty, String productImg, String userID) {
+    public String getEmail() {
+        return email;
+    }
+
+    public StaffRVModal(String productId, String productName, String staffEmail, String staffPhone,
+                        String productImg, String userID, String faculty, String department) {
         this.productName = productName;
         this.productId = productId;
-        this.productDescription = productDescription;
-        this.department = productPrice;
-        this.faculty = productfaculty;
+        this.department = department;
+        this.faculty = faculty;
         this.productImg = productImg;
         this.userID = userID;
+        this.phone = staffPhone;
+        this.email = staffEmail;
     }
 
     @Override
@@ -119,7 +121,6 @@ public class StaffRVModal implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(productName);
         dest.writeString(productId);
-        dest.writeString(productDescription);
         dest.writeString(department);
         dest.writeString(faculty);
         dest.writeString(productImg);
