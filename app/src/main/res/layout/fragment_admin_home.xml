@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="10dp"
-    tools:context=".RecordFragment">
+    tools:context=".AdminHomeFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -38,11 +38,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-                <EditText
 
+
+                <TextView
                     android:id="@+id/username"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="match_parent"
                     android:drawableTint="@color/blue"
                     android:background="@null"
                     android:inputType="text"
@@ -54,10 +55,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-                <EditText
-                    android:id="@+id/faculty"
+                <TextView
+                    android:id="@+id/userfaculty"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="match_parent"
                     android:drawableTint="@color/blue"
                     android:background="@null"
                     android:drawableStart="@drawable/ic_round_school_24"
@@ -69,10 +70,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-                <EditText
-                    android:id="@+id/department"
+                <TextView
+                    android:id="@+id/userdepartment"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="match_parent"
                     android:drawableTint="@color/blue"
                     android:background="@null"
                     android:drawableStart="@drawable/ic_sharp_class_24"
@@ -83,10 +84,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-                <EditText
-                    android:id="@+id/mobile_np"
+                <TextView
+                    android:id="@+id/usercourse"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="match_parent"
                     android:drawableTint="@color/blue"
                     android:background="@null"
                     android:drawableStart="@drawable/ic_round_library_books_24"
@@ -99,7 +100,7 @@
     </com.google.android.material.card.MaterialCardView>
 
     <Button
-        android:id="@+id/loginbtn"
+        android:id="@+id/updtProfile_btn"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_marginTop="16dp"

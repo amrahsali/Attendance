@@ -82,7 +82,7 @@ public class Add_staff_Fragment extends Fragment {
     }
 
 
-
+    
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -109,7 +109,7 @@ public class Add_staff_Fragment extends Fragment {
         coursesRV.setHasFixedSize(true);
 
         // adding on click listener for floating action button.
-        fab.setOnClickListener(v -> {
+        fab.setOnClickListener((View v) -> {
             // starting a new activity for adding a new course
             // and passing a constant value in it.
             Intent intent1 = new Intent(getActivity(), StaffAddition.class);
