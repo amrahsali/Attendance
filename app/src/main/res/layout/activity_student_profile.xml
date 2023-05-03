@@ -23,6 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
+            android:id="@+id/stdntimage"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/ic_round_person_24"
@@ -53,7 +54,7 @@
                 android:orientation="horizontal">
                 <EditText
 
-                    android:id="@+id/username"
+                    android:id="@+id/stdntname"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:drawableTint="@color/blue"
@@ -69,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <EditText
-                    android:id="@+id/faculty"
+                    android:id="@+id/stdntfaculty"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:drawableTint="@color/blue"
@@ -84,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <EditText
-                    android:id="@+id/department"
+                    android:id="@+id/stdntdepartment"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:drawableTint="@color/blue"
@@ -99,14 +100,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <EditText
-                    android:id="@+id/mobile_np"
+                    android:id="@+id/stdntNumber"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:drawableTint="@color/blue"
                     android:background="@null"
                     android:drawableStart="@drawable/ic_round_library_books_24"
                     android:drawablePadding="10dp"
-                    android:hint="Matric Number"/>
+                    android:hint="matric number"/>
 
             </LinearLayout>
             <LinearLayout
@@ -133,11 +134,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="15dp"/>
                 <Button
-                    android:id="@+id/loginbtn"
+                    android:id="@+id/stdntbtn"
                     android:layout_width="match_parent"
                     android:backgroundTint="@color/blue"
                     android:layout_height="50dp"
-                    android:text="Staff Log in"
+                    android:text="Add"
                     />
             </LinearLayout>
 
@@ -145,5 +146,14 @@
 
     </com.google.android.material.card.MaterialCardView>
 
+    <ProgressBar
+        android:id="@+id/idPBLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/progress_back"
+        android:visibility="gone" />
 
 </LinearLayout>

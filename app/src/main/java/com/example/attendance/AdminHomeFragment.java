@@ -16,10 +16,8 @@ public class AdminHomeFragment extends Fragment {
 
     Dialog dialog;
     Button button;
-    TextView nameTextView;
-    TextView department;
-    TextView  faculty;
-    TextView  course;
+    TextView nameTextView, department, faculty, course;
+
 
     public AdminHomeFragment() {
         // Required empty public constructor
