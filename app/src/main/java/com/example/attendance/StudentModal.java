@@ -11,6 +11,7 @@ public class StudentModal implements Parcelable {
     private String studentFaculty;
     private String studentDepartment;
     private String studentNumber;
+    private String studentImage;
 
 
 
@@ -23,6 +24,7 @@ public class StudentModal implements Parcelable {
         studentDepartment = in.readString();
         studentNumber = in.readString();
         productId = in.readString();
+        studentImage = in.readString();
     }
 
     public static final Creator<StudentModal> CREATOR = new Creator<StudentModal>() {
@@ -39,6 +41,11 @@ public class StudentModal implements Parcelable {
 
     public StudentModal(String courseID, String stdName, String stdDepartment, String stdFaculty, String downloadUri, String uid) {
 
+    }
+
+
+    public String getProductImg() {
+        return studentImage;
     }
 
     public String getStudentName() {

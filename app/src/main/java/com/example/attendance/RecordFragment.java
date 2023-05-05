@@ -70,7 +70,7 @@ public class RecordFragment extends Fragment {
         firebaseDatabase = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
         //on below line we are getting database reference.
-        databaseReference = firebaseDatabase.getReference("students");
+        databaseReference = firebaseDatabase.getReference("student");
         addCourseFAB = view.findViewById(R.id.idFABAddCourse);
 
 
@@ -145,44 +145,6 @@ public class RecordFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-
-        inflater.inflate(R.menu.search, menu);
-        MenuItem item = menu.findItem(R.id.search);
-        searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
-        searchView.setIconified(true);
-
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                txtSearch(query);
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-
-                txtSearch(query);
-
-                return false;
-            }
-        });
-        super.onCreateOptionsMenu(menu, inflater);
-
-
-    }
-
-    private void txtSearch(String str)
-    {
-
     }
 }
 

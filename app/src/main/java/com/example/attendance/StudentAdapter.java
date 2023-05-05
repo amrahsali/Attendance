@@ -22,7 +22,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
     // creating variables for our list, context, interface and position.
     private ArrayList<StudentModal> courseRVModalArrayList;
     private Context context;
-    private CourseClickInterface courseClickInterface;
     int lastPos = -1;
 
     public StudentAdapter(ArrayList<StudentModal> courseRVModalArrayList, Context context) {
@@ -43,12 +42,12 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
     public void onBindViewHolder(@NonNull StudentAdapter.ViewHolder holder, int position) {
 
         StudentModal courseRVModal = courseRVModalArrayList.get(holder.getAdapterPosition());
-        holder.Student_name.setText(courseRVModal.getStudentName());
-        holder.Student_faculty.setText(courseRVModal.getStudentFaculty());
-        holder.Student_department.setText( courseRVModal.getStudentDepartment());
+        holder.student_name.setText(courseRVModal.getStudentName());
+        holder.student_faculty.setText(courseRVModal.getStudentFaculty());
+        holder.student_department.setText( courseRVModal.getStudentDepartment());
         Uri uri = Uri.parse(courseRVModal.getProductImg());
-        holder.Student_image.setImageURI(uri);
-        Picasso.get().load(courseRVModal.getProductImg()).into(holder.Student_image);
+        holder.student_image.setImageURI(uri);
+        Picasso.get().load(courseRVModal.getProductImg()).into(holder.student_image);
         // adding animation to recycler view item on below line.
         setAnimation(holder.itemView, holder.getAdapterPosition());
 
