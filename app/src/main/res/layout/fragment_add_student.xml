@@ -8,40 +8,6 @@
     android:orientation="vertical"
     tools:context=".Add_studentFragment">
 
-    <LinearLayout
-        android:gravity="end"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-
-        <androidx.cardview.widget.CardView
-            android:layout_gravity="end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                app:tint="@color/blue"
-                android:src="@drawable/ic_round_person_24" />
-
-        </androidx.cardview.widget.CardView>
-
-
-
-
-    </LinearLayout>
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="12dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-
-    </LinearLayout>
     <TextView
         android:paddingTop="10dp"
         android:gravity="center"
@@ -49,146 +15,47 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textSize="20dp"
-        android:text="Add Student "/>
+        android:text="Staff student "/>
 
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="320dp"
-        android:layout_height="150dp"
-        android:elevation="6dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="10dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/ic_round_add_circle_outline_24"
-                app:tint="@color/blue" />
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="10dp"
-                android:hint="Add student image "/>
-
-        </LinearLayout>
-
-
-
-    </com.google.android.material.card.MaterialCardView>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:textSize="20sp"
-        android:hint="student Data "/>
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="360dp"
-        android:layout_height="wrap_content"
-        android:elevation="6dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="10dp">
-
-
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="20dp"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <EditText
-
-                    android:id="@+id/username"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:drawableTint="@color/blue"
-                    android:background="@null"
-                    android:inputType="text"
-                    android:drawableStart="@drawable/ic_round_home_24"
-                    android:drawablePadding="10dp"
-                    android:hint="name"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <EditText
-                    android:id="@+id/faculty"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:drawableTint="@color/blue"
-                    android:background="@null"
-                    android:drawableStart="@drawable/ic_round_school_24"
-                    android:drawablePadding="10dp"
-                    android:hint="faculty"/>
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <EditText
-                    android:id="@+id/department"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:drawableTint="@color/blue"
-                    android:background="@null"
-                    android:drawableStart="@drawable/ic_sharp_class_24"
-                    android:drawablePadding="10dp"
-                    android:hint="Department"/>
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <EditText
-                    android:id="@+id/mobile_np"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:drawableTint="@color/blue"
-                    android:background="@null"
-                    android:drawableStart="@drawable/ic_round_library_books_24"
-                    android:drawablePadding="10dp"
-                    android:hint="Matric Number"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="15dp"/>
-
-    <LinearLayout
-        android:gravity="center"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/stdt_printbtn"
-        android:layout_width="360dp"
-        android:backgroundTint="@color/blue"
+        <!--recycler view to display our data-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/idRVStudent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!--fab to add new courses-->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/stdFABtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginEnd="18dp"
+            android:layout_marginBottom="18dp"
+            android:contentDescription="TODO"
+            android:src="@android:drawable/ic_input_add"
+            app:backgroundTint="@color/blue"
+            app:tint="@color/white" />
+
+    </RelativeLayout>
+
+    <!--progress bar for loading indicator-->
+    <ProgressBar
+        android:id="@+id/idPBLoading"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Register print"
-        />
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/progress_back"
+        android:visibility="gone" />
 
-</LinearLayout>
 </LinearLayout>
