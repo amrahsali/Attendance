@@ -71,7 +71,6 @@ public class RecordFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         //on below line we are getting database reference.
         databaseReference = firebaseDatabase.getReference("student");
-        addCourseFAB = view.findViewById(R.id.idFABAddCourse);
 
 
         addCourseFAB.setOnClickListener(new View.OnClickListener() {
@@ -89,62 +88,11 @@ public class RecordFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         //recyclerView.setAdapter(new MyRecyclerViewAdapter(1234), this);
         recyclerView.setAdapter(courseRVAdapter);
-        getProducts();
 
 
         return view;
 
     }
 
-    private void getProducts() {
-        //on below line clearing our list.
-        courseRVModalArrayList.clear();
-        Query query = databaseReference.orderByChild("userID").equalTo(uid);
-        //on below line we are calling add child event listener method to read the data.
-        query.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                //on below line we are hiding our progress bar.
-                //loadingPB.setVisibility(View.GONE);
-                //adding snapshot to our array list on below line.
-                courseRVModalArrayList.add(snapshot.getValue(StudentModal.class));
-                //notifying our adapter that data has changed.
-                courseRVAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                //this method is called when new child is added we are notifying our adapter and making progress bar visibility as gone.
-                //loadingPB.setVisibility(View.GONE);
-                courseRVAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                //notifying our adapter when child is removed.
-                courseRVAdapter.notifyDataSetChanged();
-                //loadingPB.setVisibility(View.GONE);
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                //notifying our adapter when child is moved.
-                courseRVAdapter.notifyDataSetChanged();
-                //loadingPB.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        super.onCreate(savedInstanceState);
-    }
 }
 
