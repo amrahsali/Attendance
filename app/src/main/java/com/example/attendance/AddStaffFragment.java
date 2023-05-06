@@ -1,20 +1,23 @@
 package com.example.attendance;
 
+import static android.app.Activity.RESULT_OK;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -39,7 +42,11 @@ import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 
-public class StaffAddition extends AppCompatActivity {
+/**
+ * Created By: George David
+ * Date: May 2023
+ */
+public class AddStaffFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     Button create_staff;
@@ -53,22 +60,32 @@ public class StaffAddition extends AppCompatActivity {
     private StorageReference mStorageref;
     private String courseID;
     TextView name,email;
+    private static final int ADD_COURSE_REQUEST = 1;
+    private RecyclerView coursesRV;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_add_staff);
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
-        create_staff = findViewById(R.id.loginbtn);
-        username = findViewById(R.id.username);
-        faculty1 = findViewById(R.id.faculty);
-        department1 = findViewById(R.id.department);
-        phoneNumber = findViewById(R.id.mobile_np);
-        profileimg = findViewById(R.id.userprofile);
-        emailad = findViewById(R.id.email);
+        // Inflate the layout for this fragment
+        View view =  inflater.inflate(R.layout.fragment_add_staff, container, false);
+        create_staff = view.findViewById(R.id.loginbtn);
+        username = view.findViewById(R.id.username);
+        faculty1 = view.findViewById(R.id.faculty);
+        department1 = view.findViewById(R.id.department);
+        phoneNumber = view.findViewById(R.id.mobile_np);
+        profileimg = view.findViewById(R.id.userprofile);
+        emailad = view.findViewById(R.id.email);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Staff");
         mStorageref = FirebaseStorage.getInstance().getReference("Upload Photos");
+
 
         profileimg.setOnClickListener(v -> {
             // create an instance of the
@@ -100,8 +117,7 @@ public class StaffAddition extends AppCompatActivity {
             // to pass data to firebase database.
             final String timestamp = String.valueOf(System.currentTimeMillis());
             String filepathname = "Staff/" + "staff" + timestamp;
-            Drawable drawable = profileimg.getDrawable();
-            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+            Bitmap bitmap = ((BitmapDrawable) profileimg.getDrawable()).getBitmap();
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
             byte[] data = byteArrayOutputStream.toByteArray();
@@ -127,7 +143,7 @@ public class StaffAddition extends AppCompatActivity {
                         Uri staffImage = imageuri;
                         String Uid = mAuth.getUid();
                         String staffImageUri = staffImage.toString();
-                        StaffAddition.this.getContentResolver().takePersistableUriPermission(imageuri, (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
+                        getActivity().getContentResolver().takePersistableUriPermission(imageuri, (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
                         //String courseImg = productImgBtn.getText().toString();
                         courseID = name;
                         // on below line we are passing all data to our modal class.
@@ -139,18 +155,14 @@ public class StaffAddition extends AppCompatActivity {
                                 // on below line we are setting data in our firebase database.
                                 databaseReference.child(courseID).setValue(courseRVModal);
                                 // displaying a toast message.
-                                Toast.makeText(StaffAddition.this, "Product Added..", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Product Added..", Toast.LENGTH_SHORT).show();
                                 // starting a main activity.
-                                //startActivity(new Intent(StaffAddition.this, StaffListFragment.class));
-                                FragmentManager fragmentManager = getSupportFragmentManager();
-                                fragmentManager.popBackStack();
-                                finish();
-
+                                startActivity(new Intent(getContext(), StaffListFragment.class));
                             }
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
                                 // displaying a failure message on below line.
-                                Toast.makeText(StaffAddition.this, "Failed to add Product..", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Failed to add Product..", Toast.LENGTH_SHORT).show();
                                 Log.e(TAG, "onCancelled: ",error.toException() );
                             }
                         });
@@ -160,16 +172,15 @@ public class StaffAddition extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     loadingPB.setVisibility(View.GONE);
-                    Toast.makeText(StaffAddition.this, "Failed", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Failed", Toast.LENGTH_LONG).show();
                 }
             });
 
 
         });
+        return view;
     }
 
-    // this function is triggered when user
-    // selects the image from the imageChooser
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -190,4 +201,5 @@ public class StaffAddition extends AppCompatActivity {
             }
         }
     }
+
 }

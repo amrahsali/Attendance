@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".Add_staff_Fragment">
+    tools:context=".StaffListFragment">
 
     <TextView
         android:paddingTop="10dp"

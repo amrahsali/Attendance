@@ -1,6 +1,5 @@
 package com.example.attendance;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -9,16 +8,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
-
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity  {
 
@@ -71,7 +63,7 @@ public class MainActivity extends AppCompatActivity  {
                     break;
                 case R.id.add_staff:
                     toolbar.setTitle("Add Staff");
-                    Add_staff_Fragment fragment2 = new Add_staff_Fragment();
+                    StaffListFragment fragment2 = new StaffListFragment();
                     FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction2.replace(R.id.content, fragment2, "");
                     fragmentTransaction2.commit();

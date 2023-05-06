@@ -62,7 +62,14 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Add_staff_Fragment"
+            android:name=".StaffListFragment"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+       <activity
+            android:name=".AddStaffFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
