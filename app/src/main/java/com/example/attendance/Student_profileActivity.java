@@ -1,7 +1,10 @@
 package com.example.attendance;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -11,6 +14,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -24,6 +28,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +38,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Objects;
@@ -75,7 +81,7 @@ public class Student_profileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
-        databaseReference = firebaseDatabase.getReference("students");
+        databaseReference = firebaseDatabase.getReference("student");
         mStorageref = FirebaseStorage.getInstance().getReference("Upload Photos");
 
         studentImage.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +110,10 @@ public class Student_profileActivity extends AppCompatActivity {
             }
         });
 
+
+        FirebaseUser user = mAuth.getCurrentUser();
+
+
         studentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,7 +126,7 @@ public class Student_profileActivity extends AppCompatActivity {
                 // on below line we are calling a add value event
                 // to pass data to firebase database.
                 final String timestamp = String.valueOf(System.currentTimeMillis());
-                String filepathname = "students/" + "student" + timestamp;
+                String filepathname = "student/" + "student" + timestamp;
                 Bitmap bitmap = ((BitmapDrawable) studentImage.getDrawable()).getBitmap();
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
@@ -142,7 +152,7 @@ public class Student_profileActivity extends AppCompatActivity {
                             Uri productImage = imageuri;
                             String Uid = mAuth.getUid();
                             String productUri = productImage.toString();
-                            getContentResolver().takePersistableUriPermission(imageuri, (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
+                            Student_profileActivity.this.getContentResolver().takePersistableUriPermission(imageuri, (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
                             //String courseImg = productImgBtn.getText().toString();
 
 
@@ -158,7 +168,9 @@ public class Student_profileActivity extends AppCompatActivity {
                                     // displaying a toast message.
                                     Toast.makeText(Student_profileActivity.this, "Student Added..", Toast.LENGTH_SHORT).show();
                                     // starting a main activity.
-                                    startActivity(new Intent(Student_profileActivity.this, MainActivity.class));
+                                    FragmentManager fragmentManager = getSupportFragmentManager();
+                                    fragmentManager.popBackStack();
+                                    finish();
 
                                 }
 
@@ -166,6 +178,9 @@ public class Student_profileActivity extends AppCompatActivity {
                                 public void onCancelled(@NonNull DatabaseError error) {
                                     // displaying a failure message on below line.
                                     Toast.makeText(Student_profileActivity.this, "Failed to add Student..", Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG, "onCancelled: ",error.toException() );
+
+
                                 }
                             });
                         }
@@ -203,75 +218,12 @@ public class Student_profileActivity extends AppCompatActivity {
                     // update the preview image in the layout
 
                     imageuri = data.getData();
+                    Picasso.get().load(imageuri).into(studentImage);
+
 
                 }
             }
         }
     }
-    private String getFileExtension(Uri uri){
-        ContentResolver cr = getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(cr.getType(uri));
 
-    }
-
-    private void uploadfile() {
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Uploading");
-        progressDialog.show();
-
-
-        if (imageuri !=null){
-            StorageReference  filereference  = mStorageref.child(System.currentTimeMillis()+
-                    "."+getFileExtension(imageuri));
-
-            filereference.putFile(imageuri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-
-                            Toast.makeText(Student_profileActivity.this, "Upload Successfully", Toast.LENGTH_SHORT).show();
-                            Upload upload = new Upload(Objects.requireNonNull(mAuth.getCurrentUser()).getUid(),taskSnapshot.getMetadata().getReference().getDownloadUrl()
-                                    .toString());
-                            progressDialog.show();
-
-
-
-
-                            String   uploadId = databaseReference.push().getKey();
-                            databaseReference.child(uploadId).setValue(upload);
-                            progressDialog.setCanceledOnTouchOutside(false);
-                            progressDialog.dismiss();
-
-
-
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0*taskSnapshot.getBytesTransferred())/taskSnapshot.getTotalByteCount();
-                            progressDialog.setCanceledOnTouchOutside(false);
-                            progressDialog.setMessage("Uploaded  " +(int)progress+"%");
-
-
-
-                        }
-                    });
-
-        }else
-            Toast.makeText(this, "Please Select a Image", Toast.LENGTH_SHORT).show();
-
-
-
-
-
-    }
 }
