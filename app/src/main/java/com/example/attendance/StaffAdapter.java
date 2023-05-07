@@ -46,6 +46,7 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.ViewHolder> 
         holder.product_name.setText(courseRVModal.getProductName());
         holder.Product_description.setText(courseRVModal.getDepartment());
         holder.Product_price.setText("N. " + courseRVModal.getFaculty());
+        holder.email.setText(courseRVModal.getEmail());
         Uri uri = Uri.parse(courseRVModal.getProductImg());
         holder.product_image.setImageURI(uri);
         Picasso.get().load(courseRVModal.getProductImg()).into(holder.product_image);
@@ -79,7 +80,7 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.ViewHolder> 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // creating variable for our image view and text view on below line.
         private ImageView product_image;
-        private TextView product_name, Product_price, Product_description;
+        private TextView product_name, Product_price, Product_description, email;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -88,6 +89,7 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.ViewHolder> 
             product_image = itemView.findViewById(R.id.product_image);
             Product_description = itemView.findViewById(R.id.product_description);
             Product_price = itemView.findViewById(R.id.product_price);
+            email = itemView.findViewById(R.id.staff_email);
         }
     }
 
