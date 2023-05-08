@@ -158,7 +158,7 @@ public class Student_profileActivity extends AppCompatActivity {
 
                             courseID = stdName;
                             // on below line we are passing all data to our modal class.
-                            StudentModal studentModal = new StudentModal(courseID, stdName, stdDepartment, stdFaculty, downloadUri, Uid);
+                            StudentModal studentModal = new StudentModal (courseID, stdName, stdDepartment, stdFaculty, downloadUri, Uid);
 
                             databaseReference.addValueEventListener(new ValueEventListener() {
                                 @Override

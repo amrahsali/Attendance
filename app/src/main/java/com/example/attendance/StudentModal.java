@@ -15,6 +15,11 @@ public class StudentModal implements Parcelable {
 
 
 
+    // creating an empty constructor.
+    public StudentModal() {
+
+    }
+
     private String productId;
 
 
@@ -92,12 +97,13 @@ public class StudentModal implements Parcelable {
         this.productId = productId;
     }
 
-    public StudentModal(String studentName, String studentFaculty, String studentDepartment, String studentNumber, String productId) {
+    public StudentModal(String studentName, String studentFaculty, String studentDepartment, String studentNumber, String productId, String productImg) {
         this.studentName = studentName;
         this.studentFaculty = studentFaculty;
         this.studentDepartment = studentDepartment;
         this.studentNumber = studentNumber;
         this.productId = productId;
+        this.studentImage = String productImg;
     }
 
     @Override
@@ -112,5 +118,6 @@ public class StudentModal implements Parcelable {
         dest.writeString(studentDepartment);
         dest.writeString(studentNumber);
         dest.writeString(productId);
+        dest.writeString(studentImage);
     }
 }
