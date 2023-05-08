@@ -48,6 +48,10 @@ public class StudentModal implements Parcelable {
         return studentImage;
     }
 
+    public void setStudentImage(String studentImage){
+        this.studentImage = studentImage;
+    }
+
     public String getStudentName() {
         return studentName;
     }

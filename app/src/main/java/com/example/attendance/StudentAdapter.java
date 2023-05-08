@@ -90,4 +90,9 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
             student_course = itemView.findViewById(R.id.student_course);
         }
     }
+    // creating a interface for on click
+    public interface CourseClickInterface {
+        void onCourseClick(int position);
+    }
+
 }
