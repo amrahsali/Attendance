@@ -24,7 +24,7 @@
                 android:layout_height="match_parent"
                 android:background="#9E9E9E"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_round_person_24"/>
+                android:src="@drawable/person_foreground"/>
 
 
             <RelativeLayout

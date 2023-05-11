@@ -97,13 +97,12 @@ public class StudentModal implements Parcelable {
         this.productId = productId;
     }
 
-    public StudentModal(String studentName, String studentFaculty, String studentDepartment, String studentNumber, String productId, String productImg) {
+    public StudentModal(String studentName, String studentFaculty, String studentDepartment, String studentNumber, String productId) {
         this.studentName = studentName;
         this.studentFaculty = studentFaculty;
         this.studentDepartment = studentDepartment;
         this.studentNumber = studentNumber;
         this.productId = productId;
-        this.studentImage = String productImg;
     }
 
     @Override

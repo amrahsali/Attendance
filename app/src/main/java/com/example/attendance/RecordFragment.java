@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,24 +38,8 @@ import java.util.ArrayList;
 
 
 public class RecordFragment extends Fragment {
-
-    TextView all_card, vegies, fruit, grain, tuber, student_name, are_you_a_farmer, search_here;
-    ImageView student_img;
-    Context context;
-    private RecyclerView recyclerView;
-    private FloatingActionButton addCourseFAB;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
-    private FirebaseAuth mAuth;
-    private ArrayList<StudentModal> courseRVModalArrayList;
-    //private GridRecyclerViewHolder courseRVAdapter;
-    private StudentAdapter courseRVAdapter;
-    ImageView to_notification;
-    Button addToCart;
-    String uid;
-    private MenuItem menuItem;
-    private SearchView searchView;
-    MediaPlayer mMediaPlayer;
+    Button button;
+    Button button2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,33 +47,25 @@ public class RecordFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_record, container, false);
 
+            button = view.findViewById(R.id.attendance_btn);
+            button2 = view.findViewById(R.id.exams_btn );
 
-        uid = FirebaseAuth.getInstance().getUid();
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getActivity(), Attendance_record_Activity.class);
+                    startActivity(i);
+                }
+            });
 
-        recyclerView = view.findViewById(R.id.rvNumbers);
-        courseRVModalArrayList = new ArrayList<>();
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-        //on below line we are getting database reference.
-        databaseReference = firebaseDatabase.getReference("student");
 
-
-        addCourseFAB.setOnClickListener(new View.OnClickListener() {
+        button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //opening a new activity for adding a course.
-                Intent i = new Intent(getContext(), Student_profileActivity.class);
+                Intent i = new Intent(getActivity(), Exams_record_Activity.class);
                 startActivity(i);
             }
         });
-        courseRVAdapter = new StudentAdapter(courseRVModalArrayList, getContext());
-        // Toast.makeText(context, courseRVModalArrayList.get(0).toString(), Toast.LENGTH_SHORT).show();
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        //recyclerView.setAdapter(new MyRecyclerViewAdapter(1234), this);
-        recyclerView.setAdapter(courseRVAdapter);
-
 
         return view;
 
