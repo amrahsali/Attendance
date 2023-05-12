@@ -12,6 +12,9 @@ public class StudentModal implements Parcelable {
     private String studentDepartment;
     private String studentNumber;
     private String studentImage;
+    private String studentLevel;
+    private String userID;
+
 
 
 
@@ -20,7 +23,7 @@ public class StudentModal implements Parcelable {
 
     }
 
-    private String productId;
+    private String studentID;
 
 
     protected StudentModal(Parcel in) {
@@ -28,8 +31,9 @@ public class StudentModal implements Parcelable {
         studentFaculty = in.readString();
         studentDepartment = in.readString();
         studentNumber = in.readString();
-        productId = in.readString();
+        studentID = in.readString();
         studentImage = in.readString();
+        studentLevel = in.readString();
     }
 
     public static final Creator<StudentModal> CREATOR = new Creator<StudentModal>() {
@@ -43,10 +47,6 @@ public class StudentModal implements Parcelable {
             return new StudentModal[size];
         }
     };
-
-    public StudentModal(String courseID, String stdName, String stdDepartment, String stdFaculty, String downloadUri, String uid) {
-
-    }
 
 
     public String getProductImg() {
@@ -89,20 +89,32 @@ public class StudentModal implements Parcelable {
         this.studentNumber = studentNumber;
     }
 
-    public String getProductId() {
-        return productId;
+    public String getStudentID() {
+        return studentID;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setStudentID(String studentID) {
+        this.studentID = studentID;
     }
 
-    public StudentModal(String studentName, String studentFaculty, String studentDepartment, String studentNumber, String productId) {
+    public String getStudentLevel() {
+            return studentLevel;
+        }
+
+        public void setStudentLevel(String studentLevel) {
+            this.studentLevel = studentLevel;
+        }
+
+    public StudentModal(String studentID, String studentName, String studentFaculty, String studentDepartment,
+                        String studentNumber, String uid, String studentLevel, String studentImage) {
         this.studentName = studentName;
         this.studentFaculty = studentFaculty;
         this.studentDepartment = studentDepartment;
         this.studentNumber = studentNumber;
-        this.productId = productId;
+        this.studentID = studentID;
+        this.userID = uid;
+        this.studentLevel = studentLevel;
+        this.studentImage = studentImage;
     }
 
     @Override
@@ -116,7 +128,8 @@ public class StudentModal implements Parcelable {
         dest.writeString(studentFaculty);
         dest.writeString(studentDepartment);
         dest.writeString(studentNumber);
-        dest.writeString(productId);
+        dest.writeString(studentID);
         dest.writeString(studentImage);
+        dest.writeString(studentLevel);
     }
 }

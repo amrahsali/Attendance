@@ -1,5 +1,6 @@
 package com.example.attendance;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +25,7 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.ViewHolder> 
     private Context context;
     private CourseClickInterface courseClickInterface;
     int lastPos = -1;
+
 
     // creating a constructor.
     public StaffAdapter(ArrayList<StaffRVModal> courseRVModalArrayList, Context context) {

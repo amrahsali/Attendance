@@ -13,6 +13,13 @@
         android:theme="@style/Theme.Attendance"
         tools:targetApi="31">
         <activity
+            android:name=".StudentAddition"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".Exams_record_Activity"
             android:exported="false">
             <meta-data
@@ -55,13 +62,6 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Student_profileActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name=".StaffProfileActivity"
             android:exported="false">
             <meta-data
@@ -77,13 +77,6 @@
         </activity>
         <activity
             android:name=".StaffListFragment"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".AddStaffFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

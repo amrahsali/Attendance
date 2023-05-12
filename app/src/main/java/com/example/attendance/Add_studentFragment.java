@@ -33,6 +33,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 
 public class Add_studentFragment extends Fragment {
+
    private FirebaseAuth mAuth;
    Button create_student;
     EditText username, phoneNumber, emailad, department1, faculty1;
@@ -67,8 +68,6 @@ public class Add_studentFragment extends Fragment {
   mStorageref = FirebaseStorage.getInstance().getReference("Upload Photos");
   studentAdapter = new StudentAdapter(studentRVModalArrayList, getContext());
   studentRV = view.findViewById(R.id.idRVStudent);
-
-
   studentRV.setLayoutManager(new LinearLayoutManager(getContext()));
   studentRV.setHasFixedSize(true);
   studentRV.setAdapter(studentAdapter);
@@ -79,7 +78,7 @@ public class Add_studentFragment extends Fragment {
   fab.setOnClickListener((View v) -> {
    // starting a new activity for adding a new course
    // and passing a constant value in it.
-   Intent intent1 = new Intent(getActivity(), Student_profileActivity.class);
+   Intent intent1 = new Intent(getActivity(), StudentAddition.class);
    startActivity(intent1);
 
 

@@ -8,12 +8,12 @@
     <item
         android:id="@+id/add_staff"
         android:icon="@drawable/ic_round_person_24"
-        android:title="Add staff" />
+        android:title="Staff" />
 
     <item
         android:id="@+id/add_student"
         android:icon="@drawable/ic_round_people_24"
-        android:title="Add student" />
+        android:title="Student" />
 
 
 

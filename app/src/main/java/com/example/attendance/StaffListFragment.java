@@ -1,5 +1,7 @@
 package com.example.attendance;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,22 +40,14 @@ import java.util.ArrayList;
 public class StaffListFragment extends Fragment {
 
     private FirebaseAuth mAuth;
-    Button  create_staff;
-    EditText username, phoneNumber, emailad, department1, faculty1;
-    ImageView profileimg;
     private ProgressBar loadingPB;
-    int SELECT_PICTURE = 200;
-    Uri selectedImageUri, imageuri;
     DatabaseReference databaseReference;
     FirebaseDatabase firebaseDatabase;
     private StorageReference mStorageref;
-    private String courseID;
-    TextView name,email;
-    private static final int ADD_COURSE_REQUEST = 1;
-    private RecyclerView coursesRV;
-    private StaffRVModal staffRVModal;
+    private RecyclerView staffRV;
     private StaffAdapter staffAdapter;
     private ArrayList<StaffRVModal> staffRVModalArrayList;
+    Dialog dialog;
 
 
 
@@ -63,12 +59,6 @@ public class StaffListFragment extends Fragment {
 
     
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,19 +70,48 @@ public class StaffListFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_staff_list, container, false);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
+        dialog = new Dialog(getContext());
         databaseReference = firebaseDatabase.getReference("Staff");
         FloatingActionButton fab = view.findViewById(R.id.idFABAdd);
         staffRVModalArrayList = new ArrayList<>();
         mStorageref = FirebaseStorage.getInstance().getReference("Upload Photos");
         staffAdapter = new StaffAdapter(staffRVModalArrayList, getContext());
-        coursesRV = view.findViewById(R.id.idRVCourses);
-        coursesRV.setLayoutManager(new LinearLayoutManager(getContext()));
-        coursesRV.setHasFixedSize(true);
-        coursesRV.setAdapter(staffAdapter);
+        staffRV = view.findViewById(R.id.idRVCourses);
+        staffRV.setLayoutManager(new LinearLayoutManager(getContext()));
+        staffRV.setHasFixedSize(true);
+        staffRV.setAdapter(staffAdapter);
         getStaff();
 
 
-        // adding on click listener for floating action button.
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                // on recycler view item swiped then we are deleting the item of our recycler view.
+                if(direction==ItemTouchHelper.LEFT){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Do you want to delete?")
+                            .setPositiveButton("confirm", (dialogInterface, i1) -> {
+                                //viewmodal.delete(staffAdapter.get.getCourseAt(viewHolder.getAdapterPosition()));
+                                staffAdapter.notifyDataSetChanged();
+                                //databaseReference.child(staffAdapter.getItemId(viewHolder.getAdapterPosition())).removeValue();
+                                Toast.makeText(getContext(), "Staff deleted deleted", Toast.LENGTH_SHORT).show();
+                            }).setNegativeButton("cancel", (dialogInterface, i12) -> {
+                                staffAdapter.notifyDataSetChanged();
+                                builder.create().cancel();
+                            });
+                    builder.create().show();
+                }
+            }
+        }). attachToRecyclerView(staffRV);
+
+
+
+                // adding on click listener for floating action button.
         fab.setOnClickListener((View v) -> {
             // starting a new activity for adding a new course
             // and passing a constant value in it.
