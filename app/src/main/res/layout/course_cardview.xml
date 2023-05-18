@@ -2,12 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="4dp"
-    android:layout_gravity="center"
+    android:padding="10dp"
     android:orientation="vertical">
 
 <LinearLayout
-    android:layout_width="wrap_content"
+    android:layout_width="140dp"
     android:background="@drawable/boarder_bg"
     android:orientation="vertical"
     android:layout_height="wrap_content">
@@ -17,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
         android:padding="3dp"
-        android:text="Category Text"
+        android:text="course name"
         android:textAlignment="center"
         android:textColor="@color/black" />
 
@@ -29,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
         android:padding="3dp"
-        android:text="Category Text"
+        android:text="course code "
         android:textAlignment="center"
         android:textColor="@color/black" />
 

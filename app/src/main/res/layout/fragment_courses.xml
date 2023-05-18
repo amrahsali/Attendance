@@ -6,13 +6,6 @@
     android:orientation="vertical"
     tools:context=".CoursesFragment">
 
-    <TextView
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:hint="Courses "/>
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -22,9 +15,37 @@
             android:id="@+id/idGVCourses"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:numColumns="3" />
+            android:numColumns="2" />
 
     </RelativeLayout>
 
+    <!--fab to add new courses-->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/courseFABtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="18dp"
+        android:onClick="showDialogBox"
+        android:layout_marginBottom="18dp"
+        android:contentDescription="TODO"
+        android:src="@android:drawable/ic_input_add"
+        android:backgroundTint="@color/blue"
+        android:tint="@color/white" />
+
+
+    <!--progress bar for loading indicator-->
+<ProgressBar
+android:id="@+id/idPBLoad"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_centerInParent="true"
+android:layout_gravity="center"
+android:indeterminate="true"
+android:indeterminateDrawable="@drawable/progress_back"
+android:visibility="gone" />
 
 </RelativeLayout>

@@ -82,7 +82,7 @@
         android:paddingStart="5dp"
         android:textColor="@color/black"
         android:textSize="15sp" />
-    <Space
+    <View
         android:layout_width="wrap_content"
         android:layout_height="20dp"/>
 
