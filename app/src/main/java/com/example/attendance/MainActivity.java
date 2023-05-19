@@ -75,6 +75,14 @@ public class MainActivity extends AppCompatActivity  {
                     fragmentTransaction3.replace(R.id.content, fragment3, "");
                     fragmentTransaction3.commit();
                     break;
+                case R.id.navigation_faculty:
+                    toolbar.setTitle("Faculty");
+                    FacultyFragment fragment7 = new FacultyFragment();
+                    FragmentTransaction fragmentTransaction7 = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction7.replace(R.id.content, fragment7, "");
+                    fragmentTransaction7.commit();
+                    break;
+
                 case R.id.navigation_exams:
                     toolbar.setTitle("Exams");
                     ExaminationFragment fragment4 = new ExaminationFragment();

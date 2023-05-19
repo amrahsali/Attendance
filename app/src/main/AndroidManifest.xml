@@ -13,6 +13,13 @@
         android:theme="@style/Theme.Attendance"
         tools:targetApi="31">
         <activity
+            android:name=".Department_Activity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".StudentAddition"
             android:exported="false">
             <meta-data

@@ -15,6 +15,10 @@
         android:icon="@drawable/ic_round_people_24"
         android:title="Student" />
 
+    <item
+        android:id="@+id/navigation_faculty"
+        android:icon="@drawable/ic_round_event_note_24"
+        android:title="Faculty" />
 
 
     <item
@@ -30,8 +34,4 @@
         android:id="@+id/navigation_record"
         android:icon="@drawable/ic_round_event_note_24"
         android:title="View records" />
-
-
-
-
 </menu>

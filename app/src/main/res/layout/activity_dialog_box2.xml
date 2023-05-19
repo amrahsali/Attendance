@@ -86,6 +86,23 @@
         android:layout_width="wrap_content"
         android:layout_height="20dp"/>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/add_course_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#4CAF50"
+            android:gravity="center"
+            android:text="cancel"
+            android:textColor="@color/white" />
+        <View
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"/>
+
+
         <Button
             android:id="@+id/add_course_save"
             android:layout_width="match_parent"
@@ -94,5 +111,8 @@
             android:gravity="center"
             android:text="Save"
             android:textColor="@color/white" />
+
+
+    </LinearLayout>
 
 </LinearLayout>
