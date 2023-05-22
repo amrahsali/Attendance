@@ -27,7 +27,6 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Department_Activity"
             android:name=".FacultyModule.Department_Activity"
             android:exported="false">
             <meta-data

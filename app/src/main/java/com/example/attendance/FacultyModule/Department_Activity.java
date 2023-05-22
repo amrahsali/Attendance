@@ -2,11 +2,13 @@ package com.example.attendance.FacultyModule;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.example.attendance.R;
+import com.example.attendance.Swe_levelActivity;
 
 public class Department_Activity extends AppCompatActivity {
 
