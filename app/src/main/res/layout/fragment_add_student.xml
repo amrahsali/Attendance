@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_height="match_parent"
     android:padding="20dp"
-    tools:context=".FacultyFragment">
-    tools:context=".FacultyModule.FacultyFragment">
+    android:orientation="vertical"
+    tools:context=".Add_studentFragment">
 
+    <TextView
+        android:paddingTop="10dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:text="student list "/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,13 +25,13 @@
 
         <!--recycler view to display our data-->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/idRVFacultyt"
+            android:id="@+id/idRVStudent"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <!--fab to add new courses-->
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/facultyFABtn"
+            android:id="@+id/stdFABtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -40,6 +47,7 @@
 
     </RelativeLayout>
 
+    <!--progress bar for loading indicator-->
     <ProgressBar
         android:id="@+id/idPBLoading"
         android:layout_width="wrap_content"
