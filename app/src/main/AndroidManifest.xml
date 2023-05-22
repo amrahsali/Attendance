@@ -13,7 +13,7 @@
         android:theme="@style/Theme.Attendance"
         tools:targetApi="31">
         <activity
-            android:name=".Faculty_dialogbox_Activity"
+            android:name=".FacultyModule.Faculty_dialogbox_Activity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -62,7 +62,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".StaffModule.StaffAddition"
+            android:name=".FacultyModule.StaffModule.StaffAddition"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -90,7 +90,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".StaffModule.StaffProfileActivity"
+            android:name=".FacultyModule.StaffModule.StaffProfileActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -104,14 +104,14 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".StaffModule.StaffListFragment"
+            android:name=".FacultyModule.StaffModule.StaffListFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".StaffModule.Staff_fingerActivity"
+            android:name=".FacultyModule.StaffModule.Staff_fingerActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

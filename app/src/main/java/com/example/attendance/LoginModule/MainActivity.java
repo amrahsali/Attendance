@@ -15,7 +15,7 @@ import com.example.attendance.ExamsModule.ExaminationFragment;
 import com.example.attendance.FacultyModule.CoursesFragment;
 import com.example.attendance.FacultyModule.FacultyFragment;
 import com.example.attendance.R;
-import com.example.attendance.StaffModule.StaffListFragment;
+import com.example.attendance.FacultyModule.StaffModule.StaffListFragment;
 import com.example.attendance.StudentModule.Add_studentFragment;
 import com.google.android.material.navigation.NavigationView;
 

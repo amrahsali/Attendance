@@ -8,7 +8,7 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:padding="20dp"
-    tools:context=".Faculty_dialogbox_Activity">
+    tools:context=".FacultyModule.Faculty_dialogbox_Activity">
 
     <TextView
         android:layout_width="match_parent"

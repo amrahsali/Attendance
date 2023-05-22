@@ -1,4 +1,4 @@
-package com.example.attendance;
+package com.example.attendance.FacultyModule;
 
 public class FacultyModel {
     private String facultyId;

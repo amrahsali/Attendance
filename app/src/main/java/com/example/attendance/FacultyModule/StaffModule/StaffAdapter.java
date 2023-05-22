@@ -1,4 +1,4 @@
-package com.example.attendance.StaffModule;
+package com.example.attendance.FacultyModule.StaffModule;
 
 import android.content.Context;
 import android.net.Uri;

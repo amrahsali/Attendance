@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.attendance.StaffModule.StaffProfileActivity;
+import com.example.attendance.FacultyModule.StaffModule.StaffProfileActivity;
 
 public class ScanActivity extends AppCompatActivity {
     ImageView print;

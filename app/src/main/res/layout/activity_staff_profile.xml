@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:padding="30dp"
     android:orientation="vertical"
-    tools:context=".StaffModule.StaffProfileActivity">
+    tools:context=".FacultyModule.StaffModule.StaffProfileActivity">
 
 
     <TextView
