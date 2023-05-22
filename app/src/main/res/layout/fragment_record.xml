@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="10dp"
-    tools:context=".RecordFragment">
+    tools:context=".AttendanceModule.RecordFragment">
 
 
     <TextView

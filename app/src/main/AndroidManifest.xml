@@ -13,14 +13,14 @@
         android:theme="@style/Theme.Attendance"
         tools:targetApi="31">
         <activity
-            android:name=".Department_Activity"
+            android:name=".FacultyModule.Department_Activity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".StudentAddition"
+            android:name=".StudentModule.StudentAddition"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -34,21 +34,21 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Exams_record_Activity"
+            android:name=".ExamsModule.Exams_record_Activity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".Attendance_record_Activity"
+            android:name=".AttendanceModule.Attendance_record_Activity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".StaffAddition"
+            android:name=".StaffModule.StaffAddition"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -62,42 +62,42 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".RecordFragment"
+            android:name=".AttendanceModule.RecordFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".ExaminationFragment"
+            android:name=".ExamsModule.ExaminationFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".StaffProfileActivity"
+            android:name=".StaffModule.StaffProfileActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".Add_studentFragment"
+            android:name=".StudentModule.Add_studentFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".StaffListFragment"
+            android:name=".StaffModule.StaffListFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".Staff_fingerActivity"
+            android:name=".StaffModule.Staff_fingerActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -110,14 +110,14 @@
         <!-- android:value="" /> -->
         <!-- </activity> -->
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginModule.MainActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".Login"
+            android:name=".LoginModule.Login"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

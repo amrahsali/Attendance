@@ -7,13 +7,13 @@
     android:id="@+id/my_drawer_layout"
     tools:openDrawer="start"
     tools:ignore="HardcodedText"
-    tools:context=".MainActivity">
+    tools:context=".LoginModule.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".MainActivity">
+        tools:context=".LoginModule.MainActivity">
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

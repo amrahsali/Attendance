@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".Login">
+    tools:context=".LoginModule.Login">
 
     <LinearLayout
         android:paddingStart="8dp"

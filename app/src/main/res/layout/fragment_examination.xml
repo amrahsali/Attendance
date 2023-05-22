@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".ExaminationFragment">
+    tools:context=".ExamsModule.ExaminationFragment">
     <TextView
         android:paddingTop="10dp"
         android:gravity="center"

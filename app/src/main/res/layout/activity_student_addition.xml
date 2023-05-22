@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="20sp"
-    tools:context=".StudentAddition">
+    tools:context=".StudentModule.StudentAddition">
 
 
     <TextView
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="30sp"
-        android:hint="student profile "/>
+        android:hint="@string/student_profile"/>
 
 
 
@@ -29,7 +29,8 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/student_profile" />
 
     </LinearLayout>
 
@@ -40,9 +41,6 @@
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
         app:cardCornerRadius="10dp">
-
-
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,7 +62,8 @@
                     android:inputType="text"
                     android:drawableStart="@drawable/ic_round_home_24"
                     android:drawablePadding="10dp"
-                    android:hint="name"/>
+                    android:hint="name"
+                    android:autofillHints="name" />
             </LinearLayout>
 
             <LinearLayout
@@ -79,7 +78,8 @@
                     android:background="@null"
                     android:drawableStart="@drawable/ic_round_school_24"
                     android:drawablePadding="10dp"
-                    android:hint="faculty"/>
+                    android:hint="@string/faculty"
+                    android:autofillHints="" />
 
             </LinearLayout>
             <LinearLayout

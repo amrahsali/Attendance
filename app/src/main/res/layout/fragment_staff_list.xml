@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".StaffListFragment">
+    tools:context=".StaffModule.StaffListFragment">
 
     <TextView
         android:paddingTop="10dp"
@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".MainActivity">
+        tools:context=".LoginModule.MainActivity">
 
         <!--recycler view to display our data-->
         <androidx.recyclerview.widget.RecyclerView
