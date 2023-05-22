@@ -1,8 +1,6 @@
 package com.example.attendance.FacultyModule;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.view.View;
@@ -25,20 +23,10 @@ public class Department_Activity extends AppCompatActivity {
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                swe_levelsFragment sweLevelsFragment = new swe_levelsFragment();
-
-                // Get the FragmentManager
-                FragmentManager fragmentManager = getSupportFragmentManager();
-
-                // Start a new FragmentTransaction
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                // Replace the content of the container view with the new fragment
-                fragmentTransaction.replace(R.id.swe, sweLevelsFragment);
-
-                // Commit the transaction
-                fragmentTransaction.commit();
+                Intent intent = new Intent(Department_Activity.this, Swe_levelActivity.class);
+                startActivity(intent);
             }
         });
+
     }
-    }
+}
