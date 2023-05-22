@@ -43,7 +43,7 @@
             android:contentDescription="TODO"
             android:src="@android:drawable/ic_input_add"
             app:backgroundTint="@color/blue"
-            app:tint="@color/white" />
+            app:tint="@color/black" />
 
     </RelativeLayout>
 
