@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="330dp"
-    android:layout_height="500dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_gravity="center"
+    android:gravity="center"
     android:padding="20dp"
     tools:context=".Faculty_dialogbox_Activity">
 
@@ -38,23 +39,53 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:text="Department Name"
+        android:text="Department Names"
         android:textColor="@color/black"
         android:textSize="20sp" />
 
-    <EditText
-        android:id="@+id/department_named_dbox"
+    <LinearLayout
+        android:id="@+id/department_layout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/boarder_bg"
-        android:hint="department name"
-        android:paddingStart="5dp"
-        android:textColor="@color/black"
-        android:textSize="15sp" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/department_named_dbox"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/boarder_bg"
+            android:hint="department name"
+            android:paddingStart="5dp"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/add_department_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="Add"
+            android:textColor="@color/white"
+            android:background="@drawable/ic_add" />
+
+        <LinearLayout
+            android:id="@+id/department_list_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Department items will be dynamically added here -->
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <View
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"/>
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:orientation="horizontal"
@@ -83,6 +114,5 @@
 
 
     </LinearLayout>
-
 
 </LinearLayout>
