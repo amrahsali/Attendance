@@ -1,103 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
     android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white"
     tools:context=".StudentModule.Add_studentFragment">
 
     <TextView
-        android:paddingTop="10dp"
-        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
         android:textStyle="bold"
-        android:textSize="20dp"
+        android:textSize="24sp"
+        android:textColor="@android:color/black"
         android:text="Student List" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="12dp">
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp">
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="8dp"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/blue"
-            app:cardCornerRadius="40dp"
+            app:cardBackgroundColor="#E6F0F5"
+            app:cardCornerRadius="20dp"
             app:cardElevation="0dp"
-            app:strokeColor="@color/purple_500"
+            app:strokeColor="#884EAD"
             app:strokeWidth="1dp">
 
-            <!--Spinner widget-->
+            <!-- Spinner widget -->
             <Spinner
                 android:id="@+id/level_spinner"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@android:color/transparent"
                 android:tooltipText="Level"
-                android:spinnerDropDownItemStyle="@style/CustomDropdownItemStyle"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:spinnerDropDownItemStyle="@style/CustomDropdownItemStyle" />
 
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/blue"
-            app:cardCornerRadius="40dp"
+            app:cardBackgroundColor="#E6F0F5"
+            app:cardCornerRadius="20dp"
             app:cardElevation="0dp"
-            app:strokeColor="@color/purple_500"
+            app:strokeColor="#884EAD"
             app:strokeWidth="1dp">
 
-            <!--Spinner widget-->
+            <!-- Spinner widget -->
             <Spinner
                 android:id="@+id/faculty_spinner"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:spinnerDropDownItemStyle="@style/CustomDropdownItemStyle"
-                android:tooltipText="Level"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@android:color/transparent"
+                android:tooltipText="Faculty"
+                android:spinnerDropDownItemStyle="@style/CustomDropdownItemStyle" />
 
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:layout_marginStart="8dp"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/blue"
-            app:cardCornerRadius="40dp"
+            app:cardBackgroundColor="#E6F0F5"
+            app:cardCornerRadius="20dp"
             app:cardElevation="0dp"
-            app:strokeColor="@color/purple_500"
+            app:strokeColor="#884EAD"
             app:strokeWidth="1dp">
 
-            <!--Spinner widget-->
+            <!-- Spinner widget -->
             <Spinner
                 android:id="@+id/dept_spinner"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:spinnerDropDownItemStyle="@style/CustomDropdownItemStyle"
-                android:tooltipText="Level"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@android:color/transparent"
+                android:tooltipText="Department"
+                android:spinnerDropDownItemStyle="@style/CustomDropdownItemStyle" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -105,52 +105,53 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".LoginModule.MainActivity">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <!--recycler view to display data-->
+        <!-- RecyclerView to display data -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/idRVStudent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_above="@+id/stdFABtn" />
 
-        <!--fab to add new courses-->
+        <!-- FAB to add new courses -->
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/stdFABtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="18dp"
-            android:layout_marginEnd="18dp"
-            android:layout_marginBottom="18dp"
-            android:contentDescription="TODO"
-            android:src="@android:drawable/ic_input_add"
-            app:backgroundTint="@color/blue"
-            app:tint="@color/white" />
+            android:layout_margin="16dp"
+            android:contentDescription="Add"
+            android:src="@drawable/ic_add"
+            app:backgroundTint="#1976D2"
+            app:tint="@android:color/white" />
 
-        <!--progress bar for loading indicator-->
+        <!-- Progress bar for loading indicator -->
         <ProgressBar
             android:id="@+id/loading_pb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_gravity="center"
             android:indeterminate="true"
             android:indeterminateDrawable="@drawable/progress_back"
             android:visibility="gone" />
 
-        <!--empty text view-->
+        <!-- Empty text view -->
         <TextView
             android:id="@+id/empty_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:visibility="gone"
-            android:text="No data available" />
+            android:text="No data available"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
 </LinearLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+

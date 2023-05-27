@@ -1,4 +1,4 @@
-package com.example.attendance.FacultyModule.StaffModule;
+package com.example.attendance.StaffModule;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,11 +11,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.attendance.R;
@@ -36,11 +39,21 @@ import java.util.ArrayList;
 public class StaffListFragment extends Fragment {
 
     private FirebaseAuth mAuth;
+
+    boolean hasData = false;
     private ProgressBar loadingPB;
     DatabaseReference databaseReference;
     FirebaseDatabase firebaseDatabase;
     private StorageReference mStorageref;
     private RecyclerView staffRV;
+
+    private TextView emptyTextView;
+
+    private Handler handler;
+    private Runnable timeoutRunnable;
+
+    // Declare a member variable for the ChildEventListener
+    private ChildEventListener childEventListener;
     private StaffAdapter staffAdapter;
     private ArrayList<StaffRVModal> staffRVModalArrayList;
     Dialog dialog;
@@ -53,7 +66,7 @@ public class StaffListFragment extends Fragment {
     }
 
 
-    
+
 
 
     @Override
@@ -70,13 +83,14 @@ public class StaffListFragment extends Fragment {
         databaseReference = firebaseDatabase.getReference("Staff");
         FloatingActionButton fab = view.findViewById(R.id.idFABAdd);
         staffRVModalArrayList = new ArrayList<>();
-        loadingPB = view.findViewById(R.id.idPBLoading);
+        loadingPB = view.findViewById(R.id.loading_pb);
         mStorageref = FirebaseStorage.getInstance().getReference("Upload Photos");
         staffAdapter = new StaffAdapter(staffRVModalArrayList, getContext());
         staffRV = view.findViewById(R.id.idRVCourses);
         staffRV.setLayoutManager(new LinearLayoutManager(getContext()));
         staffRV.setHasFixedSize(true);
         staffRV.setAdapter(staffAdapter);
+        emptyTextView = view.findViewById(R.id.empty_text_view);
         getStaff();
 
 
@@ -118,29 +132,60 @@ public class StaffListFragment extends Fragment {
 
         });
 
+        // Find the SwipeRefreshLayout in the layout
+        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+
+        // Set the listener for the swipe-to-refresh action
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    // Stop the refreshing animation
+                    refreshData();
+                    swipeRefreshLayout.setRefreshing(false);
+                    // Check if there is data available
+                    if (hasData) {
+                        emptyTextView.setVisibility(View.GONE);
+                    } else {
+                        emptyTextView.setVisibility(View.VISIBLE);
+                        emptyTextView.setText("No Staff Found");
+                    }
+                }
+            }, 100); // 10 seconds delay
+
+        });
+
         return view;
     }
 
     private void getStaff() {
+        handler = new Handler();
         //on below line clearing our list.
+        loadingPB.setVisibility(View.VISIBLE);
+        emptyTextView.setVisibility(View.GONE);
         staffRVModalArrayList.clear();
         Query query = databaseReference.orderByChild("userID").equalTo(FirebaseAuth.getInstance().getUid());
+        startTimeoutRunnable(query);
         //on below line we are calling add child event listener method to read the data.
-        query.addChildEventListener(new ChildEventListener() {
+        query.addChildEventListener(childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 //on below line we are hiding our progress bar.
-                //loadingPB.setVisibility(View.GONE);
+                loadingPB.setVisibility(View.GONE);
+                emptyTextView.setVisibility(View.GONE);
                 //adding snapshot to our array list on below line.
                 staffRVModalArrayList.add(snapshot.getValue(StaffRVModal.class));
                 //notifying our adapter that data has changed.
                 staffAdapter.notifyDataSetChanged();
+
+                hasData = true;
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 //this method is called when new child is added we are notifying our adapter and making progress bar visibility as gone.
-                //loadingPB.setVisibility(View.GONE);
+                loadingPB.setVisibility(View.GONE);
+
                 staffAdapter.notifyDataSetChanged();
             }
 
@@ -148,7 +193,7 @@ public class StaffListFragment extends Fragment {
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                 //notifying our adapter when child is removed.
                 staffAdapter.notifyDataSetChanged();
-                //loadingPB.setVisibility(View.GONE);
+                loadingPB.setVisibility(View.GONE);
 
             }
 
@@ -156,14 +201,55 @@ public class StaffListFragment extends Fragment {
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 //notifying our adapter when child is moved.
                 staffAdapter.notifyDataSetChanged();
-                //loadingPB.setVisibility(View.GONE);
+                loadingPB.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                stopTimeoutRunnable();
+                loadingPB.setVisibility(View.GONE);
+                emptyTextView.setVisibility(View.VISIBLE);
+                emptyTextView.setText("Error: " + error.getMessage());
             }
         });
     }
+
+    private void startTimeoutRunnable(Query query) {
+        // Initialize the timeout runnable
+        timeoutRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // Hide the loading progress bar
+                loadingPB.setVisibility(View.GONE);
+
+                if (staffRVModalArrayList.isEmpty()) {
+                    emptyTextView.setVisibility(View.VISIBLE);
+                    emptyTextView.setText("No Staff Found");
+                }
+
+                // Remove the child event listener
+                query.removeEventListener(childEventListener);
+            }
+        };
+
+        // Schedule the runnable after 10 seconds
+        handler.postDelayed(timeoutRunnable, 10000);
+    }
+
+    // Method to stop the timeout runnable
+    private void stopTimeoutRunnable() {
+        // Remove the timeout runnable callbacks
+        handler.removeCallbacks(timeoutRunnable);
+    }
+
+    private void refreshData() {
+        // Clear the existing data
+        staffRVModalArrayList.clear();
+        staffAdapter.notifyDataSetChanged();
+
+        // Call the method to fetch the updated data
+        getStaff();
+    }
+
 
 }

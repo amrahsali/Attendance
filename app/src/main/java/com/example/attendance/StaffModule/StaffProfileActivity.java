@@ -1,4 +1,4 @@
-package com.example.attendance.FacultyModule.StaffModule;
+package com.example.attendance.StaffModule;
 
 import androidx.appcompat.app.AppCompatActivity;
 

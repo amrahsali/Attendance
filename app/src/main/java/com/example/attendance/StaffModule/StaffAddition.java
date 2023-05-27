@@ -1,4 +1,4 @@
-package com.example.attendance.FacultyModule.StaffModule;
+package com.example.attendance.StaffModule;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
@@ -97,7 +97,7 @@ public class StaffAddition extends AppCompatActivity {
         create_staff.setOnClickListener(v -> {
 
         if (!username.getText().toString().isEmpty() && !emailad.getText().toString().isEmpty()
-                && !phoneNumber.getText().toString().isEmpty() && !department1.getText().toString().isEmpty()
+                && !phoneNumber.getText().toString().isEmpty() && !department1.getText().toString().isEmpty() && imageuri != null
                 ) {
             staffBiometricDialog.setContentView(R.layout.biometric_dialog);
             staffBiometricDialog.create();

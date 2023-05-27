@@ -9,13 +9,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.attendance.AttendanceModule.RecordFragment;
 import com.example.attendance.ExamsModule.ExaminationFragment;
 import com.example.attendance.FacultyModule.CoursesFragment;
 import com.example.attendance.FacultyModule.FacultyFragment;
 import com.example.attendance.R;
-import com.example.attendance.FacultyModule.StaffModule.StaffListFragment;
+import com.example.attendance.StaffModule.StaffListFragment;
 import com.example.attendance.StudentModule.Add_studentFragment;
 import com.google.android.material.navigation.NavigationView;
 
@@ -25,6 +27,10 @@ public class MainActivity extends AppCompatActivity   {
     NavigationView vNV;
     Toolbar toolbar;
 
+    TextView welcomeMessage;
+
+    ImageView profileImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,18 +39,20 @@ public class MainActivity extends AppCompatActivity   {
         vNV = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
 
-       // setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, layDL, toolbar, R.string.nav_open, R.string.nav_close);
 
         layDL.addDrawerListener(toggle);
         toggle.syncState();
 
-        toolbar.setTitle("Home");
+        // Customize the toolbar with profile image and welcome message
+        profileImage = findViewById(R.id.profile_img);
+        welcomeMessage = findViewById(R.id.welcome_msg);
+        welcomeMessage.setText("Welcome, Admin!");
 
-        // When we open the application first
-        // time the fragment should be shown to the user
-        // in this case it is home fragment
+        // When we open the application first time, the fragment should be shown to the user
+        // in this case, it is the home fragment
         AdminHomeFragment fragment = new AdminHomeFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content, fragment, "");
@@ -54,7 +62,6 @@ public class MainActivity extends AppCompatActivity   {
             vNV.setCheckedItem(R.id.navigation_record);
         }
         NavClick();
-
     }
     private void NavClick() {
         vNV.setNavigationItemSelectedListener(item -> {
