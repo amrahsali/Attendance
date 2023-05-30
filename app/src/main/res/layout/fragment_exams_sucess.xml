@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_height="match_parent"
-    android:padding="20dp"
-    tools:context=".FacultyFragment">
+    tools:context=".ExamsSuccessFragment">
+
+    <TextView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableTint="@color/blue"
+        android:textSize="20sp"
+        android:text="Successful Students"
+        android:drawablePadding="10dp"/>
 
 
     <RelativeLayout
@@ -17,13 +25,11 @@
 
         <!--recycler view to display our data-->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/idRVFacultyt"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <!--fab to add new courses-->
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/facultyFABtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -39,14 +45,4 @@
 
     </RelativeLayout>
 
-    <ProgressBar
-        android:id="@+id/idPBLoading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        android:indeterminate="true"
-        android:indeterminateDrawable="@drawable/progress_back"
-        android:visibility="gone" />
-
-</LinearLayout>
+</FrameLayout>

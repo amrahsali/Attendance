@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:gravity="center"
     tools:context=".ExamsModule.ExaminationFragment">
     <TextView
         android:paddingTop="10dp"
@@ -13,147 +12,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:textSize="30dp"
-        android:text="Examination "/>
+        android:textSize="30sp"
+        android:text="@string/examination"/>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="360dp"
-        android:layout_height="400dp"
-        android:elevation="6dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="10dp">
-        <LinearLayout
-            android:gravity="center"
-            android:orientation="vertical"
+        <!-- RecyclerView to display data -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/idRVExams"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"/>
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="330dp"
-                android:layout_height="70dp"
-                android:layout_gravity="center"
-                android:elevation="6dp"
-                android:layout_marginTop="8dp"
-                app:cardCornerRadius="10dp">
+        <!-- FAB to add new courses -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/examsFABtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/add"
+            android:src="@drawable/ic_add"
+            app:backgroundTint="#1976D2"
+            app:tint="@android:color/white" />
 
-                <LinearLayout
-                    android:padding="10dp"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp">
-
-
-                    <TextView
-                        android:gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:layout_gravity="center"
-                        android:inputType="text"
-                        android:textSize="20sp"
-                        android:text="View student profile"/>
-
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="330dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:elevation="6dp"
-                android:layout_marginTop="8dp"
-                app:cardCornerRadius="10dp">
-
-                <LinearLayout
-                    android:padding="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_height="60dp">
-
-
-                    <TextView
-                        android:gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:layout_gravity="center"
-                        android:inputType="text"
-                        android:textSize="20sp"
-                        android:text="Student biometric verification"/>
-
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="330dp"
-                android:layout_gravity="center"
-                android:layout_height="wrap_content"
-                android:elevation="6dp"
-                android:layout_marginTop="8dp"
-                app:cardCornerRadius="10dp">
-
-                <LinearLayout
-                    android:padding="10dp"
-                    android:layout_width="match_parent"
-                    android:gravity="center"
-                    android:layout_height="60dp">
-
-
-                    <TextView
-                        android:gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:layout_gravity="center"
-                        android:inputType="text"
-                        android:textSize="20sp"
-                        android:text="View exams card"/>
-
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="330dp"
-                android:layout_height="wrap_content"
-                android:elevation="6dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="8dp"
-                app:cardCornerRadius="10dp">
-
-                <LinearLayout
-                    android:padding="10dp"
-                    android:background="@color/blue"
-                    android:layout_width="match_parent"
-                    android:gravity="center"
-                    android:layout_height="60dp">
-
-
-                    <TextView
-                        android:gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:inputType="text"
-                        android:textSize="20sp"
-                        android:text="start"/>
-
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-
-        </LinearLayout>
-
-
-
-    </com.google.android.material.card.MaterialCardView>
-
+        <!-- Progress bar for loading indicator -->
+        <ProgressBar
+            android:id="@+id/loading_pb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminate="true"
+            android:indeterminateDrawable="@drawable/progress_back"
+            android:visibility="gone" />
+    </RelativeLayout>
 
 
 </LinearLayout>

@@ -16,15 +16,16 @@ import java.util.List;
 
 public class FacultyAdapter extends RecyclerView.Adapter<FacultyAdapter.ViewHolder> {
 
-
+    int lastPos = -1;
 
     private Context context;
     private List<FacultyModel> facultyList;
 
-    public FacultyAdapter(Context context, List<FacultyModel> facultyList) {
+    public FacultyAdapter(Context context, ArrayList<FacultyModel> facultyList) {
         this.context = context;
         this.facultyList = facultyList;
     }
+
 
     public FacultyAdapter(ArrayList<FacultyModel> facultyList) {
         this.facultyList = facultyList;
