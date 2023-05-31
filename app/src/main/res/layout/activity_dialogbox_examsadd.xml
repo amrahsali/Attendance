@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:layout_gravity="center"
     android:padding="20dp"
-    tools:context=".DialogBox_courseActivity">
+    tools:context=".activity_dialogbox_examsadd">
 
 
     <TextView
