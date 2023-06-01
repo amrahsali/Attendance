@@ -52,7 +52,7 @@ public class ExaminationFragment extends Fragment {
 
         examsRV = view.findViewById(R.id.idRVExams);
         examsModalsArrayList = new ArrayList<>();
-        examsAdapter = new ExamsAdapter(examsModalsArrayList);
+        examsAdapter = new ExamsAdapter(examsModalsArrayList, getContext());
 
         examsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
         examsRV.setAdapter(examsAdapter);

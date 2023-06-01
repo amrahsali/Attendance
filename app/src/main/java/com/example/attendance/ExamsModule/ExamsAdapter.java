@@ -18,8 +18,8 @@ public class ExamsAdapter extends RecyclerView.Adapter<ExamsAdapter.ExamsViewHol
     private Context context;
     private ArrayList<ExamsModal> examsModals;
 
-    public ExamsAdapter(ArrayList<ExamsModal> dataModalArrayList) {
-        super(context, 0, dataModalArrayList);
+    public ExamsAdapter(ArrayList<ExamsModal> dataModalArrayList, Context context) {
+        this.examsModals = dataModalArrayList;
         this.context = context;
     }
 
