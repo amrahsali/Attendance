@@ -3,6 +3,7 @@ package com.example.attendance.ExamsModule;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -76,22 +78,25 @@ public class ExaminationFragment extends Fragment {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String previousChildName) {
                 ExamsModal exam = dataSnapshot.getValue(ExamsModal.class);
                 examsModalsArrayList.add(exam);
-                examsAdapter.notifyDataSetChanged();
+                examsAdapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String previousChildName) {
-                // Handle updated exam data if needed
-            }
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                // Handle removed exam data if needed
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
             }
 
             @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String previousChildName) {
-                // Handle moved exam data if needed
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
             }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            // Other overridden methods...
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -99,9 +104,10 @@ public class ExaminationFragment extends Fragment {
             }
         });
     }
+
     private void showDialogBox() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Add Exam");
+        builder.setTitle("Add Course Name");
         View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.activity_dialogbox_examsadd, null);
         final EditText examNameEditText = dialogView.findViewById(R.id.edt_nameExam);
         builder.setView(dialogView);
@@ -115,10 +121,11 @@ public class ExaminationFragment extends Fragment {
         builder.show();
     }
 
-    private void saveExamToFirebase(String examName) {
+    private void saveExamToFirebase(String departmentName) {
+
         String examId = examsRef.push().getKey();
         if (examId != null) {
-            ExamsModal exam = new ExamsModal(examId, examName);
+            ExamsModal exam = new ExamsModal(examId, departmentName);
             examsRef.child(examId).setValue(exam);
         }
     }

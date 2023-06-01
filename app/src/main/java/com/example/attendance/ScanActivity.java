@@ -23,11 +23,12 @@ public class ScanActivity extends AppCompatActivity {
 
 
         print.setOnClickListener(v -> {
-            if (click >= 2){
+            if (click >= 2) {
                 Intent intent = getIntent();
                 Bundle bundle = intent.getExtras();
-                if(bundle!=null) {
-                    String origin = bundle.getString("origin");
+                String origin = null;
+                if (bundle != null) {
+                    origin = bundle.getString("origin");
                     if (origin != null && origin.equals("staffProfile")) {
                         //student attendance
                         Toast.makeText(this, "Attendance taken", Toast.LENGTH_SHORT).show();
@@ -37,7 +38,15 @@ public class ScanActivity extends AppCompatActivity {
                         Intent i = new Intent(ScanActivity.this, StaffProfileActivity.class);
                         startActivity(i);
                     }
+
+                    if (origin != null && origin.equals("exams")) {
+                        Intent i = new Intent(ScanActivity.this, exams_dialogbox_Activity.class);
+                        startActivity(i);
+                    }
                 }
+
+
+
 
             }else{
                 print.setImageResource(R.drawable.printfailedxhdpi);

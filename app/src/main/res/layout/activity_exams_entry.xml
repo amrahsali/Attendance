@@ -19,33 +19,13 @@
         android:textSize="20sp"
         android:text="software Engineering "/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="20dp"/>
-    <LinearLayout
-        android:id="@+id/faculty_layout"
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:padding="10dp"
-        android:background="@drawable/boarder_bg"
-        android:layout_height="wrap_content">
-
-
-        <TextView
-            android:id="@+id/faculty_name"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="16sp"
-            android:drawableStart="@drawable/ic_add"
-            android:layout_gravity="center"
-            android:text="   software Engineering"/>
-    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="20dp"/>
 
     <Button
+            android:id="@+id/savebtnExams"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"

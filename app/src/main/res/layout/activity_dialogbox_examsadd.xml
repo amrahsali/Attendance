@@ -30,6 +30,32 @@
         android:paddingStart="5dp"
         android:textColor="@color/black"
         android:textSize="15sp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+    <EditText
+        android:id="@+id/invigilatorName"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/boarder_bg"
+        android:hint="invigilator Name"
+        android:paddingStart="5dp"
+        android:textColor="@color/black"
+        android:textSize="15sp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+    <EditText
+        android:id="@+id/examsTime"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/boarder_bg"
+        android:hint="set time"
+        android:paddingStart="5dp"
+        android:textColor="@color/black"
+        android:textSize="15sp" />
+
+
 
 
 

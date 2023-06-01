@@ -28,21 +28,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <!--fab to add new courses-->
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="18dp"
-            android:layout_marginEnd="18dp"
-            android:layout_marginBottom="18dp"
-            android:contentDescription="TODO"
-            android:src="@android:drawable/ic_input_add"
-            app:backgroundTint="@color/blue"
-            app:tint="@color/black" />
-
     </RelativeLayout>
 
 </FrameLayout>
