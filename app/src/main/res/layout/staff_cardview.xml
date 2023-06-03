@@ -1,30 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="10dp"
-    android:layout_height="130dp">
+    android:layout_height="match_parent">
 
 
 <androidx.cardview.widget.CardView
     android:id="@+id/product_viewHolder"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    app:cardMaxElevation="10dp"
+    android:elevation="50dp"
+    app:cardCornerRadius="10dp"
+    android:padding="10dp"
+    app:cardPreventCornerOverlap="true"
+    android:layout_height="88dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="5dp"
         android:orientation="horizontal">
 
 
+   <androidx.cardview.widget.CardView
+       android:layout_width="wrap_content"
+       app:cardCornerRadius="6dp"
+       android:layout_height="match_parent">
        <ImageView
            android:id="@+id/product_image"
-           android:layout_width="0dp"
-           android:layout_weight="1"
+           android:layout_width="100dp"
            android:layout_height="match_parent"
-           android:background="#9E9E9E"
            android:scaleType="centerCrop"
            android:src="@drawable/person_foreground"/>
+   </androidx.cardview.widget.CardView>
 
 
         <RelativeLayout
@@ -32,13 +40,12 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:padding="5dp">
+            android:padding="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="55dp"
-                android:gravity="center_vertical"
+                android:layout_height="match_parent"
+                android:padding="8dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -46,8 +53,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Staff Name"
-                    android:textColor="@color/black"
-                    android:textSize="19sp"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
 
 
@@ -57,10 +63,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:text="Faculty"
-                    android:textSize="15dp"
-                    android:textStyle="bold"
-                     />
+                    android:text="Faculty"/>
 
                 <TextView
                     android:id="@+id/product_description"
@@ -73,7 +76,8 @@
                     android:id="@+id/staff_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="email"
+                    android:inputType="textEmailAddress"
+                    android:text="Email"
                     android:textSize="12sp" />
             </LinearLayout>
         </RelativeLayout>

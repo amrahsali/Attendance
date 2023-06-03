@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="20sp"
+    android:background="@color/lightBlue"
     tools:context=".StudentModule.StudentAddition">
 
 
@@ -30,7 +31,8 @@
             android:layout_height="100dp"
             android:layout_gravity="center"
             android:scaleType="fitCenter"
-            android:contentDescription="@string/student_profile" />
+            android:contentDescription="@string/student_profile"
+            app:tint="@color/blue" />
 
     </LinearLayout>
 
@@ -122,24 +124,13 @@
                     android:layout_height="50dp"
                     android:drawableTint="@color/blue"
                     android:background="@null"
-                    android:drawableStart="@drawable/ic_round_library_books_24"
+                    android:drawableStart="@drawable/ic_round_arrow_upward_24"
                     android:drawablePadding="10dp"
                     android:hint="level"/>
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <Spinner
-                    android:layout_width="160dp"
-                    android:layout_height="wrap_content"/>
-
-            </LinearLayout>
-
-
-            <Space
+            <View
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"/>
 
@@ -148,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical">
-                <Space
+                <View
                     android:layout_width="wrap_content"
                     android:layout_height="15dp"/>
                 <Button

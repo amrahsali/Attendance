@@ -5,7 +5,8 @@ xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:orientation="vertical"
-android:gravity="center"
+    android:background="@color/lightBlue"
+    android:gravity="center"
 tools:context=".StaffModule.StaffAddition">
 
 <TextView
@@ -19,7 +20,7 @@ tools:context=".StaffModule.StaffAddition">
 
 
 <com.google.android.material.card.MaterialCardView
-    android:layout_width="320dp"
+    android:layout_width="300dp"
     android:layout_height="150dp"
     android:elevation="6dp"
     android:layout_gravity="center"
@@ -34,10 +35,11 @@ tools:context=".StaffModule.StaffAddition">
             android:id="@+id/userprofile"
             android:src="@drawable/person_foreground"
             android:gravity="center"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
             android:layout_gravity="center"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter"
+            app:tint="@color/blue" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -51,12 +53,12 @@ tools:context=".StaffModule.StaffAddition">
 
 
 
-<Space
+<View
     android:layout_width="wrap_content"
     android:layout_height="30dp"/>
 
 <com.google.android.material.card.MaterialCardView
-    android:layout_width="360dp"
+    android:layout_width="320dp"
     android:layout_height="400dp"
     android:elevation="6dp"
     android:layout_gravity="center"
@@ -80,6 +82,11 @@ tools:context=".StaffModule.StaffAddition">
             android:drawableTint="@color/blue"
             android:background="@null"
             android:inputType="text"
+            android:lines="1"
+            android:ellipsize="end"
+            android:scrollHorizontally="true"
+            android:maxLines="1"
+            android:singleLine="true"
             android:drawableStart="@drawable/ic_round_home_24"
             android:drawablePadding="10dp"
             android:hint="name"/>
@@ -91,6 +98,12 @@ tools:context=".StaffModule.StaffAddition">
             android:layout_height="50dp"
             android:drawableTint="@color/blue"
             android:background="@null"
+            android:lines="1"
+            android:ellipsize="end"
+            android:scrollHorizontally="true"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:inputType="text"
             android:drawableStart="@drawable/ic_round_school_24"
             android:drawablePadding="10dp"
             android:hint="faculty"/>
@@ -102,6 +115,12 @@ tools:context=".StaffModule.StaffAddition">
             android:layout_height="50dp"
             android:drawableTint="@color/blue"
             android:background="@null"
+            android:inputType="text"
+            android:lines="1"
+            android:ellipsize="end"
+            android:scrollHorizontally="true"
+            android:maxLines="1"
+            android:singleLine="true"
             android:drawableStart="@drawable/ic_sharp_class_24"
             android:drawablePadding="10dp"
             android:hint="Department"/>
@@ -113,6 +132,12 @@ tools:context=".StaffModule.StaffAddition">
             android:layout_height="50dp"
             android:drawableTint="@color/blue"
             android:background="@null"
+            android:lines="1"
+            android:ellipsize="end"
+            android:scrollHorizontally="true"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:inputType="phone"
             android:drawableStart="@drawable/ic_sharp_local_phone_24"
             android:drawablePadding="10dp"
             android:hint="Mobile Number"/>
@@ -123,25 +148,22 @@ tools:context=".StaffModule.StaffAddition">
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:drawableTint="@color/blue"
+            android:inputType="textEmailAddress"
+            android:lines="1"
+            android:ellipsize="end"
+            android:scrollHorizontally="true"
+            android:maxLines="1"
+            android:singleLine="true"
             android:background="@null"
             android:drawableStart="@drawable/ic_round_email_24"
             android:drawablePadding="10dp"
             android:hint="Email"/>
-
-
-
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical">
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="15dp"/>
             <Button
                 android:id="@+id/loginbtn"
                 android:layout_width="match_parent"

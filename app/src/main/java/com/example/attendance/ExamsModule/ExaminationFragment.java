@@ -107,7 +107,7 @@ public class ExaminationFragment extends Fragment {
 
     private void showDialogBox() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Add Course Name");
+        builder.setTitle("Add Exam");
         View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.activity_dialogbox_examsadd, null);
         final EditText examNameEditText = dialogView.findViewById(R.id.edt_nameExam);
         builder.setView(dialogView);

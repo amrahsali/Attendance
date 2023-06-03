@@ -29,7 +29,7 @@ public class Splash_screenActivity extends AppCompatActivity {
             Intent intent = new Intent(Splash_screenActivity.this, Login.class);
             Splash_screenActivity.this.startActivity(intent);
             Splash_screenActivity.this.finish();
-        }, 3000);
+        }, 1000);
 
     }
 }

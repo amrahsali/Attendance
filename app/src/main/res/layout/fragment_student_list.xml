@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
+    android:background="@color/lightBlue"
     android:layout_height="match_parent">
 
 <LinearLayout
@@ -11,7 +12,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@android:color/white"
     tools:context=".StudentModule.Add_studentFragment">
 
     <TextView
@@ -128,7 +128,7 @@
             android:layout_marginBottom="16dp"
             android:contentDescription="Add"
             android:src="@drawable/ic_add"
-            app:backgroundTint="#1976D2"
+            app:backgroundTint="@color/blue"
             app:tint="@android:color/white" />
 
         <!-- Progress bar for loading indicator -->
