@@ -3,6 +3,14 @@ package com.example.attendance.FacultyModule;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,76 +18,75 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-
+import com.example.attendance.R;
+import com.example.attendance.StaffModule.StaffRVModal;
+import com.example.attendance.sampledata.FacultyBottomSheetDialogFragment;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import com.example.attendance.R;
 
 public class FacultyFragment extends Fragment {
 
     Dialog dialog;
 
+    private Handler handler;
+
+    private ProgressBar loadingPB;
     RecyclerView recyclerView;
     FacultyAdapter adapter;
+
+    boolean hasData = false;
     ArrayList<FacultyModel> facultyList;
+    DatabaseReference facultyRef;
+    FirebaseDatabase firebaseDatabase;
+
+    private TextView emptyTextView;
+    private Runnable timeoutRunnable;
+
+    private ArrayList<FacultyModel> facultyModelArrayList;
+    private ChildEventListener childEventListener;
 
     EditText editText;
-
-
 
     public FacultyFragment() {
         // Required empty public constructor
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
 
         dialog = new Dialog(getContext());
         facultyList = new ArrayList<>();
 
         adapter = new FacultyAdapter(getContext(), facultyList);
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_faculty, container, false);
-
-        RecyclerView recyclerView = view.findViewById(R.id.idRVFacultyt);
+        recyclerView = view.findViewById(R.id.idRVFacultyt);
+        firebaseDatabase = FirebaseDatabase.getInstance();
         Context context = requireContext();
-
-        FacultyAdapter adapter = new FacultyAdapter(context, facultyList);
-
+        facultyModelArrayList = new ArrayList<>();
+        loadingPB = view.findViewById(R.id.loading_pb);
+        emptyTextView = view.findViewById(R.id.empty_text_view);
+        adapter = new FacultyAdapter(context, facultyList);
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        facultyRef = firebaseDatabase.getReference("Faculty");
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-
-        recyclerView.setAdapter(adapter);
-
-
-        adapter = new FacultyAdapter(facultyList);
         recyclerView.setAdapter(adapter);
 
         FloatingActionButton fab = view.findViewById(R.id.facultyFABtn);
@@ -88,68 +95,53 @@ public class FacultyFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 showFacultyDialog();
-
             }
-
-
         });
-
-
-
-    return view;
-}
+        return view;
+    }
 
     private void showFacultyDialog() {
-        dialog.setContentView(R.layout.activity_faculty_dialogbox);
-        dialog.create();
-        Button saveButton = dialog.findViewById(R.id.add_faculty_save);
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        FacultyBottomSheetDialogFragment bottomSheetDialogFragment = new FacultyBottomSheetDialogFragment();
+        bottomSheetDialogFragment.setSaveFacultyListener(new FacultyBottomSheetDialogFragment.SaveFacultyListener() {
             @Override
-            public void onClick(View v) {
-                EditText facultyNameEditText = dialog.findViewById(R.id.faculty_name);
-                EditText departmentNameEditText = dialog.findViewById(R.id.department_named_dbox);
-
-                String facultyName = facultyNameEditText.getText().toString().trim();
-                String departmentName = departmentNameEditText.getText().toString().trim();
-
-                if (!facultyName.isEmpty() && !departmentName.isEmpty()) {
-                    saveFacultyToFirestore(facultyName, departmentName);
-                    dialog.dismiss();
+            public void onSaveFaculty(String facultyName, ArrayList<String> departmentList) {
+                if (!facultyName.isEmpty() && !departmentList.isEmpty()) {
+                    Toast.makeText(getContext(),"worked", Toast.LENGTH_SHORT).show();
+                    saveFacultyToRealtimeDB(facultyName, departmentList);
                 } else {
-                    Toast.makeText(getContext(), "Please enter faculty and department name", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Please enter faculty name and department names", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        dialog.show();
+        bottomSheetDialogFragment.show(getParentFragmentManager(), bottomSheetDialogFragment.getTag());
     }
-    private void saveFacultyToFirestore(String facultyName, String departmentName) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference facultyRef = db.collection("faculties");
+
+
+
+    private void saveFacultyToRealtimeDB(String facultyName, ArrayList<String> departmentList) {
+        DatabaseReference newFacultyRef = facultyRef.child(facultyName); // Use faculty name as the key
+        String facultyId = newFacultyRef.push().getKey();
 
         Map<String, Object> facultyData = new HashMap<>();
-        facultyData.put("facultyName", facultyName);
-        facultyData.put("departmentName", departmentName);
+        facultyData.put("name", facultyName);
+        facultyData.put("fid", facultyId);
+        newFacultyRef.setValue(facultyData);
 
-        facultyRef.add(facultyData)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        // Faculty saved successfully
-                        Toast.makeText(getContext(), "Faculty saved successfully", Toast.LENGTH_SHORT).show();
-                        // Add the new faculty to the list and update the RecyclerView
-                        FacultyModel faculty = new FacultyModel(documentReference.getId(), facultyName, departmentName);
-                        facultyList.add(faculty);
-                        adapter.notifyDataSetChanged();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Failed to save faculty
-                        Toast.makeText(getContext(), "Failed to save faculty", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        if (!departmentList.isEmpty()) {
+            DatabaseReference deptRef = newFacultyRef.child("dept");
+            for (String department : departmentList) {
+                DatabaseReference newDeptRef = deptRef.push();
+                String deptId = newDeptRef.getKey();
+
+                Map<String, Object> deptData = new HashMap<>();
+                deptData.put("name", department);
+                deptData.put("did", deptId);
+                newDeptRef.setValue(deptData);
+            }
+        }
     }
+
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -157,30 +149,93 @@ public class FacultyFragment extends Fragment {
     }
 
     private void loadFacultyData() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference facultyRef = db.collection("faculties");
+            handler = new Handler();
+            //on below line clearing our list.
+            loadingPB.setVisibility(View.VISIBLE);
+            emptyTextView.setVisibility(View.GONE);
+            facultyModelArrayList.clear();
+            Query query = facultyRef.orderByChild("fid").equalTo(FirebaseAuth.getInstance().getUid());
+            startTimeoutRunnable(query);
+            //on below line we are calling add child event listener method to read the data.
+            query.addChildEventListener(childEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    //on below line we are hiding our progress bar.
+                    loadingPB.setVisibility(View.GONE);
+                    emptyTextView.setVisibility(View.GONE);
+                    //adding snapshot to our array list on below line.
+                    facultyModelArrayList.add(snapshot.getValue(FacultyModel.class));
+                    //notifying our adapter that data has changed.
+                    adapter.notifyDataSetChanged();
 
-        facultyRef.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                            String facultyId = document.getId();
-                            String facultyName = document.getString("facultyName");
-                            String departmentName = document.getString("departmentName");
+                    hasData = true;
+                }
 
-                            FacultyModel faculty = new FacultyModel(facultyId, facultyName, departmentName);
-                            facultyList.add(faculty);
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), "Failed to load faculty data", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    //this method is called when new child is added we are notifying our adapter and making progress bar visibility as gone.
+                    loadingPB.setVisibility(View.GONE);
+
+                    adapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                    //notifying our adapter when child is removed.
+                    adapter.notifyDataSetChanged();
+                    loadingPB.setVisibility(View.GONE);
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    //notifying our adapter when child is moved.
+                    adapter.notifyDataSetChanged();
+                    loadingPB.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    stopTimeoutRunnable();
+                    loadingPB.setVisibility(View.GONE);
+                    emptyTextView.setVisibility(View.VISIBLE);
+                    emptyTextView.setText("Error: " + error.getMessage());
+                }
+            });
+    }
+
+    private void startTimeoutRunnable(Query query) {
+        // Initialize the timeout runnable
+        timeoutRunnable = () -> {
+            // Hide the loading progress bar
+            loadingPB.setVisibility(View.GONE);
+
+            if (facultyModelArrayList.isEmpty()) {
+                emptyTextView.setVisibility(View.VISIBLE);
+                emptyTextView.setText("No faculty Found");
+            }
+
+            // Remove the child event listener
+            query.removeEventListener(childEventListener);
+        };
+
+        // Schedule the runnable after 10 seconds
+        handler.postDelayed(timeoutRunnable, 10000);
+    }
+
+    // Method to stop the timeout runnable
+    private void stopTimeoutRunnable() {
+        // Remove the timeout runnable callbacks
+        handler.removeCallbacks(timeoutRunnable);
+    }
+
+    private void refreshData() {
+        // Clear the existing data
+        facultyModelArrayList.clear();
+        adapter.notifyDataSetChanged();
+
+        // Call the method to fetch the updated data
+        loadFacultyData();
     }
 
 

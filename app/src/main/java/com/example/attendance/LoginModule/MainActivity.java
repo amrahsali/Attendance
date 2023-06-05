@@ -19,9 +19,12 @@ import com.example.attendance.FacultyModule.FacultyFragment;
 import com.example.attendance.R;
 import com.example.attendance.StaffModule.StaffListFragment;
 import com.example.attendance.StudentModule.Add_studentFragment;
+import com.example.attendance.sampledata.FacultyBottomSheetDialogFragment;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity   {
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity implements FacultyBottomSheetDialogFragment.FacultyDialogListener {
 
     DrawerLayout layDL;
     NavigationView vNV;
@@ -133,5 +136,10 @@ public class MainActivity extends AppCompatActivity   {
         else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onSaveClicked(String facultyName, ArrayList<String> departmentNames) {
+
     }
 }
