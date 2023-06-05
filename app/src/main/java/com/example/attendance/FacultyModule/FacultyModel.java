@@ -1,41 +1,45 @@
 package com.example.attendance.FacultyModule;
 
+import java.util.List;
+import java.util.Map;
+
 public class FacultyModel {
-    private String facultyId;
-    private String facultyName;
-    private String departmentName;
+    private String fid;
+    private String name;
+    private List<String> dept; // Updated to store department names
 
     public FacultyModel() {
-        // Default constructor required for Firestore
+        // Default constructor required for Firebase
     }
 
-    public FacultyModel(String facultyId, String facultyName, String departmentName) {
-        this.facultyId = facultyId;
-        this.facultyName = facultyName;
-        this.departmentName = departmentName;
+    public FacultyModel(String facultyId, String facultyName, List<String> departmentNames) {
+        this.fid = facultyId;
+        this.name = facultyName;
+        this.dept = departmentNames;
     }
 
-    public String getFacultyId() {
-        return facultyId;
+    public String getFId() {
+        return fid;
     }
 
-    public void setFacultyId(String facultyId) {
-        this.facultyId = facultyId;
+    public void setFId(String facultyId) {
+        this.fid = facultyId;
     }
 
-    public String getFacultyName() {
-        return facultyName;
+    public String getName() {
+        return name;
     }
 
-    public void setFacultyName(String facultyName) {
-        this.facultyName = facultyName;
+    public void setName(String facultyName) {
+        this.name = facultyName;
     }
 
-    public String getDepartmentName() {
-        return departmentName;
+    public List<String> getDept() {
+        return dept;
     }
 
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
+    public void setDept(List<String> departmentNames) {
+        this.dept = departmentNames;
     }
 }
+

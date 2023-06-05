@@ -1,4 +1,4 @@
-package com.example.attendance.sampledata;
+package com.example.attendance.Utility;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -15,7 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.attendance.FacultyFragment;
 import com.example.attendance.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 

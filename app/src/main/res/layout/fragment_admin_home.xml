@@ -10,7 +10,11 @@
     android:background="@color/lightBlue"
     tools:context=".LoginModule.MainActivity">
 
-
+    <androidx.viewpager.widget.ViewPager
+        android:layout_margin="5dp"
+        android:id="@+id/imageViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="250dp" />
 
     <GridLayout
         android:layout_width="match_parent"

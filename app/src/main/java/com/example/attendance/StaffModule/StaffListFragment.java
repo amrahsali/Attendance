@@ -66,9 +66,6 @@ public class StaffListFragment extends Fragment {
     }
 
 
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -164,10 +161,10 @@ public class StaffListFragment extends Fragment {
         loadingPB.setVisibility(View.VISIBLE);
         emptyTextView.setVisibility(View.GONE);
         staffRVModalArrayList.clear();
-        Query query = databaseReference.orderByChild("userID").equalTo(FirebaseAuth.getInstance().getUid());
-        startTimeoutRunnable(query);
+//        Query query = databaseReference.get();
+        startTimeoutRunnable(databaseReference);
         //on below line we are calling add child event listener method to read the data.
-        query.addChildEventListener(childEventListener = new ChildEventListener() {
+        databaseReference.addChildEventListener(childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 //on below line we are hiding our progress bar.
@@ -216,20 +213,17 @@ public class StaffListFragment extends Fragment {
 
     private void startTimeoutRunnable(Query query) {
         // Initialize the timeout runnable
-        timeoutRunnable = new Runnable() {
-            @Override
-            public void run() {
-                // Hide the loading progress bar
-                loadingPB.setVisibility(View.GONE);
+        timeoutRunnable = () -> {
+            // Hide the loading progress bar
+            loadingPB.setVisibility(View.GONE);
 
-                if (staffRVModalArrayList.isEmpty()) {
-                    emptyTextView.setVisibility(View.VISIBLE);
-                    emptyTextView.setText("No Staff Found");
-                }
-
-                // Remove the child event listener
-                query.removeEventListener(childEventListener);
+            if (staffRVModalArrayList.isEmpty()) {
+                emptyTextView.setVisibility(View.VISIBLE);
+                emptyTextView.setText("No Staff Found");
             }
+
+            // Remove the child event listener
+            databaseReference.removeEventListener(childEventListener);
         };
 
         // Schedule the runnable after 10 seconds

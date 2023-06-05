@@ -45,8 +45,8 @@ public class FacultyAdapter extends RecyclerView.Adapter<FacultyAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         FacultyModel faculty = facultyList.get(position);
-        holder.txtFacultyName.setText(faculty.getFacultyName());
-        holder.txtDepartmentName.setText(faculty.getDepartmentName());
+        holder.txtFacultyName.setText(faculty.getName());
+        holder.txtDepartmentName.setText(faculty.getDept().size());
     }
 
     @Override

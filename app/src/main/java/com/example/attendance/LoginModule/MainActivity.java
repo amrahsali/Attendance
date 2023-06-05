@@ -19,7 +19,7 @@ import com.example.attendance.FacultyModule.FacultyFragment;
 import com.example.attendance.R;
 import com.example.attendance.StaffModule.StaffListFragment;
 import com.example.attendance.StudentModule.Add_studentFragment;
-import com.example.attendance.sampledata.FacultyBottomSheetDialogFragment;
+import com.example.attendance.Utility.FacultyBottomSheetDialogFragment;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;

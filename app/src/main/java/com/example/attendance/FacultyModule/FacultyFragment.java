@@ -17,11 +17,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.attendance.R;
-import com.example.attendance.StaffModule.StaffRVModal;
-import com.example.attendance.sampledata.FacultyBottomSheetDialogFragment;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.example.attendance.Utility.FacultyBottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -33,6 +32,7 @@ import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FacultyFragment extends Fragment {
@@ -63,21 +63,13 @@ public class FacultyFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-        dialog = new Dialog(getContext());
-        facultyList = new ArrayList<>();
-
-        adapter = new FacultyAdapter(getContext(), facultyList);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_faculty, container, false);
         recyclerView = view.findViewById(R.id.idRVFacultyt);
+        dialog = new Dialog(getContext());
+        facultyList = new ArrayList<>();
+        adapter = new FacultyAdapter(getContext(), facultyList);
         firebaseDatabase = FirebaseDatabase.getInstance();
         Context context = requireContext();
         facultyModelArrayList = new ArrayList<>();
@@ -90,6 +82,7 @@ public class FacultyFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         FloatingActionButton fab = view.findViewById(R.id.facultyFABtn);
+        loadFacultyData();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,6 +90,26 @@ public class FacultyFragment extends Fragment {
                 showFacultyDialog();
             }
         });
+
+        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+
+        // Set the listener for the swipe-to-refresh action
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            new Handler().postDelayed(() -> {
+                // Stop the refreshing animation
+                refreshData();
+                swipeRefreshLayout.setRefreshing(false);
+                // Check if there is data available
+                if (hasData) {
+                    emptyTextView.setVisibility(View.GONE);
+                } else {
+                    emptyTextView.setVisibility(View.VISIBLE);
+                    emptyTextView.setText("No faculty Found");
+                }
+            }, 100); // 10 seconds delay
+
+        });
+
         return view;
     }
 
@@ -115,8 +128,6 @@ public class FacultyFragment extends Fragment {
         });
         bottomSheetDialogFragment.show(getParentFragmentManager(), bottomSheetDialogFragment.getTag());
     }
-
-
 
     private void saveFacultyToRealtimeDB(String facultyName, ArrayList<String> departmentList) {
         DatabaseReference newFacultyRef = facultyRef.child(facultyName); // Use faculty name as the key
@@ -141,30 +152,38 @@ public class FacultyFragment extends Fragment {
         }
     }
 
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        loadFacultyData();
-    }
-
     private void loadFacultyData() {
             handler = new Handler();
             //on below line clearing our list.
             loadingPB.setVisibility(View.VISIBLE);
             emptyTextView.setVisibility(View.GONE);
             facultyModelArrayList.clear();
-            Query query = facultyRef.orderByChild("fid").equalTo(FirebaseAuth.getInstance().getUid());
-            startTimeoutRunnable(query);
+            startTimeoutRunnable();
             //on below line we are calling add child event listener method to read the data.
-            query.addChildEventListener(childEventListener = new ChildEventListener() {
+        facultyRef.addChildEventListener(childEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     //on below line we are hiding our progress bar.
                     loadingPB.setVisibility(View.GONE);
                     emptyTextView.setVisibility(View.GONE);
                     //adding snapshot to our array list on below line.
-                    facultyModelArrayList.add(snapshot.getValue(FacultyModel.class));
+                    //facultyModelArrayList.add(snapshot.getValue(FacultyModel.class));
+
+
+                    // Get the data as a HashMap
+                    HashMap<String, Object> facultyData = (HashMap<String, Object>) snapshot.getValue();
+
+                    // Extract the relevant information
+                    String facultyId = (String) facultyData.get("fid");
+                    String facultyName = (String) facultyData.get("name");
+                    List<String> departmentNames = (List<String>) facultyData.get("departments");
+
+                    // Create the FacultyModel object
+                    FacultyModel faculty = new FacultyModel(facultyId, facultyName, departmentNames);
+
+                    // Add faculty to your ArrayList or adapter as needed
+                    facultyModelArrayList.add(faculty);
+
                     //notifying our adapter that data has changed.
                     adapter.notifyDataSetChanged();
 
@@ -204,7 +223,7 @@ public class FacultyFragment extends Fragment {
             });
     }
 
-    private void startTimeoutRunnable(Query query) {
+    private void startTimeoutRunnable() {
         // Initialize the timeout runnable
         timeoutRunnable = () -> {
             // Hide the loading progress bar
@@ -214,9 +233,6 @@ public class FacultyFragment extends Fragment {
                 emptyTextView.setVisibility(View.VISIBLE);
                 emptyTextView.setText("No faculty Found");
             }
-
-            // Remove the child event listener
-            query.removeEventListener(childEventListener);
         };
 
         // Schedule the runnable after 10 seconds
