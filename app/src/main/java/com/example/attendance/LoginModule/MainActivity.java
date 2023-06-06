@@ -1,5 +1,6 @@
 package com.example.attendance.LoginModule;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -10,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,25 +32,14 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
-
-
-
-
-
-
-
-
 public class MainActivity extends AppCompatActivity implements FacultyBottomSheetDialogFragment.FacultyDialogListener {
 
     DrawerLayout layDL;
     NavigationView vNV;
     Toolbar toolbar;
     private FirebaseAuth mAuth;
-
     TextView welcomeMessage;
-
     ImageView profileImage;
-
     Button log_out_btn;
 
 
@@ -59,14 +50,11 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
         layDL = findViewById(R.id.my_drawer_layout);
         vNV = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
-
         setSupportActionBar(toolbar);
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, layDL, toolbar, R.string.nav_open, R.string.nav_close);
-
         layDL.addDrawerListener(toggle);
         toggle.syncState();
-
+        mAuth = FirebaseAuth.getInstance();
         // Customize the toolbar with profile image and welcome message
         profileImage = findViewById(R.id.profile_img);
         welcomeMessage = findViewById(R.id.welcome_msg);
@@ -83,6 +71,20 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
             vNV.setCheckedItem(R.id.navigation_record);
         }
         NavClick();
+
+        Button logoutButton = findViewById(R.id.nav_bt);
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this,  "Logout ", Toast.LENGTH_SHORT).show();
+                    mAuth.signOut();
+                    Intent i = new Intent(MainActivity.this, Login.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                   finish();
+            }
+        });
     }
     private void NavClick() {
         vNV.setNavigationItemSelectedListener(item -> {
@@ -141,17 +143,9 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
                     break;
             }
 
-            Button logoutButton = findViewById(R.id.logoutButton);
 
-            logoutButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mAuth.signOut();
-                    Intent i = new Intent(MainActivity.this, Login.class);
-                    startActivity(i);
-                   finish();
-                }
-            });
+
+
 
 
             layDL.closeDrawer(GravityCompat.START);
@@ -169,24 +163,6 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
             super.onBackPressed();
         }
     }
-
-
-
-
-
-
-//    log_out_btn.setOnClickListener(new View.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            //opening a new activity for adding a course.
-//            // on below line we are signing out our user.
-//            mAuth.signOut();
-//            // on below line we are opening our login activity.
-//            Intent i = new Intent(MainActivity.this, Login.class);
-//            startActivity(i);
-//            finish();
-//        }
-//    });
 
     @Override
     public void onSaveClicked(String facultyName, ArrayList<String> departmentNames) {
