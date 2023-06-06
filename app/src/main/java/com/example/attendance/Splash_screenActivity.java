@@ -31,5 +31,10 @@ public class Splash_screenActivity extends AppCompatActivity {
             Splash_screenActivity.this.finish();
         }, 1000);
 
+    }@Override
+    public void onBackPressed() {
+        // Disable the back button functionality in the splash screen activity
+        moveTaskToBack(true);
     }
+
 }

@@ -74,7 +74,23 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
-        app:menu="@menu/nav_menu" />
+        app:menu="@menu/nav_menu" >
+
+        <Button
+            android:id="@+id/nav_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="logout"
+            android:padding="10dp"
+            android:layout_gravity="bottom"
+            app:headerLayout="@layout/nav_btn"
+            app:menu="@menu/nav_menu" />
+
+    </com.google.android.material.navigation.NavigationView>
+
+
+
+
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

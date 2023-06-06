@@ -32,7 +32,6 @@ public class AdminHomeFragment extends Fragment {
 
     CardView addStudentCard, addStaffCard, facultyCard, departmentCard;
 
-
     public AdminHomeFragment() {
         // Required empty public constructor
     }
