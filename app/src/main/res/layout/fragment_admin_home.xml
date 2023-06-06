@@ -10,11 +10,16 @@
     android:background="@color/lightBlue"
     tools:context=".LoginModule.MainActivity">
 
-    <androidx.viewpager.widget.ViewPager
-        android:layout_margin="5dp"
-        android:id="@+id/imageViewPager"
-        android:layout_width="match_parent"
-        android:layout_height="250dp" />
+  <androidx.cardview.widget.CardView
+      android:layout_width="wrap_content"
+      app:cardCornerRadius="6dp"
+      android:layout_height="wrap_content">
+      <androidx.viewpager.widget.ViewPager
+          android:layout_margin="5dp"
+          android:id="@+id/imageViewPager"
+          android:layout_width="match_parent"
+          android:layout_height="230dp" />
+  </androidx.cardview.widget.CardView>
 
     <GridLayout
         android:layout_width="match_parent"
