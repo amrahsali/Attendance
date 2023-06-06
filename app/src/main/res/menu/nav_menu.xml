@@ -40,5 +40,6 @@
         android:iconTint="@color/blue"
         android:id="@+id/navigation_record"
         android:icon="@drawable/ic_round_event_note_24"
-        android:title="View records" />
+        android:title="records" />
 </menu>
+

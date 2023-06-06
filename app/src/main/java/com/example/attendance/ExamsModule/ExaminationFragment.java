@@ -122,11 +122,25 @@ public class ExaminationFragment extends Fragment {
     }
 
     private void saveExamToFirebase(String departmentName) {
+        DatabaseReference examsRef = FirebaseDatabase.getInstance().getReference().child("exams");
 
         String examId = examsRef.push().getKey();
         if (examId != null) {
             ExamsModal exam = new ExamsModal(examId, departmentName);
-            examsRef.child(examId).setValue(exam);
+            examsRef.child(departmentName).setValue(exam).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getActivity(), "Exam added successfully", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getActivity(), "Failed to add exam", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+
         }
     }
 

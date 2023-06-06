@@ -52,7 +52,6 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.14.2'
     implementation 'com.firebaseui:firebase-ui-database:8.0.0'
 
-
     dependencies {
         // Import the BoM for the Firebase platform
         implementation platform('com.google.firebase:firebase-bom:31.4.0')
@@ -70,6 +69,7 @@ dependencies {
 
         // Add this at the bottom
         apply plugin: 'com.google.gms.google-services'
+
 
     }
 

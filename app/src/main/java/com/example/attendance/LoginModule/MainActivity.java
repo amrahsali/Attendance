@@ -8,9 +8,13 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.attendance.AttendanceModule.RecordFragment;
 import com.example.attendance.ExamsModule.ExaminationFragment;
@@ -21,18 +25,32 @@ import com.example.attendance.StaffModule.StaffListFragment;
 import com.example.attendance.StudentModule.Add_studentFragment;
 import com.example.attendance.Utility.FacultyBottomSheetDialogFragment;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.slider.Slider;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+
+
+
+
+
+
+
+
 
 public class MainActivity extends AppCompatActivity implements FacultyBottomSheetDialogFragment.FacultyDialogListener {
 
     DrawerLayout layDL;
     NavigationView vNV;
     Toolbar toolbar;
+    private FirebaseAuth mAuth;
 
     TextView welcomeMessage;
 
     ImageView profileImage;
+
+    Button log_out_btn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +140,20 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
                     fragmentTransaction6.commit();
                     break;
             }
+
+            Button logoutButton = findViewById(R.id.logoutButton);
+
+            logoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mAuth.signOut();
+                    Intent i = new Intent(MainActivity.this, Login.class);
+                    startActivity(i);
+                   finish();
+                }
+            });
+
+
             layDL.closeDrawer(GravityCompat.START);
             return true;
         });
@@ -138,8 +170,28 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
         }
     }
 
+
+
+
+
+
+//    log_out_btn.setOnClickListener(new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            //opening a new activity for adding a course.
+//            // on below line we are signing out our user.
+//            mAuth.signOut();
+//            // on below line we are opening our login activity.
+//            Intent i = new Intent(MainActivity.this, Login.class);
+//            startActivity(i);
+//            finish();
+//        }
+//    });
+
     @Override
     public void onSaveClicked(String facultyName, ArrayList<String> departmentNames) {
 
     }
+
+
 }

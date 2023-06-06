@@ -25,5 +25,7 @@
     </style>
     <style name="Theme.Attendance.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.Attendance.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.AnAutomaticAndroidSlider" parent="Theme.AppCompat.Light.DarkActionBar"></style>
+
 
 </resources>
