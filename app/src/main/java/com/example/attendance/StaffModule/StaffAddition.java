@@ -16,13 +16,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.attendance.FacultyModule.FacultyModel;
 import com.example.attendance.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,13 +45,17 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StaffAddition extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     Button create_staff, Cancel, Save;
     Dialog staffBiometricDialog;;
-    EditText username, phoneNumber, emailad, department1, faculty1;
+    EditText username, phoneNumber, emailad;
     ImageView profileimg;
     private ProgressBar loadingPB;
     int SELECT_PICTURE = 200;
@@ -57,6 +66,18 @@ public class StaffAddition extends AppCompatActivity {
     private String courseID;
     TextView name,email;
 
+    AutoCompleteTextView faculty1, department1;
+    List<String> facultyList;
+    List<String> departmentList;
+    DatabaseReference facultyRef;
+
+    private Map<String, List<String>> facultyDepartmentsMap;
+    private ArrayAdapter<String> facultyAdapter;
+    private ArrayAdapter<String> departmentAdapter;
+    private AutoCompleteTextView facultyAutoComplete;
+    private AutoCompleteTextView departmentAutoComplete;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,15 +85,22 @@ public class StaffAddition extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         create_staff = findViewById(R.id.loginbtn);
         username = findViewById(R.id.username);
-        faculty1 = findViewById(R.id.faculty);
-        department1 = findViewById(R.id.department);
         phoneNumber = findViewById(R.id.mobile_np);
         profileimg = findViewById(R.id.userprofile);
         emailad = findViewById(R.id.email);
         firebaseDatabase = FirebaseDatabase.getInstance();
+        facultyRef = firebaseDatabase.getReference("Faculty");
         databaseReference = firebaseDatabase.getReference("Staff");
         mStorageref = FirebaseStorage.getInstance().getReference("Upload Photos");
         staffBiometricDialog = new Dialog(this);
+        facultyDepartmentsMap = new HashMap<>();
+        facultyDepartmentsMap = new HashMap<>();
+        facultyAutoComplete = findViewById(R.id.faculty);
+        departmentAutoComplete = findViewById(R.id.department);
+        facultyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line);
+        departmentAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line);
+        facultyAutoComplete.setAdapter(facultyAdapter);
+        departmentAutoComplete.setAdapter(departmentAdapter);
 
         profileimg.setOnClickListener(v -> {
             // create an instance of the
@@ -91,8 +119,12 @@ public class StaffAddition extends AppCompatActivity {
             }
 
         });
-        //get user profile
-        FirebaseUser user = mAuth.getCurrentUser();
+        loadFacultyData();
+        facultyAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedFaculty = (String) parent.getItemAtPosition(position);
+            updateDepartmentDropdown(selectedFaculty);
+        });
+
 
         create_staff.setOnClickListener(v -> {
 
@@ -194,7 +226,6 @@ public class StaffAddition extends AppCompatActivity {
         });
     }
 
-    // this function is triggered when user
     // selects the image from the imageChooser
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -214,6 +245,44 @@ public class StaffAddition extends AppCompatActivity {
                     //IVPreviewImage.setImageURI(selectedImageUri);
                 }
             }
+        }
+    }
+    private void loadFacultyData() {
+        DatabaseReference facultyRef = FirebaseDatabase.getInstance().getReference("Faculties");
+        facultyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot facultySnapshot : dataSnapshot.getChildren()) {
+                    String facultyId = facultySnapshot.getKey();
+                    String facultyName = facultySnapshot.child("name").getValue(String.class);
+                    List<String> departmentNames = new ArrayList<>();
+
+                    for (DataSnapshot deptSnapshot : facultySnapshot.child("dept").getChildren()) {
+                        String departmentName = deptSnapshot.child("name").getValue(String.class);
+                        departmentNames.add(departmentName);
+                    }
+
+                    facultyDepartmentsMap.put(facultyName, departmentNames);
+                }
+
+                facultyAdapter.addAll(facultyDepartmentsMap.keySet());
+                facultyAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle any errors
+                Log.e(TAG, "Failed to load faculty data: " + databaseError.getMessage());
+            }
+        });
+    }
+    private void updateDepartmentDropdown(String selectedFaculty) {
+        List<String> departmentNames = facultyDepartmentsMap.get(selectedFaculty);
+
+        if (departmentNames != null) {
+            departmentAdapter.clear();
+            departmentAdapter.addAll(departmentNames);
+            departmentAdapter.notifyDataSetChanged();
         }
     }
 }

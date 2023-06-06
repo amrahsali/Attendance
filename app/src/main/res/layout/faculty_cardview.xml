@@ -48,7 +48,7 @@
                     android:paddingEnd="5dp"
                     android:textSize="18sp"
                     android:layout_gravity="center"
-                    android:text="software engineering"/>
+                    android:text="Department no"/>
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>

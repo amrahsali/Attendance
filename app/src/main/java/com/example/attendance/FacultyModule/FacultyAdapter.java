@@ -21,16 +21,10 @@ public class FacultyAdapter extends RecyclerView.Adapter<FacultyAdapter.ViewHold
     private Context context;
     private List<FacultyModel> facultyList;
 
+
     public FacultyAdapter(Context context, ArrayList<FacultyModel> facultyList) {
         this.context = context;
         this.facultyList = facultyList;
-    }
-
-
-    public FacultyAdapter(ArrayList<FacultyModel> facultyList) {
-        this.facultyList = facultyList;
-
-
     }
 
     @NonNull
@@ -46,7 +40,7 @@ public class FacultyAdapter extends RecyclerView.Adapter<FacultyAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         FacultyModel faculty = facultyList.get(position);
         holder.txtFacultyName.setText(faculty.getName());
-        holder.txtDepartmentName.setText(faculty.getDept().size());
+        holder.txtDepartmentName.setText(faculty.getDept().size() + " Departments");
     }
 
     @Override

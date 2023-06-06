@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +48,6 @@ public class FacultyFragment extends Fragment {
     FacultyAdapter adapter;
 
     boolean hasData = false;
-    ArrayList<FacultyModel> facultyList;
     DatabaseReference facultyRef;
     FirebaseDatabase firebaseDatabase;
 
@@ -68,14 +69,12 @@ public class FacultyFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_faculty, container, false);
         recyclerView = view.findViewById(R.id.idRVFacultyt);
         dialog = new Dialog(getContext());
-        facultyList = new ArrayList<>();
-        adapter = new FacultyAdapter(getContext(), facultyList);
         firebaseDatabase = FirebaseDatabase.getInstance();
         Context context = requireContext();
         facultyModelArrayList = new ArrayList<>();
         loadingPB = view.findViewById(R.id.loading_pb);
         emptyTextView = view.findViewById(R.id.empty_text_view);
-        adapter = new FacultyAdapter(context, facultyList);
+        adapter = new FacultyAdapter(context, facultyModelArrayList);
         firebaseDatabase = FirebaseDatabase.getInstance();
         facultyRef = firebaseDatabase.getReference("Faculty");
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -84,12 +83,7 @@ public class FacultyFragment extends Fragment {
         FloatingActionButton fab = view.findViewById(R.id.facultyFABtn);
         loadFacultyData();
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showFacultyDialog();
-            }
-        });
+        fab.setOnClickListener(v -> showFacultyDialog());
 
         SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
 
@@ -153,75 +147,48 @@ public class FacultyFragment extends Fragment {
     }
 
     private void loadFacultyData() {
-            handler = new Handler();
-            //on below line clearing our list.
-            loadingPB.setVisibility(View.VISIBLE);
-            emptyTextView.setVisibility(View.GONE);
-            facultyModelArrayList.clear();
-            startTimeoutRunnable();
-            //on below line we are calling add child event listener method to read the data.
-        facultyRef.addChildEventListener(childEventListener = new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    //on below line we are hiding our progress bar.
-                    loadingPB.setVisibility(View.GONE);
-                    emptyTextView.setVisibility(View.GONE);
-                    //adding snapshot to our array list on below line.
-                    //facultyModelArrayList.add(snapshot.getValue(FacultyModel.class));
+        handler = new Handler();
+        loadingPB.setVisibility(View.VISIBLE);
+        emptyTextView.setVisibility(View.GONE);
+        facultyModelArrayList.clear();
 
+        startTimeoutRunnable();
 
-                    // Get the data as a HashMap
-                    HashMap<String, Object> facultyData = (HashMap<String, Object>) snapshot.getValue();
+        facultyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                loadingPB.setVisibility(View.GONE);
+                Log.d("FirebaseData", "Snapshot Key: " + snapshot.getKey());
+                Log.d("FirebaseData", "Snapshot Value: " + snapshot.getValue());
 
-                    // Extract the relevant information
-                    String facultyId = (String) facultyData.get("fid");
-                    String facultyName = (String) facultyData.get("name");
-                    List<String> departmentNames = (List<String>) facultyData.get("departments");
+                for (DataSnapshot facultySnapshot : snapshot.getChildren()) {
+                    String facultyId = facultySnapshot.getKey();
+                    String facultyName = facultySnapshot.child("name").getValue(String.class);
+                    List<String> departmentNames = new ArrayList<>();
 
-                    // Create the FacultyModel object
+                    for (DataSnapshot deptSnapshot : facultySnapshot.child("dept").getChildren()) {
+                        String departmentName = deptSnapshot.child("name").getValue(String.class);
+                        departmentNames.add(departmentName);
+                    }
+
                     FacultyModel faculty = new FacultyModel(facultyId, facultyName, departmentNames);
-
-                    // Add faculty to your ArrayList or adapter as needed
                     facultyModelArrayList.add(faculty);
-
-                    //notifying our adapter that data has changed.
-                    adapter.notifyDataSetChanged();
-
-                    hasData = true;
                 }
 
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    //this method is called when new child is added we are notifying our adapter and making progress bar visibility as gone.
-                    loadingPB.setVisibility(View.GONE);
+                adapter.notifyDataSetChanged();
+                hasData = true;
+            }
 
-                    adapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                    //notifying our adapter when child is removed.
-                    adapter.notifyDataSetChanged();
-                    loadingPB.setVisibility(View.GONE);
-
-                }
-
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    //notifying our adapter when child is moved.
-                    adapter.notifyDataSetChanged();
-                    loadingPB.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    stopTimeoutRunnable();
-                    loadingPB.setVisibility(View.GONE);
-                    emptyTextView.setVisibility(View.VISIBLE);
-                    emptyTextView.setText("Error: " + error.getMessage());
-                }
-            });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                stopTimeoutRunnable();
+                loadingPB.setVisibility(View.GONE);
+                emptyTextView.setVisibility(View.VISIBLE);
+                emptyTextView.setText("Error: " + error.getMessage());
+            }
+        });
     }
+
 
     private void startTimeoutRunnable() {
         // Initialize the timeout runnable
