@@ -1,4 +1,4 @@
-package com.example.attendance;
+package com.example.attendance.ExamsModule;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.attendance.R;
+import com.example.attendance.ScanActivity;
 
 public class Exams_entryActivity extends AppCompatActivity {
 

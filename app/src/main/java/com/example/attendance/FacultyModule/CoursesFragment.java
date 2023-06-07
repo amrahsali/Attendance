@@ -11,10 +11,16 @@ import androidx.fragment.app.Fragment;
 import com.example.attendance.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.database.FirebaseDatabase;
+
 
 import java.util.List;
 
@@ -33,7 +39,7 @@ public class CoursesFragment extends Fragment {
 
     GridView courseGV;
     ArrayList<Coursemodal> coursemodalArrayList;
-    FirebaseFirestore db;
+    DatabaseReference db;
     CourseAdapter adapter; // Declare adapter as an instance variable
 
     private void collectDataAndDisplay(String courseName, String courseCode) {
@@ -48,16 +54,21 @@ public class CoursesFragment extends Fragment {
         adapter.notifyDataSetChanged();
 
         // Save the course details to Firebase Firestore
-        saveCourseToFirestore(courseName, courseCode);
+        saveCourseToFirebase(courseName, courseCode);
 
     }
-    private void saveCourseToFirestore(String courseName, String courseCode) {
+    private void saveCourseToFirebase(String courseName, String courseCode) {
         // Create a new document in the "Data" collection with the course details
-        db.collection("Data")
-                .add(new Coursemodal(courseName, courseCode))
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
+        DatabaseReference coursesRef = db.child("courses");
+        String courseId = coursesRef.push().getKey();
+
+
+        if (courseId != null) {
+            Coursemodal course = new Coursemodal(courseName, courseCode);
+            coursesRef.child(courseId).setValue(course)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
                         // Course saved successfully
                     }
                 })
@@ -67,6 +78,7 @@ public class CoursesFragment extends Fragment {
                         // Failed to save course
                     }
                 });
+    }
     }
 
 
@@ -83,11 +95,10 @@ public class CoursesFragment extends Fragment {
 
         // initializing our variable for firebase
         // firestore and getting its instance.
-        db = FirebaseFirestore.getInstance();
-
+        db = FirebaseDatabase.getInstance().getReference();
         // here we are calling a method
         // to load data in our list view.
-        loadDatainGridView();
+        loadDataFromFirebase();
 
         FloatingActionButton addButton = view.findViewById(R.id.courseFABtn);
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -103,50 +114,28 @@ public class CoursesFragment extends Fragment {
         return view;
 
     }
-    private void loadDatainGridView(){
-
-        db.collection("Data").get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        // after getting the data we are calling on success method
-                        // and inside this method we are checking if the received
-                        // query snapshot is empty or not.
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            // if the snapshot is not empty we are hiding our
-                            // progress bar and adding our data in a list.
-                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                            for (DocumentSnapshot d : list) {
-
-                                // after getting this list we are passing
-                                // that list to our object class.
-                                Coursemodal dataModal = d.toObject(Coursemodal.class);
-
-                                // after getting data from Firebase
-                                // we are storing that data in our array list
-                                coursemodalArrayList.add(dataModal);
-                            }
-                            // after that we are passing our array list to our adapter class.
-                            CourseAdapter adapter = new CourseAdapter(getActivity(),  coursemodalArrayList);
-
-                            // after passing this array list
-                            // to our adapter class we are setting
-                            // our adapter to our list view.
-                            courseGV.setAdapter(adapter);
-                        } else {
-                            // if the snapshot is empty we are displaying a toast message.
-                            Toast.makeText(getActivity(),  "No data found in Database", Toast.LENGTH_SHORT).show();
-                        }
+    private void loadDataFromFirebase() {
+        db.child("courses").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Coursemodal course = snapshot.getValue(Coursemodal.class);
+                        coursemodalArrayList.add(course);
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // we are displaying a toast message
-                        // when we get any error from Firebase.
-                        Toast.makeText(getActivity(),  "Fail to load data..", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(getActivity(), "No data found in Database", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Fail to load data..", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 
     private void showDialogBox() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

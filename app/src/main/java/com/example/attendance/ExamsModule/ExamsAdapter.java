@@ -10,12 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.attendance.Exams_entryActivity;
 import com.example.attendance.R;
 
 import java.util.ArrayList;
-
-import android.content.Intent;
 
 
 public class ExamsAdapter extends RecyclerView.Adapter<ExamsAdapter.ExamsViewHolder> {

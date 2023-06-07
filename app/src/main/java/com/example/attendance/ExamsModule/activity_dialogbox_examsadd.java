@@ -1,4 +1,4 @@
-package com.example.attendance;
+package com.example.attendance.ExamsModule;
 
 import android.app.Activity;
 
