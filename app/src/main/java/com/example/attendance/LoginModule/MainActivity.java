@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
     private FirebaseAuth mAuth;
     TextView welcomeMessage;
     ImageView profileImage;
-    Button log_out_btn;
 
 
     @Override

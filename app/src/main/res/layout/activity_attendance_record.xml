@@ -48,6 +48,23 @@
             android:text="100 Student"/>
     </LinearLayout>
 
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/idBtnGeneratePDF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Generate PDF" />
+    </LinearLayout>
+
 
 
 </LinearLayout>
