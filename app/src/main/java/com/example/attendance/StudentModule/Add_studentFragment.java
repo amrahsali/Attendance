@@ -101,13 +101,15 @@ public class Add_studentFragment extends Fragment {
         initspinners();
 
 
-        // adding on click listener for floating action button.
-        fab.setOnClickListener((View v) -> {
-            // starting a new activity for adding a new course
-            // and passing a constant value in it.
-            Intent intent1 = new Intent(getActivity(), StudentAddition.class);
-            startActivity(intent1);
-        });
+        if (isUserLoggedIn()){
+            fab.setOnClickListener((View v) -> {
+                Intent intent1 = new Intent(getActivity(), StudentAddition.class);
+                startActivity(intent1);
+            });
+            fab.setVisibility(View.VISIBLE);
+        }else {
+            fab.setVisibility(View.GONE);
+        }
 
         // Find the SwipeRefreshLayout in the layout
         SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
@@ -211,47 +213,14 @@ public class Add_studentFragment extends Fragment {
                 isMatched = false;
             }
 
-
             if (isMatched) {
                 filteredList.add(student);
-                studentAdapter.notifyDataSetChanged();
             }
         }
 
         // Check if no dropdown is selected, add all students
         if (filterModel.getLevel().equals("Select level") && filterModel.getDepartment().equals("Select dept") && filterModel.getFaculty().equals("Select fal")) {
             filteredList.addAll(studentRVModalArrayList);
-        } else {
-            // Filter students based on selected values
-            if (!filterModel.getLevel().equalsIgnoreCase("Select level")) {
-                ArrayList<StudentModal> levelFiltered = new ArrayList<>();
-                for (StudentModal student : filteredList) {
-                    if (filterModel.getLevel().equalsIgnoreCase(student.getStudentLevel())) {
-                        levelFiltered.add(student);
-                    }
-                }
-                filteredList = levelFiltered;
-            }
-
-            if (!filterModel.getDepartment().equalsIgnoreCase("Select dept")) {
-                ArrayList<StudentModal> deptFiltered = new ArrayList<>();
-                for (StudentModal student : filteredList) {
-                    if (filterModel.getDepartment().equalsIgnoreCase(student.getStudentDepartment())) {
-                        deptFiltered.add(student);
-                    }
-                }
-                filteredList = deptFiltered;
-            }
-
-            if (!filterModel.getFaculty().equals("Select fal")) {
-                ArrayList<StudentModal> facultyFiltered = new ArrayList<>();
-                for (StudentModal student : filteredList) {
-                    if (filterModel.getFaculty().equalsIgnoreCase(student.getStudentFaculty())) {
-                        facultyFiltered.add(student);
-                    }
-                }
-                filteredList = facultyFiltered;
-            }
         }
 
         studentAdapter.setStudentList(filteredList);
@@ -348,6 +317,10 @@ public class Add_studentFragment extends Fragment {
 
         // Call the method to fetch the updated data
         getStudent();
+    }
+
+    private boolean isUserLoggedIn() {
+        return mAuth.getCurrentUser() != null;
     }
 
 

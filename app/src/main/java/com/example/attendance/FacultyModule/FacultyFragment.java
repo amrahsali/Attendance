@@ -50,6 +50,7 @@ public class FacultyFragment extends Fragment {
     boolean hasData = false;
     DatabaseReference facultyRef;
     FirebaseDatabase firebaseDatabase;
+    private FirebaseAuth mAuth;
 
     private TextView emptyTextView;
     private Runnable timeoutRunnable;
@@ -76,6 +77,7 @@ public class FacultyFragment extends Fragment {
         emptyTextView = view.findViewById(R.id.empty_text_view);
         adapter = new FacultyAdapter(context, facultyModelArrayList);
         firebaseDatabase = FirebaseDatabase.getInstance();
+        mAuth = FirebaseAuth.getInstance();
         facultyRef = firebaseDatabase.getReference("Faculty");
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
@@ -83,7 +85,13 @@ public class FacultyFragment extends Fragment {
         FloatingActionButton fab = view.findViewById(R.id.facultyFABtn);
         loadFacultyData();
 
-        fab.setOnClickListener(v -> showFacultyDialog());
+        if (isUserLoggedIn()){
+            fab.setOnClickListener(v -> showFacultyDialog());
+            fab.setVisibility(View.VISIBLE);
+        }else {
+            fab.setVisibility(View.GONE);
+        }
+
 
         SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
 
@@ -219,6 +227,10 @@ public class FacultyFragment extends Fragment {
 
         // Call the method to fetch the updated data
         loadFacultyData();
+    }
+
+    private boolean isUserLoggedIn() {
+        return mAuth.getCurrentUser() != null;
     }
 
 

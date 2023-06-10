@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.attendance.LoginModule.MainActivity;
 import com.example.attendance.StaffModule.StaffProfileActivity;
 
 public class ScanActivity extends AppCompatActivity {
@@ -35,8 +36,9 @@ public class ScanActivity extends AppCompatActivity {
                     }
                     if (origin != null && origin.equals("login")) {
                         //staff login
-                        Intent i = new Intent(ScanActivity.this, StaffProfileActivity.class);
+                        Intent i = new Intent(ScanActivity.this, MainActivity.class);
                         startActivity(i);
+                        finish();
                     }
 
                     if (origin != null && origin.equals("exams")) {

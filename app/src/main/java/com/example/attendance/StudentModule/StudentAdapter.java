@@ -35,6 +35,10 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
         this.courseRVModalArrayList = studentList;
     }
 
+//    public void setStudentList(List<StudentModal> studentList) {
+//        this.courseRVModalArrayList = studentList;
+//    }
+
     @NonNull
     @Override
     public StudentAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

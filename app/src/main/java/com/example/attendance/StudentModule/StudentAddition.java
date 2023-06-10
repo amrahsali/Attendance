@@ -15,10 +15,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,13 +42,17 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StudentAddition extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     Button create_student, Cancel, Save;
     Dialog studentBiometricDialog;;
-    EditText username, matricNumber, level, department1, faculty1;
+    EditText username, matricNumber, level;
     ImageView profileimg;
     private ProgressBar loadingPB;
     int SELECT_PICTURE = 200;
@@ -56,6 +63,13 @@ public class StudentAddition extends AppCompatActivity {
     private String courseID;
     TextView name,email;
 
+    private Spinner facultySpinner;
+    private Spinner departmentSpinner;
+
+    private Map<String, List<String>> facultyDepartmentsMap;
+    private ArrayAdapter<String> facultyAdapter;
+    private ArrayAdapter<String> departmentAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,8 +77,6 @@ public class StudentAddition extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         create_student = findViewById(R.id.create_student);
         username = findViewById(R.id.stdntname);
-        faculty1 = findViewById(R.id.stdntfaculty);
-        department1 = findViewById(R.id.stdntdepartment);
         matricNumber = findViewById(R.id.stdntNumber);
         profileimg = findViewById(R.id.stdntimage);
         level = findViewById(R.id.student_level);
@@ -73,6 +85,18 @@ public class StudentAddition extends AppCompatActivity {
         mStorageref = FirebaseStorage.getInstance().getReference("Upload Photos");
         studentBiometricDialog = new Dialog(this);
         loadingPB = findViewById(R.id.idPBLoading);
+        facultySpinner = findViewById(R.id.fac_std_spinner);
+        departmentSpinner = findViewById(R.id.dep_std_spinner);
+
+        facultyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        departmentAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        facultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        departmentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Set the adapters to the spinners
+        facultySpinner.setAdapter(facultyAdapter);
+        departmentSpinner.setAdapter(departmentAdapter);
+
 
         profileimg.setOnClickListener(v -> {
             // create an instance of the
@@ -91,13 +115,27 @@ public class StudentAddition extends AppCompatActivity {
             }
 
         });
+
+        loadFacultyData();
+        facultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedFaculty = (String) parent.getItemAtPosition(position);
+                updateDepartmentDropdown(selectedFaculty);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
         //get user profile
         FirebaseUser user = mAuth.getCurrentUser();
 
         create_student.setOnClickListener(v -> {
 
             if (!username.getText().toString().isEmpty() && !level.getText().toString().isEmpty()
-                    && !matricNumber.getText().toString().isEmpty() && !department1.getText().toString().isEmpty() && imageuri != null
+                    && !matricNumber.getText().toString().isEmpty() && imageuri != null
             ) {
                 studentBiometricDialog.setContentView(R.layout.biometric_dialog);
                 studentBiometricDialog.create();
@@ -127,9 +165,9 @@ public class StudentAddition extends AppCompatActivity {
                             if (uriTask.isSuccessful()) {
                                 String name = username.getText().toString();
                                 String matric = matricNumber.getText().toString();
-                                String department = department1.getText().toString();
-                                String faculty = faculty1.getText().toString();
-                                String studentLevel = level.getText().toString();
+                                String department = departmentSpinner.getSelectedItem().toString();
+                                String faculty = facultySpinner.getSelectedItem().toString();
+                                String level1 =  level.getText().toString();
 
                                 Uri staffImage = imageuri;
                                 String Uid = mAuth.getUid();
@@ -144,7 +182,7 @@ public class StudentAddition extends AppCompatActivity {
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         // on below line we are setting data in our firebase database.
 
-                                        StudentModal studentModal = new StudentModal(courseID, name, faculty, department, matric, Uid, studentLevel, downloadUri);
+                                        StudentModal studentModal = new StudentModal(courseID, name, faculty, department, matric, Uid, level1, downloadUri);
 
                                         databaseReference.child(courseID).setValue(studentModal);
                                         // displaying a toast message.
@@ -183,12 +221,6 @@ public class StudentAddition extends AppCompatActivity {
                 if (matricNumber.getText().toString().isEmpty()){
                     matricNumber.setError("fill");
                 }
-                if (department1.getText().toString().isEmpty()){
-                    department1.setError("fill");
-                }
-                if (faculty1.getText().toString().isEmpty()){
-                    faculty1.setError("fill");
-                }
                 if (imageuri == null) {
                     Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show();
                 }
@@ -217,5 +249,52 @@ public class StudentAddition extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void loadFacultyData() {
+        facultyDepartmentsMap = new HashMap<>();
+        DatabaseReference facultyRef = FirebaseDatabase.getInstance().getReference("Faculty");
+        facultyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot facultySnapshot : dataSnapshot.getChildren()) {
+                    String facultyId = facultySnapshot.getKey();
+                    String facultyName = facultySnapshot.child("name").getValue(String.class);
+                    List<String> departmentNames = new ArrayList<>();
+
+                    for (DataSnapshot deptSnapshot : facultySnapshot.child("dept").getChildren()) {
+                        String departmentName = deptSnapshot.child("name").getValue(String.class);
+                        departmentNames.add(departmentName);
+                    }
+
+                    facultyDepartmentsMap.put(facultyName, departmentNames);
+                }
+
+                // Update the faculty and department spinners
+                facultyAdapter.addAll(facultyDepartmentsMap.keySet());
+                facultyAdapter.notifyDataSetChanged();
+
+                String selectedFaculty = (String) facultySpinner.getSelectedItem();
+                updateDepartmentDropdown(selectedFaculty);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle any errors
+                Log.e(TAG, "Failed to load faculty data: " + databaseError.getMessage());
+            }
+        });
+    }
+    private void updateDepartmentDropdown(String faculty) {
+        departmentAdapter.clear();
+
+        if (faculty != null) {
+            List<String> departmentNames = facultyDepartmentsMap.get(faculty);
+            if (departmentNames != null) {
+                departmentAdapter.addAll(departmentNames);
+            }
+        }
+
+        departmentAdapter.notifyDataSetChanged();
     }
 }

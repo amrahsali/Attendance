@@ -50,6 +50,7 @@ public class Login extends AppCompatActivity {
                 Intent i = new Intent(Login.this, ScanActivity.class);
                 i.putExtra("origin","login");
                 startActivity(i);
+                finish();
             }
         });
 
@@ -79,7 +80,7 @@ public class Login extends AppCompatActivity {
                             // on below line we are opening our mainactivity.
                             Intent i = new Intent(Login.this, MainActivity.class);
                             startActivity(i);
-                          finish();
+                            finish();
                         } else {
                             // hiding our progress bar and displaying a toast message.
                             loadingPB.setVisibility(View.GONE);

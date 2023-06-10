@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
         layDL = findViewById(R.id.my_drawer_layout);
         vNV = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, layDL, toolbar, R.string.nav_open, R.string.nav_close);
         layDL.addDrawerListener(toggle);
         toggle.syncState();
@@ -72,12 +73,21 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
         }
         NavClick();
 
+        Menu navMenu = vNV.getMenu();
+        MenuItem addStaffItem = navMenu.findItem(R.id.add_staff);
+        MenuItem addStudentItem = navMenu.findItem(R.id.add_student);
+
+        if (isUserLoggedIn()) {
+            addStaffItem.setVisible(true);
+        } else {
+            addStaffItem.setVisible(false);
+        }
+
         Button logoutButton = findViewById(R.id.nav_bt);
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,  "Logout ", Toast.LENGTH_SHORT).show();
                     mAuth.signOut();
                     Intent i = new Intent(MainActivity.this, Login.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -92,18 +102,20 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
             switch (item.getItemId()) {
 
                 case R.id.navigation_record:
-                    toolbar.setTitle("Records");
-                    RecordFragment fragment = new RecordFragment();
-                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.content, fragment, "");
-                    fragmentTransaction.commit();
+                        toolbar.setTitle("Records");
+                        RecordFragment fragment = new RecordFragment();
+                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.content, fragment, "");
+                        fragmentTransaction.commit();
                     break;
                 case R.id.add_staff:
-                    toolbar.setTitle("Add Staff");
-                    StaffListFragment fragment2 = new StaffListFragment();
-                    FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction2.replace(R.id.content, fragment2, "");
-                    fragmentTransaction2.commit();
+                    if (isUserLoggedIn()) {
+                        toolbar.setTitle("Add Staff");
+                        StaffListFragment fragment2 = new StaffListFragment();
+                        FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction2.replace(R.id.content, fragment2, "");
+                        fragmentTransaction2.commit();
+                    }
                     break;
                 case R.id.add_student:
                     toolbar.setTitle("Add Student");
@@ -167,6 +179,10 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
     @Override
     public void onSaveClicked(String facultyName, ArrayList<String> departmentNames) {
 
+    }
+
+    private boolean isUserLoggedIn() {
+        return mAuth.getCurrentUser() != null;
     }
 
 

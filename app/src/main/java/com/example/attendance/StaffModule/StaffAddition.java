@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 
 import com.example.attendance.FacultyModule.FacultyModel;
 import com.example.attendance.R;
+import com.example.attendance.Utility.CustomSpinnerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -52,6 +54,7 @@ import java.util.Map;
 
 public class StaffAddition extends AppCompatActivity {
 
+    private static final int CAMERA_IMAGE_REQUEST_CODE = -1;
     private FirebaseAuth mAuth;
     Button create_staff, Cancel, Save;
     Dialog staffBiometricDialog;;
@@ -65,17 +68,13 @@ public class StaffAddition extends AppCompatActivity {
     private StorageReference mStorageref;
     private String courseID;
     TextView name,email;
-
-    AutoCompleteTextView faculty1, department1;
-    List<String> facultyList;
-    List<String> departmentList;
     DatabaseReference facultyRef;
+    private Spinner facultySpinner;
+    private Spinner departmentSpinner;
 
     private Map<String, List<String>> facultyDepartmentsMap;
     private ArrayAdapter<String> facultyAdapter;
     private ArrayAdapter<String> departmentAdapter;
-    private AutoCompleteTextView facultyAutoComplete;
-    private AutoCompleteTextView departmentAutoComplete;
 
 
     @Override
@@ -93,14 +92,19 @@ public class StaffAddition extends AppCompatActivity {
         databaseReference = firebaseDatabase.getReference("Staff");
         mStorageref = FirebaseStorage.getInstance().getReference("Upload Photos");
         staffBiometricDialog = new Dialog(this);
-        facultyDepartmentsMap = new HashMap<>();
-        facultyDepartmentsMap = new HashMap<>();
-        facultyAutoComplete = findViewById(R.id.faculty);
-        departmentAutoComplete = findViewById(R.id.department);
-        facultyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line);
-        departmentAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line);
-        facultyAutoComplete.setAdapter(facultyAdapter);
-        departmentAutoComplete.setAdapter(departmentAdapter);
+        // Initialize the spinners
+        facultySpinner = findViewById(R.id.faculty_spinner);
+        departmentSpinner = findViewById(R.id.department_spinner);
+
+        // Initialize the adapters
+        facultyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        departmentAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        facultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        departmentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Set the adapters to the spinners
+        facultySpinner.setAdapter(facultyAdapter);
+        departmentSpinner.setAdapter(departmentAdapter);
 
         profileimg.setOnClickListener(v -> {
             // create an instance of the
@@ -119,17 +123,29 @@ public class StaffAddition extends AppCompatActivity {
             }
 
         });
-        loadFacultyData();
-        facultyAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
-            String selectedFaculty = (String) parent.getItemAtPosition(position);
-            updateDepartmentDropdown(selectedFaculty);
-        });
 
+//        profileimg.setOnClickListener(v -> {
+//            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//            startActivityForResult(cameraIntent, SELECT_PICTURE);
+//        });
+        loadFacultyData();
+        facultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedFaculty = (String) parent.getItemAtPosition(position);
+                updateDepartmentDropdown(selectedFaculty);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
 
         create_staff.setOnClickListener(v -> {
 
         if (!username.getText().toString().isEmpty() && !emailad.getText().toString().isEmpty()
-                && !phoneNumber.getText().toString().isEmpty() && !department1.getText().toString().isEmpty() && imageuri != null
+                && !phoneNumber.getText().toString().isEmpty() && imageuri != null
                 ) {
             staffBiometricDialog.setContentView(R.layout.biometric_dialog);
             staffBiometricDialog.create();
@@ -149,52 +165,49 @@ public class StaffAddition extends AppCompatActivity {
                 byte[] data = byteArrayOutputStream.toByteArray();
 
                 StorageReference storageReference1 = FirebaseStorage.getInstance().getReference().child(filepathname);
-                storageReference1.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // getting the url of image uploaded
-                        Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                        while (!uriTask.isSuccessful()) ;
-                        String downloadUri = uriTask.getResult().toString();
-                        if (uriTask.isSuccessful()) {
-                            String name = username.getText().toString();
-                            String email = emailad.getText().toString();
-                            String phone = phoneNumber.getText().toString();
-                            String department = department1.getText().toString();
-                            String faculty = faculty1.getText().toString();
+                storageReference1.putBytes(data).addOnSuccessListener(taskSnapshot -> {
+                    // getting the url of image uploaded
+                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                    while (!uriTask.isSuccessful()) ;
+                    String downloadUri = uriTask.getResult().toString();
+                    if (uriTask.isSuccessful()) {
+                        String name = username.getText().toString();
+                        String email = emailad.getText().toString();
+                        String phone = phoneNumber.getText().toString();
+                        String department = departmentSpinner.getSelectedItem().toString();
+                        String faculty = facultySpinner.getSelectedItem().toString();
 
-                            Uri staffImage = imageuri;
-                            String Uid = mAuth.getUid();
-                            String staffImageUri = staffImage.toString();
-                            StaffAddition.this.getContentResolver().takePersistableUriPermission(imageuri, (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
-                            courseID = name;
-                            // on below line we are passing all data to our modal class.
+                        Uri staffImage = imageuri;
+                        String Uid = mAuth.getUid();
+                        String staffImageUri = staffImage.toString();
+                        StaffAddition.this.getContentResolver().takePersistableUriPermission(imageuri, (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
+                        courseID = name;
+                        // on below line we are passing all data to our modal class.
 
 
-                            databaseReference.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    // on below line we are setting data in our firebase database.
+                        databaseReference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                // on below line we are setting data in our firebase database.
 
-                                    StaffRVModal courseRVModal = new StaffRVModal(courseID, name, email, phone, downloadUri, Uid, faculty, department);
+                                StaffRVModal courseRVModal = new StaffRVModal(courseID, name, email, phone, downloadUri, Uid, faculty, department);
 
-                                    databaseReference.child(courseID).setValue(courseRVModal);
-                                    // displaying a toast message.
-                                    Toast.makeText(StaffAddition.this, "Staff Created..", Toast.LENGTH_SHORT).show();
-                                    FragmentManager fragmentManager = getSupportFragmentManager();
-                                    fragmentManager.popBackStack();
-                                    staffBiometricDialog.dismiss();
-                                    finish();
-                                }
+                                databaseReference.child(courseID).setValue(courseRVModal);
+                                // displaying a toast message.
+                                Toast.makeText(StaffAddition.this, "Staff Created..", Toast.LENGTH_SHORT).show();
+                                FragmentManager fragmentManager = getSupportFragmentManager();
+                                fragmentManager.popBackStack();
+                                staffBiometricDialog.dismiss();
+                                finish();
+                            }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    // displaying a failure message on below line.
-                                    Toast.makeText(StaffAddition.this, "Failed to add Staff..", Toast.LENGTH_SHORT).show();
-                                    Log.e(TAG, "onCancelled: ", error.toException());
-                                }
-                            });
-                        }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                // displaying a failure message on below line.
+                                Toast.makeText(StaffAddition.this, "Failed to add Staff..", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "onCancelled: ", error.toException());
+                            }
+                        });
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -216,12 +229,6 @@ public class StaffAddition extends AppCompatActivity {
             if (phoneNumber.getText().toString().isEmpty()){
                 phoneNumber.setError("fill");
             }
-            if (department1.getText().toString().isEmpty()){
-                department1.setError("fill");
-            }
-            if (faculty1.getText().toString().isEmpty()){
-                faculty1.setError("fill");
-            }
         }
         });
     }
@@ -239,16 +246,30 @@ public class StaffAddition extends AppCompatActivity {
                 selectedImageUri = data.getData();
                 if (null != selectedImageUri) {
                     // update the preview image in the layout
-
                     imageuri = data.getData();
                     Picasso.get().load(imageuri).into(profileimg);
-                    //IVPreviewImage.setImageURI(selectedImageUri);
                 }
             }
+
         }
     }
+
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//          // Match the request 'pic id with requestCode
+//        if (requestCode == SELECT_PICTURE) {
+//            // BitMap is data structure of image file which store the image in memory
+//            selectedImageUri = data.getData();
+//            Toast.makeText(StaffAddition.this, "code is: "+ selectedImageUri, Toast.LENGTH_SHORT).show();
+//            if (selectedImageUri != null) {
+//                imageuri = selectedImageUri;
+//                Picasso.get().load(imageuri).into(profileimg);
+//            }
+//        }
+//    }
     private void loadFacultyData() {
-        DatabaseReference facultyRef = FirebaseDatabase.getInstance().getReference("Faculties");
+        facultyDepartmentsMap = new HashMap<>();
+        DatabaseReference facultyRef = FirebaseDatabase.getInstance().getReference("Faculty");
         facultyRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -265,8 +286,12 @@ public class StaffAddition extends AppCompatActivity {
                     facultyDepartmentsMap.put(facultyName, departmentNames);
                 }
 
+                // Update the faculty and department spinners
                 facultyAdapter.addAll(facultyDepartmentsMap.keySet());
                 facultyAdapter.notifyDataSetChanged();
+
+                String selectedFaculty = (String) facultySpinner.getSelectedItem();
+                updateDepartmentDropdown(selectedFaculty);
             }
 
             @Override
@@ -276,13 +301,16 @@ public class StaffAddition extends AppCompatActivity {
             }
         });
     }
-    private void updateDepartmentDropdown(String selectedFaculty) {
-        List<String> departmentNames = facultyDepartmentsMap.get(selectedFaculty);
+    private void updateDepartmentDropdown(String faculty) {
+        departmentAdapter.clear();
 
-        if (departmentNames != null) {
-            departmentAdapter.clear();
-            departmentAdapter.addAll(departmentNames);
-            departmentAdapter.notifyDataSetChanged();
+        if (faculty != null) {
+            List<String> departmentNames = facultyDepartmentsMap.get(faculty);
+            if (departmentNames != null) {
+                departmentAdapter.addAll(departmentNames);
+            }
         }
+
+        departmentAdapter.notifyDataSetChanged();
     }
 }

@@ -8,17 +8,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.attendance.ExamsModule.ExaminationFragment;
 import com.example.attendance.FacultyModule.FacultyFragment;
 import com.example.attendance.StaffModule.StaffListFragment;
 import com.example.attendance.R;
 import com.example.attendance.StudentModule.Add_studentFragment;
 import com.example.attendance.Utility.ImagePagerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,6 +32,7 @@ public class AdminHomeFragment extends Fragment {
     Button button;
     TextView nameTextView, department, faculty, course;
     private ViewPager imageViewPager;
+    private FirebaseAuth mAuth;
 
     CardView addStudentCard, addStaffCard, facultyCard, departmentCard;
 
@@ -54,9 +58,14 @@ public class AdminHomeFragment extends Fragment {
          addStudentCard = view.findViewById(R.id.card_students);
          facultyCard = view.findViewById(R.id.card_faculties);
          departmentCard = view.findViewById(R.id.card_departments);
+        mAuth = FirebaseAuth.getInstance();
 
-        addStaffCard.setOnClickListener(v -> navigateToStaffFragment());
 
+
+        if (isUserLoggedIn()){
+            addStaffCard.setOnClickListener(v -> navigateToStaffFragment());
+            Toast.makeText(getContext(), "Cant view staffs", Toast.LENGTH_SHORT);
+        }
         addStudentCard.setOnClickListener(v -> navigateToStudentFragment());
         
         facultyCard.setOnClickListener(v -> navigateToFacultyFragment());
@@ -149,7 +158,7 @@ public class AdminHomeFragment extends Fragment {
     }
 
     private void navigateToDepartmentFragment() {
-        Fragment fragment = new FacultyFragment();
+        Fragment fragment = new ExaminationFragment();
         FragmentTransaction fragmentTransaction = requireActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content, fragment, "");
         fragmentTransaction.commit();
@@ -174,5 +183,9 @@ public class AdminHomeFragment extends Fragment {
         FragmentTransaction fragmentTransaction = requireActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content, fragment, "");
         fragmentTransaction.commit();
+    }
+
+    private boolean isUserLoggedIn() {
+        return mAuth.getCurrentUser() != null;
     }
 }

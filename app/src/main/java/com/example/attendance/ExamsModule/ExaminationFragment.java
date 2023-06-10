@@ -23,6 +23,7 @@ import com.example.attendance.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,6 +44,8 @@ public class ExaminationFragment extends Fragment {
     ExamsAdapter examsAdapter;
     DatabaseReference examsRef;
 
+    FirebaseAuth mAuth;
+
 
     public static ExaminationFragment newInstance() {
         return new ExaminationFragment();
@@ -53,6 +56,7 @@ public class ExaminationFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_examination, container, false);
 
         examsRV = view.findViewById(R.id.idRVExams);
+        mAuth = FirebaseAuth.getInstance();
         examsModalsArrayList = new ArrayList<>();
         examsAdapter = new ExamsAdapter(examsModalsArrayList, getContext());
 
@@ -63,12 +67,12 @@ public class ExaminationFragment extends Fragment {
 
         loadExamsData();
 
-        view.findViewById(R.id.examsFABtn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialogBox();
-            }
-        });
+        if (isUserLoggedIn()){
+            view.findViewById(R.id.examsFABtn).setOnClickListener(v -> showDialogBox());
+            view.findViewById(R.id.examsFABtn).setVisibility(View.VISIBLE);
+        }else {
+            view.findViewById(R.id.examsFABtn).setVisibility(View.GONE);
+        }
 
         return view;
     }
@@ -142,6 +146,10 @@ public class ExaminationFragment extends Fragment {
 
 
         }
+    }
+
+    private boolean isUserLoggedIn() {
+        return mAuth.getCurrentUser() != null;
     }
 
 
