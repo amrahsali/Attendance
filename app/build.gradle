@@ -61,5 +61,6 @@ dependencies {
 //    implementation 'asia.kanopi.tools:fingerscan:0.1'
 //    implementation 'com.machinezoo.sourceafis:sourceafis:3.17.1'
     apply plugin: 'com.google.gms.google-services'
+        implementation 'com.itextpdf:itextg:5.5.10'
 
 }
