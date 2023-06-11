@@ -44,17 +44,21 @@ public class ExamsAdapter extends RecyclerView.Adapter<ExamsAdapter.ExamsViewHol
     }
 
     public class ExamsViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener {
-        private TextView nameTextView;
+        private TextView nameTextView, invigilator, time;
 
         public ExamsViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.dapt_name);
+            invigilator = itemView.findViewById(R.id.invigilator);
+            time = itemView.findViewById(R.id.time);
             itemView.setOnClickListener(this);
 
         }
 
         public void bind(ExamsModal exam) {
             nameTextView.setText(exam.getCourseName());
+            invigilator.setText(exam.getInvigilators().get(0));
+            time.setText(exam.getTime());
         }
 
 
@@ -71,6 +75,8 @@ public class ExamsAdapter extends RecyclerView.Adapter<ExamsAdapter.ExamsViewHol
             Intent intent = new Intent(context, Exams_entryActivity.class);
             intent.putExtra("examId", exam.getExamId());
             intent.putExtra("departmentName", exam.getCourseName());
+            intent.putExtra("invigilator", exam.getInvigilators().get(0));
+            intent.putExtra("time", exam.getTime());
             context.startActivity(intent);
         }
     }

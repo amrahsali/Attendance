@@ -128,6 +128,7 @@ public class StaffAddition extends AppCompatActivity {
 //            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 //            startActivityForResult(cameraIntent, SELECT_PICTURE);
 //        });
+
         loadFacultyData();
         facultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -142,11 +143,14 @@ public class StaffAddition extends AppCompatActivity {
             }
         });
 
+
+
         create_staff.setOnClickListener(v -> {
 
         if (!username.getText().toString().isEmpty() && !emailad.getText().toString().isEmpty()
                 && !phoneNumber.getText().toString().isEmpty() && imageuri != null
                 ) {
+
             staffBiometricDialog.setContentView(R.layout.biometric_dialog);
             staffBiometricDialog.create();
             staffBiometricDialog.show();
@@ -268,39 +272,37 @@ public class StaffAddition extends AppCompatActivity {
 //        }
 //    }
     private void loadFacultyData() {
-        facultyDepartmentsMap = new HashMap<>();
-        DatabaseReference facultyRef = FirebaseDatabase.getInstance().getReference("Faculty");
-        facultyRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot facultySnapshot : dataSnapshot.getChildren()) {
-                    String facultyId = facultySnapshot.getKey();
-                    String facultyName = facultySnapshot.child("name").getValue(String.class);
-                    List<String> departmentNames = new ArrayList<>();
-
-                    for (DataSnapshot deptSnapshot : facultySnapshot.child("dept").getChildren()) {
-                        String departmentName = deptSnapshot.child("name").getValue(String.class);
+    DatabaseReference facultyRef = FirebaseDatabase.getInstance().getReference("Faculty");
+    facultyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            facultyDepartmentsMap = new HashMap<>(); // Initialize the map
+            for (DataSnapshot facultySnapshot : dataSnapshot.getChildren()) {
+                String facultyName = facultySnapshot.child("name").getValue(String.class);
+                List<String> departmentNames = new ArrayList<>();
+                for (DataSnapshot deptSnapshot : facultySnapshot.child("dept").getChildren()) {
+                    String departmentName = deptSnapshot.child("name").getValue(String.class);
+                    if (departmentName != null) {
                         departmentNames.add(departmentName);
                     }
-
+                }
+                if (facultyName != null && !departmentNames.isEmpty()) {
                     facultyDepartmentsMap.put(facultyName, departmentNames);
                 }
-
-                // Update the faculty and department spinners
-                facultyAdapter.addAll(facultyDepartmentsMap.keySet());
-                facultyAdapter.notifyDataSetChanged();
-
-                String selectedFaculty = (String) facultySpinner.getSelectedItem();
-                updateDepartmentDropdown(selectedFaculty);
             }
+            facultyAdapter.addAll(facultyDepartmentsMap.keySet());
+            facultyAdapter.notifyDataSetChanged();
+        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle any errors
-                Log.e(TAG, "Failed to load faculty data: " + databaseError.getMessage());
-            }
-        });
-    }
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+            Log.e(TAG, "Failed to load faculty data: " + databaseError.getMessage());
+        }
+    });
+}
+
+
+
     private void updateDepartmentDropdown(String faculty) {
         departmentAdapter.clear();
 

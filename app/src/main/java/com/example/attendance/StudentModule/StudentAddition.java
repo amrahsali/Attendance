@@ -276,36 +276,30 @@ public class StudentAddition extends AppCompatActivity {
     }
 
     private void loadFacultyData() {
-        facultyAdapter.add("Select Faculty");
-        departmentAdapter.add("Select Department");
-
         DatabaseReference facultyRef = FirebaseDatabase.getInstance().getReference("Faculty");
         facultyRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                facultyDepartmentsMap = new HashMap<>(); // Initialize the map
                 for (DataSnapshot facultySnapshot : dataSnapshot.getChildren()) {
                     String facultyName = facultySnapshot.child("name").getValue(String.class);
                     List<String> departmentNames = new ArrayList<>();
-                    facultyDepartmentsMap = new HashMap<>();
                     for (DataSnapshot deptSnapshot : facultySnapshot.child("dept").getChildren()) {
                         String departmentName = deptSnapshot.child("name").getValue(String.class);
-                        departmentNames.add(departmentName);
+                        if (departmentName != null) {
+                            departmentNames.add(departmentName);
+                        }
                     }
-
-                    facultyDepartmentsMap.put(facultyName, departmentNames);
+                    if (facultyName != null && !departmentNames.isEmpty()) {
+                        facultyDepartmentsMap.put(facultyName, departmentNames);
+                    }
                 }
-
-                // Update the faculty and department spinners
                 facultyAdapter.addAll(facultyDepartmentsMap.keySet());
                 facultyAdapter.notifyDataSetChanged();
-
-                String selectedFaculty = (String) facultySpinner.getSelectedItem();
-                updateDepartmentDropdown(selectedFaculty);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle any errors
                 Log.e(TAG, "Failed to load faculty data: " + databaseError.getMessage());
             }
         });

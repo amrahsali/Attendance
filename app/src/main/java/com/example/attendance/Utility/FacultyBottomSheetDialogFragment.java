@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,7 +53,7 @@ public class FacultyBottomSheetDialogFragment extends BottomSheetDialogFragment 
         try {
             dialogListener = (FacultyDialogListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement FacultyDialogListener");
+            throw new ClassCastException(context + " must implement FacultyDialogListener");
         }
     }
 
@@ -67,7 +68,7 @@ public class FacultyBottomSheetDialogFragment extends BottomSheetDialogFragment 
 
         departmentEditText = view.findViewById(R.id.department_named_dbox);
         departmentListLayout = view.findViewById(R.id.department_list_layout);
-        Button addDepartmentButton = view.findViewById(R.id.add_department_button);
+        ImageButton addDepartmentButton = view.findViewById(R.id.add_department_button);
         saveButton = view.findViewById(R.id.add_faculty_save);
 
         departmentList = new ArrayList<>();

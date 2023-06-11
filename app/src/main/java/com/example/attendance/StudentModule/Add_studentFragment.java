@@ -136,7 +136,6 @@ public class Add_studentFragment extends Fragment {
 
             }
         });
-
         return view;
     }
 

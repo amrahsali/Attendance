@@ -118,8 +118,8 @@ public class FacultyFragment extends Fragment {
             @Override
             public void onSaveFaculty(String facultyName, ArrayList<String> departmentList) {
                 if (!facultyName.isEmpty() && !departmentList.isEmpty()) {
-                    Toast.makeText(getContext(),"worked", Toast.LENGTH_SHORT).show();
                     saveFacultyToRealtimeDB(facultyName, departmentList);
+                    adapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getContext(), "Please enter faculty name and department names", Toast.LENGTH_SHORT).show();
                 }
@@ -148,6 +148,8 @@ public class FacultyFragment extends Fragment {
                 deptData.put("did", deptId);
                 newDeptRef.setValue(deptData);
             }
+            Toast.makeText(getContext(), "Facaulty added successfully", Toast.LENGTH_SHORT).show();
+
         }
     }
 
