@@ -134,7 +134,7 @@ public class StudentAddition extends AppCompatActivity {
                 coursesSpinner = courseDialog.findViewById(R.id.course_spinner);
                 selectCourse = courseDialog.findViewById(R.id.select_courses_btn);
                 coursesListLayout = courseDialog.findViewById(R.id.courses_list_layout);
-                loadingPB = courseDialog.findViewById(R.id.idPBLoading);
+                //loadingPB = courseDialog.findViewById(R.id.idPBLoading);
 
 
                 courseDialog.create();
@@ -154,7 +154,7 @@ public class StudentAddition extends AppCompatActivity {
                         studentBiometricDialog.create();
                         studentBiometricDialog.show();
                         courseDialog.dismiss();
-                        loadingPB.setVisibility(View.VISIBLE);
+                        //loadingPB.setVisibility(View.VISIBLE);
                     }else {
                         Toast.makeText(this,"Please add course",Toast.LENGTH_SHORT);
                     }
@@ -166,7 +166,7 @@ public class StudentAddition extends AppCompatActivity {
                     // loadingPB.setVisibility(View.VISIBLE);
                     // on below line we are calling a add value event
                     // to pass data to firebase database.
-                    loadingPB.setVisibility(View.VISIBLE);
+                   // loadingPB.setVisibility(View.VISIBLE);
                     final String timestamp = String.valueOf(System.currentTimeMillis());
                     String filepathname = "Student/" + "student" + timestamp;
                     Drawable drawable = profileimg.getDrawable();
