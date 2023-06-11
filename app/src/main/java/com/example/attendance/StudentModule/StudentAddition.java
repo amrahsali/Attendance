@@ -207,7 +207,7 @@ public class StudentAddition extends AppCompatActivity {
 
                                         databaseReference.child(courseID).setValue(studentModal);
                                         // displaying a toast message.
-                                        loadingPB.setVisibility(View.GONE);
+                                        //loadingPB.setVisibility(View.GONE);
                                         Toast.makeText(StudentAddition.this, "Student added..", Toast.LENGTH_SHORT).show();
 
                                         studentBiometricDialog.dismiss();
