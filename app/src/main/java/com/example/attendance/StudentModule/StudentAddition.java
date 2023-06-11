@@ -1,6 +1,7 @@
 package com.example.attendance.StudentModule;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+import static androidx.core.content.ContentProviderCompat.requireContext;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -19,7 +21,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -50,53 +54,37 @@ import java.util.Map;
 public class StudentAddition extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    Button create_student, Cancel, Save;
-    Dialog studentBiometricDialog;;
+    Button create_student, Cancel, Save,  SaveCourse, CancelCourse;
+    ImageButton selectCourse;
+    Dialog studentBiometricDialog, courseDialog;
     EditText username, matricNumber, level;
     ImageView profileimg;
     private ProgressBar loadingPB;
     int SELECT_PICTURE = 200;
     Uri selectedImageUri, imageuri;
+
+    private LinearLayout coursesListLayout;
     DatabaseReference databaseReference;
     FirebaseDatabase firebaseDatabase;
     private StorageReference mStorageref;
     private String courseID;
     TextView name,email;
 
-    private Spinner facultySpinner;
-    private Spinner departmentSpinner;
+    private Spinner facultySpinner, departmentSpinner, coursesSpinner;
 
     private Map<String, List<String>> facultyDepartmentsMap;
     private ArrayAdapter<String> facultyAdapter;
+
+    private ArrayAdapter<String> coursesAdapter;
     private ArrayAdapter<String> departmentAdapter;
+
+    private ArrayList<String> coursesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_addition);
-        mAuth = FirebaseAuth.getInstance();
-        create_student = findViewById(R.id.create_student);
-        username = findViewById(R.id.stdntname);
-        matricNumber = findViewById(R.id.stdntNumber);
-        profileimg = findViewById(R.id.stdntimage);
-        level = findViewById(R.id.student_level);
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Student");
-        mStorageref = FirebaseStorage.getInstance().getReference("Upload Photos");
-        studentBiometricDialog = new Dialog(this);
-        loadingPB = findViewById(R.id.idPBLoading);
-        facultySpinner = findViewById(R.id.fac_std_spinner);
-        departmentSpinner = findViewById(R.id.dep_std_spinner);
-
-        facultyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
-        departmentAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
-        facultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        departmentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // Set the adapters to the spinners
-        facultySpinner.setAdapter(facultyAdapter);
-        departmentSpinner.setAdapter(departmentAdapter);
-
+        initUI();
 
         profileimg.setOnClickListener(v -> {
             // create an instance of the
@@ -117,6 +105,7 @@ public class StudentAddition extends AppCompatActivity {
         });
 
         loadFacultyData();
+
         facultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -129,23 +118,55 @@ public class StudentAddition extends AppCompatActivity {
                 // Do nothing
             }
         });
-        //get user profile
-        FirebaseUser user = mAuth.getCurrentUser();
 
+        //get user profile
         create_student.setOnClickListener(v -> {
 
             if (!username.getText().toString().isEmpty() && !level.getText().toString().isEmpty()
                     && !matricNumber.getText().toString().isEmpty() && imageuri != null
             ) {
                 studentBiometricDialog.setContentView(R.layout.biometric_dialog);
-                studentBiometricDialog.create();
-                studentBiometricDialog.show();
+                courseDialog.setContentView(R.layout.student_course_dialog);
+                SaveCourse = courseDialog.findViewById(R.id.add_stn_course_save);
+                CancelCourse = courseDialog.findViewById(R.id.add_stn_course_cancel);
                 Save = studentBiometricDialog.findViewById(R.id.add_print_save);
                 Cancel = studentBiometricDialog.findViewById(R.id.add_print_cancel);
+                coursesSpinner = courseDialog.findViewById(R.id.course_spinner);
+                selectCourse = courseDialog.findViewById(R.id.select_courses_btn);
+                coursesListLayout = courseDialog.findViewById(R.id.courses_list_layout);
+                loadingPB = courseDialog.findViewById(R.id.idPBLoading);
+
+
+                courseDialog.create();
+                courseDialog.show();
+                loadCoursesData();
+                coursesSpinner.setAdapter(coursesAdapter);
+
+                selectCourse.setOnClickListener(v1 -> {
+                    String courseName = coursesSpinner.getSelectedItem().toString();
+                    if (!courseName.equals("select course") && !coursesList.contains(courseName)) {
+                        coursesList.add(courseName);
+                        addDepartmentToLayout(courseName);
+                    }
+                });
+                SaveCourse.setOnClickListener(view ->{
+                    if (!coursesList.isEmpty()){
+                        studentBiometricDialog.create();
+                        studentBiometricDialog.show();
+                        courseDialog.dismiss();
+                        loadingPB.setVisibility(View.VISIBLE);
+                    }else {
+                        Toast.makeText(this,"Please add course",Toast.LENGTH_SHORT);
+                    }
+
+                        });
+                CancelCourse.setOnClickListener(c->courseDialog.dismiss());
+
                 Save.setOnClickListener(view2 -> {
                     // loadingPB.setVisibility(View.VISIBLE);
                     // on below line we are calling a add value event
                     // to pass data to firebase database.
+                    loadingPB.setVisibility(View.VISIBLE);
                     final String timestamp = String.valueOf(System.currentTimeMillis());
                     String filepathname = "Student/" + "student" + timestamp;
                     Drawable drawable = profileimg.getDrawable();
@@ -182,10 +203,11 @@ public class StudentAddition extends AppCompatActivity {
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         // on below line we are setting data in our firebase database.
 
-                                        StudentModal studentModal = new StudentModal(courseID, name, faculty, department, matric, Uid, level1, downloadUri);
+                                        StudentModal studentModal = new StudentModal(courseID, name, faculty, department, matric, Uid, level1, downloadUri, coursesList);
 
                                         databaseReference.child(courseID).setValue(studentModal);
                                         // displaying a toast message.
+                                        loadingPB.setVisibility(View.GONE);
                                         Toast.makeText(StudentAddition.this, "Student added..", Toast.LENGTH_SHORT).show();
 
                                         studentBiometricDialog.dismiss();
@@ -197,6 +219,7 @@ public class StudentAddition extends AppCompatActivity {
                                         // displaying a failure message on below line.
                                         Toast.makeText(StudentAddition.this, "Failed to add Staff..", Toast.LENGTH_SHORT).show();
                                         Log.e(TAG, "onCancelled: ", error.toException());
+                                        loadingPB.setVisibility(View.GONE);
                                     }
                                 });
                             }
@@ -211,6 +234,7 @@ public class StudentAddition extends AppCompatActivity {
                 });
                 Cancel.setOnClickListener(view2 -> studentBiometricDialog.dismiss());
             }else {
+
                 Toast.makeText(this, "Please fill all details", Toast.LENGTH_SHORT).show();
                 if (username.getText().toString().isEmpty()){
                     username.setError("fill");
@@ -252,16 +276,17 @@ public class StudentAddition extends AppCompatActivity {
     }
 
     private void loadFacultyData() {
-        facultyDepartmentsMap = new HashMap<>();
+        facultyAdapter.add("Select Faculty");
+        departmentAdapter.add("Select Department");
+
         DatabaseReference facultyRef = FirebaseDatabase.getInstance().getReference("Faculty");
         facultyRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot facultySnapshot : dataSnapshot.getChildren()) {
-                    String facultyId = facultySnapshot.getKey();
                     String facultyName = facultySnapshot.child("name").getValue(String.class);
                     List<String> departmentNames = new ArrayList<>();
-
+                    facultyDepartmentsMap = new HashMap<>();
                     for (DataSnapshot deptSnapshot : facultySnapshot.child("dept").getChildren()) {
                         String departmentName = deptSnapshot.child("name").getValue(String.class);
                         departmentNames.add(departmentName);
@@ -285,10 +310,11 @@ public class StudentAddition extends AppCompatActivity {
             }
         });
     }
+
     private void updateDepartmentDropdown(String faculty) {
         departmentAdapter.clear();
 
-        if (faculty != null) {
+        if (!faculty.equals("Select Faculty")) {
             List<String> departmentNames = facultyDepartmentsMap.get(faculty);
             if (departmentNames != null) {
                 departmentAdapter.addAll(departmentNames);
@@ -296,5 +322,69 @@ public class StudentAddition extends AppCompatActivity {
         }
 
         departmentAdapter.notifyDataSetChanged();
+    }
+
+    private void loadCoursesData(){
+        coursesAdapter.add("Select course");
+        DatabaseReference coursesRef = FirebaseDatabase.getInstance().getReference("courses");
+        coursesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> courseNames = new ArrayList<>();
+                for (DataSnapshot courseSnapshot : dataSnapshot.getChildren()) {
+                    String courseName = courseSnapshot.child("courseName").getValue(String.class);
+                    courseNames.add(courseName);
+                }
+                coursesAdapter.addAll(courseNames);
+                coursesAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle any errors
+                Log.e(TAG, "Failed to load courses data: " + databaseError.getMessage());
+            }
+        });
+    }
+
+    private void initUI(){
+        mAuth = FirebaseAuth.getInstance();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference("Student");
+        mStorageref = FirebaseStorage.getInstance().getReference("Upload Photos");
+        create_student = findViewById(R.id.create_student);
+        username = findViewById(R.id.stdntname);
+        matricNumber = findViewById(R.id.stdntNumber);
+        profileimg = findViewById(R.id.stdntimage);
+        level = findViewById(R.id.student_level);
+
+        facultySpinner = findViewById(R.id.fac_std_spinner);
+        departmentSpinner = findViewById(R.id.dep_std_spinner);
+
+
+        studentBiometricDialog = new Dialog(this);
+        courseDialog = new Dialog(this);
+        facultyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        departmentAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        coursesAdapter = new ArrayAdapter<>(StudentAddition.this, android.R.layout.simple_spinner_item);
+        facultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        departmentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        coursesList = new ArrayList<>();
+        // Set the adapters to the spinners
+        facultySpinner.setAdapter(facultyAdapter);
+        departmentSpinner.setAdapter(departmentAdapter);
+    }
+
+    private void addDepartmentToLayout(String departmentName) {
+        TextView coursesTextView = new TextView(this);
+        coursesTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        coursesTextView.setText(departmentName);
+        coursesTextView.setTextColor(Color.BLACK);
+        coursesTextView.setTextSize(16);
+        coursesListLayout.addView(coursesTextView);
     }
 }

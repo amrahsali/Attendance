@@ -54,7 +54,7 @@ public class ExamsAdapter extends RecyclerView.Adapter<ExamsAdapter.ExamsViewHol
         }
 
         public void bind(ExamsModal exam) {
-            nameTextView.setText(exam.getDepartmentName());
+            nameTextView.setText(exam.getCourseName());
         }
 
 
@@ -70,7 +70,7 @@ public class ExamsAdapter extends RecyclerView.Adapter<ExamsAdapter.ExamsViewHol
         private void openAnotherActivity(ExamsModal exam) {
             Intent intent = new Intent(context, Exams_entryActivity.class);
             intent.putExtra("examId", exam.getExamId());
-            intent.putExtra("departmentName", exam.getDepartmentName());
+            intent.putExtra("departmentName", exam.getCourseName());
             context.startActivity(intent);
         }
     }

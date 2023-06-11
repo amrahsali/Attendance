@@ -56,9 +56,6 @@ public class FacultyFragment extends Fragment {
     private Runnable timeoutRunnable;
 
     private ArrayList<FacultyModel> facultyModelArrayList;
-    private ChildEventListener childEventListener;
-
-    EditText editText;
 
     public FacultyFragment() {
         // Required empty public constructor

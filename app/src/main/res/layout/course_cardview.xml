@@ -22,20 +22,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
+        android:textStyle="bold"
         android:padding="3dp"
         android:text="course name"
-        android:textAlignment="center"/>
+        android:textAlignment="viewStart"/>
 
 
     <!--Text view for displaying our text -->
     <TextView
         android:id="@+id/code_name"
+        android:textStyle="italic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
         android:padding="3dp"
         android:text="course code "
-        android:textAlignment="center"/>
+        android:textAlignment="viewStart"/>
 
 
 </LinearLayout>

@@ -42,46 +42,6 @@ public class CoursesFragment extends Fragment {
     DatabaseReference db;
     CourseAdapter adapter; // Declare adapter as an instance variable
 
-    private void collectDataAndDisplay(String courseName, String courseCode) {
-        // Create a new Coursemodal object and set the course name and course code
-        Coursemodal course = new Coursemodal();
-        course.setCourseName(courseName);
-        course.setCodeName(courseCode);
-
-        coursemodalArrayList.add(course);
-
-        // Notify the adapter that the data has changed
-        adapter.notifyDataSetChanged();
-
-        // Save the course details to Firebase Firestore
-        saveCourseToFirebase(courseName, courseCode);
-
-    }
-    private void saveCourseToFirebase(String courseName, String courseCode) {
-        // Create a new document in the "Data" collection with the course details
-        DatabaseReference coursesRef = db.child("courses");
-        String courseId = coursesRef.push().getKey();
-
-
-        if (courseId != null) {
-            Coursemodal course = new Coursemodal(courseName, courseCode);
-            coursesRef.child(courseId).setValue(course)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                        // Course saved successfully
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Failed to save course
-                    }
-                });
-    }
-    }
-
-
 
 
     @Override
@@ -93,26 +53,14 @@ public class CoursesFragment extends Fragment {
         courseGV = view.findViewById(R.id.idGVCourses);
         coursemodalArrayList = new ArrayList<>();
 
-        // initializing our variable for firebase
-        // firestore and getting its instance.
         db = FirebaseDatabase.getInstance().getReference();
-        // here we are calling a method
-        // to load data in our list view.
         loadDataFromFirebase();
 
         FloatingActionButton addButton = view.findViewById(R.id.courseFABtn);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialogBox();
-            }
-        });
+        addButton.setOnClickListener(v -> showDialogBox());
         adapter = new CourseAdapter(getActivity(), coursemodalArrayList);
         courseGV.setAdapter(adapter);
-
-
         return view;
-
     }
     private void loadDataFromFirebase() {
         db.child("courses").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -135,8 +83,6 @@ public class CoursesFragment extends Fragment {
             }
         });
     }
-
-
     private void showDialogBox() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Add Course");
@@ -154,6 +100,90 @@ public class CoursesFragment extends Fragment {
         });
         builder.show();
     }
+    private void collectDataAndDisplay(String courseName, String courseCode) {
+        // Create a new Coursemodal object and set the course name and course code
+        Coursemodal course = new Coursemodal();
+        course.setCourseName(courseName);
+        course.setCodeName(courseCode);
+
+        // Save the course details to Firebase Firestore
+        saveCourseToFirebase(courseName, courseCode);
+
+    }
+//    private void saveCourseToFirebase(String courseName, String courseCode) {
+//        // Create a new document in the "Data" collection with the course details
+//        DatabaseReference coursesRef = db.child("courses");
+//        String courseId = coursesRef.push().getKey();
+//        if (courseId != null) {
+//            Coursemodal course = new Coursemodal(courseName, courseCode);
+//            coursesRef.child(courseId).setValue(course)
+//                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                        @Override
+//                        public void onSuccess(Void aVoid) {
+//                            // Course saved successfully
+//                        }
+//                    })
+//                    .addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            // Failed to save course
+//                        }
+//                    });
+//        }
+//    }
+
+    private void saveCourseToFirebase(String courseName, String courseCode) {
+        DatabaseReference coursesRef = db.child("courses");
+
+        // Convert the course code to lowercase
+        String lowercaseCourseCode = courseCode.toLowerCase();
+
+        // Check if the course code already exists (case-insensitive)
+        coursesRef.orderByChild("codeName").equalTo(lowercaseCourseCode).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Course with the given course code already exists
+                    Toast.makeText(getActivity(), "Course already exists", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Course does not exist, proceed with saving
+                    String courseId = coursesRef.push().getKey();
+                    if (courseId != null) {
+                        Coursemodal course = new Coursemodal(courseName, courseCode);
+                        course.setCodeNameLowerCase(lowercaseCourseCode); // Set the lowercase codeName
+                        coursesRef.child(courseId).setValue(course)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        // Course saved successfully
+                                        coursemodalArrayList.add(course);
+
+                                        // Notify the adapter that the data has changed
+                                        adapter.notifyDataSetChanged();
+                                        Toast.makeText(getActivity(), "Course saved successfully", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // Failed to save course
+                                        Toast.makeText(getActivity(), "Failed to save course", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Failed to check course existence", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
+
 }
 
 

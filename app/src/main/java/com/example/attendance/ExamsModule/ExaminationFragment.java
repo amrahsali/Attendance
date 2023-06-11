@@ -1,13 +1,24 @@
 package com.example.attendance.ExamsModule;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,6 +31,7 @@ import com.example.attendance.ExamsModule.ExamsAdapter;
 //import com.example.attendance.FacultyModule.CourseAdapter;
 import com.example.attendance.FacultyModule.CourseAdapter;
 import com.example.attendance.R;
+import com.example.attendance.StudentModule.StudentAddition;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -29,13 +41,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class ExaminationFragment extends Fragment {
 
@@ -44,7 +60,18 @@ public class ExaminationFragment extends Fragment {
     ExamsAdapter examsAdapter;
     DatabaseReference examsRef;
 
+    Spinner coursesSpinner, staffsSpinner;
+    private Button examsTime;
+    private Calendar calendar;
     FirebaseAuth mAuth;
+    ImageButton selectStaff;
+    private ArrayAdapter<String> coursesAdapter, staffsAdapter;
+
+    private ArrayList<String> staffsList;
+
+    private LinearLayout staffListLayout;
+
+
 
 
     public static ExaminationFragment newInstance() {
@@ -58,7 +85,12 @@ public class ExaminationFragment extends Fragment {
         examsRV = view.findViewById(R.id.idRVExams);
         mAuth = FirebaseAuth.getInstance();
         examsModalsArrayList = new ArrayList<>();
+        staffsList = new ArrayList<>();
         examsAdapter = new ExamsAdapter(examsModalsArrayList, getContext());
+        coursesAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
+        staffsAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
+        coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        staffsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         examsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
         examsRV.setAdapter(examsAdapter);
@@ -73,6 +105,8 @@ public class ExaminationFragment extends Fragment {
         }else {
             view.findViewById(R.id.examsFABtn).setVisibility(View.GONE);
         }
+
+
 
         return view;
     }
@@ -113,24 +147,45 @@ public class ExaminationFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Add Exam");
         View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.activity_dialogbox_examsadd, null);
-        final EditText examNameEditText = dialogView.findViewById(R.id.edt_nameExam);
-        builder.setView(dialogView);
-        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String examName = examNameEditText.getText().toString().trim();
-                saveExamToFirebase(examName);
+//        final EditText examNameEditText = dialogView.findViewById(R.id.edt_nameExam);
+        examsTime = dialogView.findViewById(R.id.examsTime);
+        coursesSpinner = dialogView.findViewById(R.id.course_spinner);
+        staffsSpinner = dialogView.findViewById(R.id.staff_spinner);
+        staffListLayout = dialogView.findViewById(R.id.staff_list_layout);
+        selectStaff = dialogView.findViewById(R.id.select_staff_btn);
+        loadCoursesData();
+        loadStaffData();
+        coursesSpinner.setAdapter(coursesAdapter);
+        staffsSpinner.setAdapter(staffsAdapter);
+
+        selectStaff.setOnClickListener(v1 -> {
+            String staffName = staffsSpinner.getSelectedItem().toString();
+            if (!staffName.equals("select invigilator") && !staffsList.contains(staffName)) {
+                staffsList.add(staffName);
+                addStaffToLayout(staffName);
             }
+        });
+
+        calendar = Calendar.getInstance();
+
+        examsTime.setOnClickListener(v -> showDatePickerDialog());
+        builder.setView(dialogView);
+        builder.setPositiveButton("Add", (dialog, which) -> {
+            String examName = coursesSpinner.getSelectedItem().toString();
+            String dateFormat = "dd/MM/yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
+            String examTime = simpleDateFormat.format(calendar.getTime());
+            saveExamToFirebase(examName, examTime);
         });
         builder.show();
     }
 
-    private void saveExamToFirebase(String departmentName) {
+    private void saveExamToFirebase(String departmentName, String examsTIme) {
         DatabaseReference examsRef = FirebaseDatabase.getInstance().getReference().child("exams");
 
         String examId = examsRef.push().getKey();
         if (examId != null) {
-            ExamsModal exam = new ExamsModal(examId, departmentName);
+            ExamsModal exam = new ExamsModal(examId, departmentName, staffsList, examsTIme);
             examsRef.child(departmentName).setValue(exam).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -147,11 +202,85 @@ public class ExaminationFragment extends Fragment {
 
         }
     }
-
     private boolean isUserLoggedIn() {
         return mAuth.getCurrentUser() != null;
     }
 
+    public void showDatePickerDialog() {
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, monthOfYear);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateExamsTime();
+            }
+        };
 
+        new DatePickerDialog(getContext(), dateSetListener, calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+    private void updateExamsTime() {
+        String dateFormat = "dd/MM/yyyy";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
+        examsTime.setText(simpleDateFormat.format(calendar.getTime()));
+    }
+    private void addStaffToLayout(String staffName) {
+        TextView coursesTextView = new TextView(getContext());
+        coursesTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        coursesTextView.setText(staffName);
+        coursesTextView.setTextColor(Color.BLACK);
+        coursesTextView.setTextSize(16);
+        staffListLayout.addView(coursesTextView);
+    }
+
+    private void loadCoursesData(){
+        coursesAdapter.add("Select course");
+        DatabaseReference coursesRef = FirebaseDatabase.getInstance().getReference("courses");
+        coursesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> courseNames = new ArrayList<>();
+                for (DataSnapshot courseSnapshot : dataSnapshot.getChildren()) {
+                    String courseName = courseSnapshot.child("courseName").getValue(String.class);
+                    courseNames.add(courseName);
+                }
+                coursesAdapter.addAll(courseNames);
+                coursesAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle any errors
+                Log.e(TAG, "Failed to load course data: " + databaseError.getMessage());
+            }
+        });
+    }
+
+    private void loadStaffData(){
+        staffsAdapter.add("Select Invigilator");
+        DatabaseReference coursesRef = FirebaseDatabase.getInstance().getReference("Staff");
+        coursesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> staffs = new ArrayList<>();
+                for (DataSnapshot courseSnapshot : dataSnapshot.getChildren()) {
+                    String staff = courseSnapshot.child("productName").getValue(String.class);
+                    staffs.add(staff);
+                }
+                staffsAdapter.addAll(staffs);
+                staffsAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle any errors
+                Log.e(TAG, "Failed to load courses data: " + databaseError.getMessage());
+            }
+        });
+    }
 
 }

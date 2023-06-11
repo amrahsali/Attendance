@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
+
 public class StudentModal implements Parcelable {
 
     private  String studentName;
@@ -14,6 +16,8 @@ public class StudentModal implements Parcelable {
     private String studentImage;
     private String studentLevel;
     private String userID;
+
+    private ArrayList<String> courses;
 
 
 
@@ -35,6 +39,7 @@ public class StudentModal implements Parcelable {
         studentImage = in.readString();
         studentLevel = in.readString();
         userID = in.readString();
+        courses = in.readArrayList(getClass().getClassLoader());
     }
 
     public static final Creator<StudentModal> CREATOR = new Creator<StudentModal>() {
@@ -50,6 +55,13 @@ public class StudentModal implements Parcelable {
     };
 
 
+    public ArrayList<String> getCourses(){
+        return courses;
+    }
+
+    public void setCourses(ArrayList<String> courses){
+        this.courses = courses;
+    }
     public String getProductImg() {
         return studentImage;
     }
@@ -116,7 +128,7 @@ public class StudentModal implements Parcelable {
         }
 
     public StudentModal(String studentID, String studentName, String studentFaculty, String studentDepartment,
-                        String studentNumber, String uid, String studentLevel, String studentImage) {
+                        String studentNumber, String uid, String studentLevel, String studentImage, ArrayList<String> courses) {
         this.studentName = studentName;
         this.studentFaculty = studentFaculty;
         this.studentDepartment = studentDepartment;
@@ -125,6 +137,7 @@ public class StudentModal implements Parcelable {
         this.userID = uid;
         this.studentLevel = studentLevel;
         this.studentImage = studentImage;
+        this.courses = courses;
     }
 
     @Override
@@ -142,5 +155,6 @@ public class StudentModal implements Parcelable {
         dest.writeString(studentImage);
         dest.writeString(studentLevel);
         dest.writeString(userID);
+        dest.writeList(courses);
     }
 }

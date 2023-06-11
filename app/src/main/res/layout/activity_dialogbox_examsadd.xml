@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,54 +8,73 @@
     android:padding="20dp"
     tools:context=".ExamsModule.activity_dialogbox_examsadd">
 
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Update Course"
+        android:text="Setup Examination"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold" />
 
-
-
-    <EditText
-        android:id="@+id/edt_nameExam"
+    <Spinner
+        android:layout_marginTop="16dp"
+        android:id="@+id/course_spinner"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/boarder_bg"
-        android:hint="Course Title"
-        android:paddingStart="5dp"
-        android:textColor="@color/black"
-        android:textSize="15sp" />
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:hint="Exams" />
+
     <View
         android:layout_width="match_parent"
-        android:layout_height="10dp"/>
-    <EditText
-        android:id="@+id/invigilatorName"
+        android:layout_height="10dp" />
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/boarder_bg"
-        android:hint="invigilator Name"
-        android:paddingStart="5dp"
-        android:textColor="@color/black"
-        android:textSize="15sp" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    <Spinner
+        android:id="@+id/staff_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:hint="Exams" />
+
+    <ImageButton
+        android:id="@+id/select_staff_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/baseline_add_box_24"
+        app:tint="@color/blue" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:padding="12dp"
+        android:id="@+id/staff_list_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <!-- Department items will be dynamically added here -->
+    </LinearLayout>
+
     <View
         android:layout_width="match_parent"
-        android:layout_height="10dp"/>
-    <EditText
+        android:layout_height="10dp" />
+
+    <Button
         android:id="@+id/examsTime"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/boarder_bg"
-        android:hint="set time"
-        android:paddingStart="5dp"
+        android:text="Select Date"
         android:textColor="@color/black"
-        android:textSize="15sp" />
-
-
-
-
+        android:textSize="15sp"
+        android:onClick="showDatePickerDialog" />
 
 </LinearLayout>

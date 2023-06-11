@@ -1,25 +1,33 @@
 package com.example.attendance.ExamsModule;
 
+import java.util.ArrayList;
+
 public class ExamsModal {
 
-    private String departmentName;
+    private String courseName;
+
+    private ArrayList<String> invigilators;
     private String examId;
+
+    private String time;
 
     public ExamsModal() {
         // Default constructor required for Firebase
     }
 
-    public ExamsModal(String examId, String departmentName) {
+    public ExamsModal(String examId, String courseName,ArrayList<String> invigilators, String time) {
         this.examId = examId;
-        this.departmentName = departmentName;
+        this.courseName = courseName;
+        this.invigilators = invigilators;
+        this.time = time;
     }
 
-    public String getDepartmentName() {
-        return departmentName;
+    public String getCourseName() {
+        return courseName;
     }
 
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
     }
 
     public String getExamId() {
@@ -28,5 +36,21 @@ public class ExamsModal {
 
     public void setExamId(String examId) {
         this.examId = examId;
+    }
+
+    public String getTime(){
+        return time;
+    }
+
+    public void setTime(String time){
+        this.time = time;
+    }
+
+    public ArrayList<String> getInvigilators(){
+        return invigilators;
+    }
+
+    public void setInvigilators(ArrayList<String> invigilators){
+        this.invigilators = invigilators;
     }
 }

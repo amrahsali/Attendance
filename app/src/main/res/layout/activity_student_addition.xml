@@ -102,14 +102,18 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingBottom="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:drawableStartCompat="@drawable/ic_sharp_class_24"
+                    app:drawableTint="@color/blue" />
                 <Spinner
                     android:id="@+id/fac_std_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:drawableTint="@color/blue"
                     android:singleLine="true"
-                    android:drawableStart="@drawable/ic_sharp_class_24"
                     android:drawablePadding="10dp"
                     android:hint="Faculty" />
 
@@ -119,13 +123,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:drawableStartCompat="@drawable/ic_sharp_class_24"
+                    app:drawableTint="@color/blue" />
                 <Spinner
                     android:id="@+id/dep_std_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:drawableTint="@color/blue"
                     android:singleLine="true"
-                    android:drawableStart="@drawable/ic_sharp_class_24"
                     android:drawablePadding="10dp"
                     android:hint="Department" />
 

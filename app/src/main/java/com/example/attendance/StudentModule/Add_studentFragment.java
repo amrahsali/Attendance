@@ -78,20 +78,18 @@ public class Add_studentFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         mAuth = FirebaseAuth.getInstance();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference("Student");
+        mStorageref = FirebaseStorage.getInstance().getReference("Upload Photos");
         View view = inflater.inflate(R.layout.fragment_student_list, container, false);
 
         levelSpinner = view.findViewById(R.id.level_spinner);
         falcSpinner = view.findViewById(R.id.faculty_spinner);
         deptSpinner = view.findViewById(R.id.dept_spinner);
-
-
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Student");
-        FloatingActionButton fab = view.findViewById(R.id.stdFABtn);
         loadingPB = view.findViewById(R.id.loading_pb);
         emptyTextView = view.findViewById(R.id.empty_text_view);
         studentRVModalArrayList = new ArrayList<>();
-        mStorageref = FirebaseStorage.getInstance().getReference("Upload Photos");
+        FloatingActionButton fab = view.findViewById(R.id.stdFABtn);
         studentAdapter = new StudentAdapter(studentRVModalArrayList, getContext());
         studentRV = view.findViewById(R.id.idRVStudent);
         studentRV.setLayoutManager(new LinearLayoutManager(getContext()));
