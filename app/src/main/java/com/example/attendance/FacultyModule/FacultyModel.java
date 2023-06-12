@@ -1,9 +1,10 @@
 package com.example.attendance.FacultyModule;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class FacultyModel {
+public class FacultyModel implements Serializable {
     private String fid;
     private String name;
     private List<String> dept; // Updated to store department names
@@ -40,6 +41,11 @@ public class FacultyModel {
 
     public void setDept(List<String> departmentNames) {
         this.dept = departmentNames;
+    }
+
+
+    public String getId() {
+        return null;
     }
 }
 

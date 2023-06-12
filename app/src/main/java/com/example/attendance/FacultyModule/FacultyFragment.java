@@ -1,5 +1,8 @@
 package com.example.attendance.FacultyModule;
 
+import static android.content.ContentValues.TAG;
+
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -16,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -82,10 +86,10 @@ public class FacultyFragment extends Fragment {
         FloatingActionButton fab = view.findViewById(R.id.facultyFABtn);
         loadFacultyData();
 
-        if (isUserLoggedIn()){
+        if (isUserLoggedIn()) {
             fab.setOnClickListener(v -> showFacultyDialog());
             fab.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             fab.setVisibility(View.GONE);
         }
 
@@ -108,9 +112,80 @@ public class FacultyFragment extends Fragment {
             }, 100); // 10 seconds delay
 
         });
+//     below method is use to add swipe to delete method for item of recycler view.
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                if (direction == ItemTouchHelper.RIGHT) {
+                    // Handle right swipe action
+                    FacultyModel item = adapter.getItem(viewHolder.getAdapterPosition());
+
+                    // Create and show the BottomSheetDialogFragment
+                    FacultyBottomSheetDialogFragment bottomSheetDialogFragment = FacultyBottomSheetDialogFragment.newInstance(item);
+                    bottomSheetDialogFragment.setSaveFacultyListener(new FacultyBottomSheetDialogFragment.SaveFacultyListener() {
+                        @Override
+                        public void onSaveFaculty(String facultyName, ArrayList<String> departmentList) {
+                            // Update the faculty data
+                            item.setName(facultyName);
+                            item.setDept(departmentList);
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                    bottomSheetDialogFragment.show(getChildFragmentManager(), "bottom_sheet_tag");
+
+        } else if (direction == ItemTouchHelper.LEFT) {
+                    // Handle left swipe action
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Do you want to delete?")
+                            .setPositiveButton("Confirm", (dialogInterface, i) -> {
+                                int position = viewHolder.getAdapterPosition();
+                                FacultyModel item = adapter.getItem(position);
+                                Toast.makeText(getContext(), "test "+ item.getId(), Toast.LENGTH_SHORT).show();
+
+                                // Delete the item from the RecyclerView
+                                adapter.removeItem(position);
+
+                                if (item.getId() != null) {
+                                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Faculty");
+                                    //  Log.i(TAG,"item is is:"+ item.getId());
+                                    databaseReference.child(item.getId()).removeValue()
+                                            .addOnSuccessListener(aVoid -> {
+                                                // Item deleted successfully
+                                                Toast.makeText(getContext(), "Course deleted", Toast.LENGTH_SHORT).show();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                // Failed to delete the item
+                                                Toast.makeText(getContext(), "Failed to delete course", Toast.LENGTH_SHORT).show();
+                                            });
+                                } else {
+                                    // Handle the case where the item's ID is null
+                                    Toast.makeText(getContext(), "Invalid item ID", Toast.LENGTH_SHORT).show();
+                                }
+
+                            })
+                            .setNegativeButton("Cancel", (dialogInterface, i) -> {
+                                // User canceled the delete operation, notify the adapter to update the view
+                                adapter.notifyDataSetChanged();
+                                builder.create().cancel();
+                            });
+                    builder.create().show();
+                }
+            }
+
+
+
+        }).attachToRecyclerView(recyclerView);
 
         return view;
+
     }
+
+
 
     private void showFacultyDialog() {
         FacultyBottomSheetDialogFragment bottomSheetDialogFragment = new FacultyBottomSheetDialogFragment();
@@ -148,7 +223,7 @@ public class FacultyFragment extends Fragment {
                 deptData.put("did", deptId);
                 newDeptRef.setValue(deptData);
             }
-            Toast.makeText(getContext(), "Facaulty added successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Faculty added successfully", Toast.LENGTH_SHORT).show();
 
         }
     }

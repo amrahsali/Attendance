@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.attendance.FacultyModule.FacultyModel;
 import com.example.attendance.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -31,9 +32,20 @@ public class FacultyBottomSheetDialogFragment extends BottomSheetDialogFragment 
 
     private SaveFacultyListener saveFacultyListener;
 
-    public void setFacultyDialogListener(FacultyDialogListener listener) {
-        this.dialogListener = listener;
+    public static FacultyBottomSheetDialogFragment newInstance(FacultyModel item) {
+        FacultyBottomSheetDialogFragment fragment = new FacultyBottomSheetDialogFragment();
+        Bundle args = new Bundle();
+        // Pass the necessary data to the dialog fragment through arguments
+        args.putSerializable("faculty_item", item);
+        fragment.setArguments(args);
+        return fragment;
     }
+
+
+
+    //public void setFacultyDialogListener(FacultyDialogListener listener) {
+      //  this.dialogListener = listener;
+    //}
 
     public void setSaveFacultyListener(SaveFacultyListener listener) {
         this.saveFacultyListener = listener;

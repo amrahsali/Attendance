@@ -48,6 +48,37 @@ public class FacultyAdapter extends RecyclerView.Adapter<FacultyAdapter.ViewHold
         return facultyList.size();
     }
 
+    public FacultyModel getItem(int position) {
+        if (position >= 0 && position < facultyList.size()) {
+            return facultyList.get(position);
+        } else {
+            return null; // or handle the out-of-bounds case accordingly
+        }    }
+
+    public FacultyModel removeItem(int position) {
+     return null;
+
+    }
+
+    public void updateItem(FacultyModel updatedItem) {
+        int position = getItemPosition(updatedItem);
+        if (position != RecyclerView.NO_POSITION) {
+            // Update the item at the specified position
+            facultyList.set(position, updatedItem);
+            notifyItemChanged(position);
+        }
+    }
+    private int getItemPosition(FacultyModel item) {
+        for (int i = 0; i < facultyList.size(); i++) {
+            if (facultyList.get(i).getId().equals(item.getId())) {
+                return i;
+            }
+        }
+        return RecyclerView.NO_POSITION;
+    }
+
+
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView txtFacultyName;
@@ -58,6 +89,10 @@ public class FacultyAdapter extends RecyclerView.Adapter<FacultyAdapter.ViewHold
             txtFacultyName = itemView.findViewById(R.id.faculty_name);
             txtDepartmentName = itemView.findViewById(R.id.department_name);
         }
+
+
     }
+
+
 
 }
