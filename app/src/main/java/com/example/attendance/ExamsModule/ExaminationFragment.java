@@ -4,6 +4,7 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -63,6 +65,7 @@ public class ExaminationFragment extends Fragment {
     Spinner coursesSpinner, staffsSpinner;
     private Button examsTime;
     private Calendar calendar;
+    private SimpleDateFormat dateTimeFormat;
     FirebaseAuth mAuth;
     ImageButton selectStaff;
     private ArrayAdapter<String> coursesAdapter, staffsAdapter;
@@ -153,6 +156,8 @@ public class ExaminationFragment extends Fragment {
         staffsSpinner = dialogView.findViewById(R.id.staff_spinner);
         staffListLayout = dialogView.findViewById(R.id.staff_list_layout);
         selectStaff = dialogView.findViewById(R.id.select_staff_btn);
+        calendar = Calendar.getInstance();
+        dateTimeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.US);
         loadCoursesData();
         loadStaffData();
         coursesSpinner.setAdapter(coursesAdapter);
@@ -166,16 +171,15 @@ public class ExaminationFragment extends Fragment {
             }
         });
 
-        calendar = Calendar.getInstance();
 
-        examsTime.setOnClickListener(v -> showDatePickerDialog());
+        examsTime.setOnClickListener(v -> showDateTimePickerDialog());
         builder.setView(dialogView);
         builder.setPositiveButton("Add", (dialog, which) -> {
             String examName = coursesSpinner.getSelectedItem().toString();
             String dateFormat = "dd/MM/yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
             String examTime = simpleDateFormat.format(calendar.getTime());
-            saveExamToFirebase(examName, examTime);
+            saveExamToFirebase(examName, dateTimeFormat.format(calendar.getTime()));
         });
         builder.show();
     }
@@ -202,29 +206,63 @@ public class ExaminationFragment extends Fragment {
 
         }
     }
+
     private boolean isUserLoggedIn() {
         return mAuth.getCurrentUser() != null;
     }
 
-    public void showDatePickerDialog() {
-        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+    private void showDatePickerDialog() {
+        TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, monthOfYear);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                calendar.set(Calendar.MINUTE, minute);
                 updateExamsTime();
             }
         };
 
-        new DatePickerDialog(getContext(), dateSetListener, calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        new TimePickerDialog(getContext(), timeSetListener, hour, minute, false).show();
     }
+
+
+    private void showDateTimePickerDialog() {
+        DatePickerDialog.OnDateSetListener dateSetListener = (view, year, monthOfYear, dayOfMonth) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, monthOfYear);
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            showTimePickerDialog();
+        };
+
+        new DatePickerDialog(getContext(), DatePickerDialog.THEME_HOLO_DARK, dateSetListener,
+                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    private void showTimePickerDialog() {
+        TimePickerDialog.OnTimeSetListener timeSetListener = (view, hourOfDay, minute) -> {
+            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            calendar.set(Calendar.MINUTE, minute);
+            updateExamsDateTime();
+        };
+
+        new TimePickerDialog(getContext(), TimePickerDialog.THEME_HOLO_DARK, timeSetListener,
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false).show();
+    }
+
+    private void updateExamsDateTime() {
+        examsTime.setText(dateTimeFormat.format(calendar.getTime()));
+    }
+
+
+
+
     private void updateExamsTime() {
         String dateFormat = "dd/MM/yyyy";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
         examsTime.setText(simpleDateFormat.format(calendar.getTime()));
     }
+
     private void addStaffToLayout(String staffName) {
         TextView coursesTextView = new TextView(getContext());
         coursesTextView.setLayoutParams(new LinearLayout.LayoutParams(
