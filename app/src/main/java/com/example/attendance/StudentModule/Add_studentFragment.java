@@ -74,6 +74,11 @@ public class Add_studentFragment extends Fragment {
     private ArrayAdapter<String> departmentAdapter;
     private ArrayAdapter<String> levelAdapter;
 
+    private String selectedLevel = "All";
+    private String selectedFaculty = "All";
+    private String selectedDepartment = "All";
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,9 +92,6 @@ public class Add_studentFragment extends Fragment {
         FloatingActionButton fab = view.findViewById(R.id.stdFABtn);
         onInit(view);
         getStudent();
-        //initspinners();
-
-
         if (isUserLoggedIn()){
             fab.setOnClickListener((View v) -> {
                 Intent intent1 = new Intent(getActivity(), StudentAddition.class);
@@ -101,18 +103,19 @@ public class Add_studentFragment extends Fragment {
         }
         loadFacultyData();
         loadLevelData();
-        facultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedFaculty = (String) parent.getItemAtPosition(position);
-                updateDepartmentDropdown(selectedFaculty);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
-            }
-        });
+        spinnerListeners();
+//        facultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                String selectedFaculty = (String) parent.getItemAtPosition(position);
+//                updateDepartmentDropdown(selectedFaculty);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//                // Do nothing
+//            }
+//        });
 
 
         // Find the SwipeRefreshLayout in the layout
@@ -201,6 +204,47 @@ public class Add_studentFragment extends Fragment {
             }
         });
     }
+
+//    private void getStudent() {
+//        // Clear the existing data
+//        studentRVModalArrayList.clear();
+//
+//        // Add a listener to fetch the student data
+//        databaseReference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                // Iterate over the student data
+//                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+//                    StudentModal student = dataSnapshot.getValue(StudentModal.class);
+//
+//                    // Apply filters
+//                    if (selectedLevel.equals("All") || student.getStudentLevel().equals(selectedLevel)) {
+//                        if (selectedFaculty.equals("All") || student.getStudentFaculty().equals(selectedFaculty)) {
+//                            if (selectedDepartment.equals("All") || student.getStudentDepartment().equals(selectedDepartment)) {
+//                                studentRVModalArrayList.add(student);
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                // Notify the adapter that the data has changed
+//                studentAdapter.notifyDataSetChanged();
+//
+//                // Check if there is data available
+//                if (studentRVModalArrayList.isEmpty()) {
+//                    emptyTextView.setVisibility(View.VISIBLE);
+//                    emptyTextView.setText("No Student Found");
+//                } else {
+//                    emptyTextView.setVisibility(View.GONE);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Log.e(TAG, "Failed to fetch student data: " + error.getMessage());
+//            }
+//        });
+//    }
 
     // Method to start the timeout runnable
     private void startTimeoutRunnable() {
@@ -316,6 +360,49 @@ public class Add_studentFragment extends Fragment {
         }
 
         departmentAdapter.notifyDataSetChanged();
+    }
+
+    private void spinnerListeners(){
+        levelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedLevel = (String) parent.getItemAtPosition(position);
+                getStudent();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+
+        facultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedFaculty = (String) parent.getItemAtPosition(position);
+                updateDepartmentDropdown(selectedFaculty);
+                getStudent();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+
+        departmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedDepartment = (String) parent.getItemAtPosition(position);
+                getStudent();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+
     }
 
 

@@ -167,6 +167,7 @@ public class StudentAddition extends AppCompatActivity {
                     // on below line we are calling a add value event
                     // to pass data to firebase database.
                    // loadingPB.setVisibility(View.VISIBLE);
+                    Save.setEnabled(false);
                     final String timestamp = String.valueOf(System.currentTimeMillis());
                     String filepathname = "Student/" + "student" + timestamp;
                     Drawable drawable = profileimg.getDrawable();
