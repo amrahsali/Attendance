@@ -160,6 +160,7 @@ public class StaffAddition extends AppCompatActivity {
                 // loadingPB.setVisibility(View.VISIBLE);
                 // on below line we are calling a add value event
                 // to pass data to firebase database.
+                Save.setEnabled(false);
                 final String timestamp = String.valueOf(System.currentTimeMillis());
                 String filepathname = "Staff/" + "staff" + timestamp;
                 Drawable drawable = profileimg.getDrawable();
