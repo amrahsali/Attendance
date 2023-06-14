@@ -106,6 +106,7 @@ public class Login extends AppCompatActivity {
             // opening a main activity on below line.
             Intent i = new Intent(Login.this, MainActivity.class);
             startActivity(i);
+            onDestroy();
         }
     }
 
@@ -113,3 +114,5 @@ public class Login extends AppCompatActivity {
     // ...
 //amrah@gmail.com password amrahsali12
 }
+
+//D/View: [Warning] assignParent to null: this = DecorView@de746b4[MainActivity]
