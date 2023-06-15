@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.attendance.AttendanceModule.AttendanceRecord;
 import com.example.attendance.R;
 
 import java.util.ArrayList;
@@ -41,6 +42,10 @@ public class ExamsAdapter extends RecyclerView.Adapter<ExamsAdapter.ExamsViewHol
     @Override
     public int getItemCount() {
         return examsModals.size();
+    }
+
+    public AttendanceRecord getItem(int i) {
+        return null;
     }
 
     public class ExamsViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener {
