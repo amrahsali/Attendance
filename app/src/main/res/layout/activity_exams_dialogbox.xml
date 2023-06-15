@@ -8,7 +8,7 @@
     android:padding="20dp"
     android:background="@color/lightBlue"
     android:orientation="vertical"
-    tools:context=".exams_dialogbox_Activity">
+    tools:context=".Utility.exams_dialogbox_Activity">
 
 
     <LinearLayout

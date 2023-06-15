@@ -1,4 +1,4 @@
-package com.example.attendance;
+package com.example.attendance.Utility;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+
+import com.example.attendance.R;
 import com.example.attendance.databinding.FragmentSecondBinding;
 
 public class SecondFragment extends Fragment {

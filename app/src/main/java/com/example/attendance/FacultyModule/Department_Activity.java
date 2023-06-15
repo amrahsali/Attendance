@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.attendance.R;
-import com.example.attendance.Swe_levelActivity;
 
 public class Department_Activity extends AppCompatActivity {
 
@@ -25,8 +25,9 @@ public class Department_Activity extends AppCompatActivity {
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Department_Activity.this, Swe_levelActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(Department_Activity.this, Swe_levelActivity.class);
+//                startActivity(intent);
+                Toast.makeText(Department_Activity.this, "Item clicked", Toast.LENGTH_SHORT).show();
             }
         });
 

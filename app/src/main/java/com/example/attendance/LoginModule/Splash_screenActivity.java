@@ -1,4 +1,4 @@
-package com.example.attendance;
+package com.example.attendance.LoginModule;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,8 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.example.attendance.LoginModule.Login;
-import com.example.attendance.LoginModule.MainActivity;
+import com.example.attendance.R;
 
 public class Splash_screenActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -28,7 +27,7 @@ public class Splash_screenActivity extends AppCompatActivity {
         handler.postDelayed(() -> {
             Intent intent = new Intent(Splash_screenActivity.this, Login.class);
             Splash_screenActivity.this.startActivity(intent);
-            Splash_screenActivity.this.finish();
+            this.finish();
         }, 1000);
 
     }@Override

@@ -1,4 +1,4 @@
-package com.example.attendance;
+package com.example.attendance.Utility;
 
 import static android.app.PendingIntent.getActivity;
 
@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+
+import com.example.attendance.R;
 
 public class DialogBox_courseActivity extends AppCompatActivity {
 

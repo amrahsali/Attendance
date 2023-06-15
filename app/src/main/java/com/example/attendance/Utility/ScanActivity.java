@@ -1,4 +1,4 @@
-package com.example.attendance;
+package com.example.attendance.Utility;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,7 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.attendance.LoginModule.MainActivity;
-import com.example.attendance.StaffModule.StaffProfileActivity;
+import com.example.attendance.R;
 
 public class ScanActivity extends AppCompatActivity {
     ImageView print;

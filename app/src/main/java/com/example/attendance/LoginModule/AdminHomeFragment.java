@@ -28,9 +28,6 @@ import java.util.TimerTask;
 
 public class AdminHomeFragment extends Fragment {
 
-    Dialog dialog;
-    Button button;
-    TextView nameTextView, department, faculty, course;
     private ViewPager imageViewPager;
     private FirebaseAuth mAuth;
 
@@ -106,51 +103,6 @@ public class AdminHomeFragment extends Fragment {
                 handler.post(runnable);
             }
         }, DELAY_MS, PERIOD_MS);
-                        
-
-//        button = view.findViewById(R.id.updtProfile_btn);
-//
-//        nameTextView = view.findViewById(R.id.username);
-//        department = view.findViewById(R.id.userdepartment);
-//        faculty = view.findViewById(R.id.userfaculty);
-//        course = view.findViewById(R.id.usercourse);
-
-
-//        dialog = new Dialog(getActivity());
-//        dialog.setContentView(R.layout.activity_dialog_box2);
-//        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        dialog.setCancelable(false);
-//
-//        EditText nameEditText = dialog.findViewById(R.id.edt_name);
-//        EditText facultyEditText = dialog.findViewById(R.id.edt_faculty);
-//        EditText departmentEditText = dialog.findViewById(R.id.edt_department);
-//        EditText courseEditText = dialog.findViewById(R.id.edt_course);
-//
-//        Button saveButton = dialog.findViewById(R.id.add_course_save);
-//
-//        saveButton.setOnClickListener((View v) -> {
-//                    String name = nameEditText.getText().toString();
-//                    String facty = facultyEditText.getText().toString();
-//                    String dptment = departmentEditText.getText().toString();
-//                    String courses = courseEditText.getText().toString();
-//
-//
-//            nameTextView.setText(name);
-//            department.setText(dptment);
-//            faculty.setText(facty);
-//            course.setText(courses);
-//
-//
-//
-//
-//
-//            dialog.dismiss();
-//        });
-//
-//
-//        button.setOnClickListener((View v) -> {
-//            dialog.show();
-//        });
 
         return view;
 

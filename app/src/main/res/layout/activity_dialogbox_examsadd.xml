@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_gravity="center"
     android:padding="20dp"
-    tools:context=".ExamsModule.activity_dialogbox_examsadd">
+    tools:context=".ExamsModule.ExaminationFragment">
 
     <TextView
         android:layout_width="match_parent"

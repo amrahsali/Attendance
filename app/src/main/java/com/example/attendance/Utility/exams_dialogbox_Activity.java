@@ -1,8 +1,10 @@
-package com.example.attendance;
+package com.example.attendance.Utility;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.attendance.R;
 
 public class exams_dialogbox_Activity extends AppCompatActivity {
 

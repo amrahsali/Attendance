@@ -1,4 +1,4 @@
-package com.example.attendance;
+package com.example.attendance.Utility;
 
 public class FilterModel {
     private String level;

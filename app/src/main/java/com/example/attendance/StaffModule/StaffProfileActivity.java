@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.attendance.R;
-import com.example.attendance.ScanActivity;
+import com.example.attendance.Utility.ScanActivity;
 
 public class StaffProfileActivity extends AppCompatActivity {
 

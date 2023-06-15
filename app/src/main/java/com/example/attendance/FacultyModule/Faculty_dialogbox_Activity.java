@@ -15,7 +15,6 @@ public class Faculty_dialogbox_Activity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     DatabaseReference databaseReference;
     FirebaseDatabase firebaseDatabase;
-    private StorageReference mStorageref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
