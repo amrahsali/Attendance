@@ -28,6 +28,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
+                android:lines="1"
+                android:ellipsize="end"
+                android:scrollHorizontally="true"
+                android:maxLines="1"
                 android:text="George"/>
 
             <TextView
@@ -35,6 +39,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
+                android:lines="1"
+                android:ellipsize="end"
+                android:scrollHorizontally="true"
+                android:maxLines="1"
                 android:text="12:01pm"/>
         </RelativeLayout>
 
@@ -46,6 +54,10 @@
                 android:id="@+id/status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:lines="1"
+                android:ellipsize="end"
+                android:scrollHorizontally="true"
+                android:maxLines="1"
                 android:text="Title"/>
         </RelativeLayout>
 

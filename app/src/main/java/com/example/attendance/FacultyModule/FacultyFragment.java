@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -82,6 +83,9 @@ public class FacultyFragment extends Fragment {
         facultyRef = firebaseDatabase.getReference("Faculty");
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
+
+
+
 
         FloatingActionButton fab = view.findViewById(R.id.facultyFABtn);
         loadFacultyData();

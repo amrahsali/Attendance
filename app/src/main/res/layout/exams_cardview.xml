@@ -31,6 +31,10 @@
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content"
                        android:textSize="16sp"
+                       android:lines="1"
+                       android:ellipsize="end"
+                       android:scrollHorizontally="true"
+                       android:maxLines="1"
                        android:layout_gravity="center"
                        android:text="software Engineering"/>
                    <View
@@ -45,6 +49,10 @@
                            android:layout_width="wrap_content"
                            android:layout_height="match_parent"
                            android:textSize="16sp"
+                           android:lines="1"
+                           android:ellipsize="end"
+                           android:scrollHorizontally="true"
+                           android:maxLines="1"
                            android:text="Ahmad sani"/>
                        <TextView
                            android:id="@+id/time"
@@ -52,6 +60,10 @@
                            android:layout_height="match_parent"
                            android:paddingEnd="10dp"
                            android:gravity="end"
+                           android:lines="1"
+                           android:ellipsize="end"
+                           android:scrollHorizontally="true"
+                           android:maxLines="1"
                            android:textSize="16sp"
                            android:text="00:00"/>
                    </LinearLayout>

@@ -18,14 +18,14 @@ public class StaffProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_staff_profile);
+       // setContentView(R.layout.activity_staff_profile);
         username = findViewById(R.id.username);
         depaprtment = findViewById(R.id.department);
-        profile = findViewById(R.id.staff_profile);
-        takeAttendance = findViewById(R.id.take_attendance_btn);
-        addStudent = findViewById(R.id.add_student_btn);
-        viewRecords = findViewById(R.id.viewrecords_btn);
-        examination = findViewById(R.id.examination_btn);
+        //profile = findViewById(R.id.staff_profile);
+        //takeAttendance = findViewById(R.id.take_attendance_btn);
+     //   addStudent = findViewById(R.id.add_student_btn);
+       // viewRecords = findViewById(R.id.viewrecords_btn);
+       // examination = findViewById(R.id.examination_btn);
 
         takeAttendance.setOnClickListener(v -> {
             Intent i = new Intent(StaffProfileActivity.this, ScanActivity.class);

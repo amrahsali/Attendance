@@ -34,6 +34,7 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="10dp"
                     android:paddingStart="6dp"
+                    android:inputType="textCapWords"
                     android:textSize="20sp"
                     android:layout_gravity="center"
                     android:text="Faculty of computing"/>
