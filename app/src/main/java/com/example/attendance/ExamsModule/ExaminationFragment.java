@@ -93,6 +93,12 @@ public class ExaminationFragment extends Fragment {
 
     private Context context;
 
+    Button generatePDFbtn;
+
+    int pageHeight = 1120;
+    int pagewidth = 792;
+
+
 
 
     public static ExaminationFragment newInstance() {
@@ -118,6 +124,27 @@ public class ExaminationFragment extends Fragment {
 
         examsRef = FirebaseDatabase.getInstance().getReference().child("exams");
 
+        generatePDFbtn = view.findViewById(R.id.idBtnGntPDFExam);
+
+        if (checkPermission()) {
+            Toast.makeText(getContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+        } else {
+            requestPermission();
+        }
+
+        generatePDFbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // calling method to
+                // generate our PDF file.
+                generatePDF();
+            }
+        });
+
+
+
+
+
         loadExamsData();
 
         if (isUserLoggedIn()){
@@ -127,10 +154,40 @@ public class ExaminationFragment extends Fragment {
             view.findViewById(R.id.examsFABtn).setVisibility(View.GONE);
         }
 
+
         return view;
 
 
     }
+
+    private static final int PERMISSION_REQUEST_CODE = 1;
+
+    @Override
+    public void
+    onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0) {
+
+                // after requesting permissions we are showing
+                // users a toast message of permission granted.
+                boolean writeStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                boolean readStorage = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                if (writeStorage && readStorage) {
+                    Toast.makeText(getActivity(), "Permission Granted..", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "Permission Denied.", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        }
+    }
+
+    private void finish() {
+    }
+
+
     private void loadExamsData() {
         examsRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -338,5 +395,72 @@ public class ExaminationFragment extends Fragment {
             }
         });
     }
+
+    private void generatePDF() {
+        // creating an object variable for our PDF document.
+        PdfDocument pdfDocument = new PdfDocument();
+        int pageNumber = 1;
+
+        // creating a variable for paint "title" used for adding text in our PDF file.
+        Paint title = new Paint();
+        title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+        title.setTextSize(15);
+        title.setColor(ContextCompat.getColor(getContext(), R.color.purple_200));
+
+        // Iterate through your RecyclerView data and add it to the PDF document.
+        for (int i = 0; i < examsAdapter.getItemCount(); i++) {
+            // Get the data item from your adapter
+            AttendanceRecord item = examsAdapter.getItem(i);
+
+            // Start a new page for each item
+            PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, pageNumber).create();
+            PdfDocument.Page page = pdfDocument.startPage(pageInfo);
+            Canvas canvas = page.getCanvas();
+
+            // Draw the data from your item onto the canvas
+            // Example: Assuming your data has name and description fields
+            canvas.drawText("Name: " + item.getName1(), 50, 50, title);
+            canvas.drawText("Description: " + item.getTitle(), 50, 80, title);
+
+            // Finish the page
+            pdfDocument.finishPage(page);
+            pageNumber++;
+        }
+
+        // Define the file path and name
+        File file = new File(getActivity().getExternalFilesDir(null), "RecyclerViewRecords.pdf");
+
+        try {
+            // Write the PDF document to the file
+            pdfDocument.writeTo(new FileOutputStream(file));
+
+            // Show a toast message on successful generation
+            Toast.makeText(getActivity(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            // Handle any exceptions
+            e.printStackTrace();
+        }
+
+        // Close the PDF document
+        pdfDocument.close();
+    }
+
+
+    private boolean checkPermission() {
+
+        // checking of permissions.
+        int permission1 = ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), WRITE_EXTERNAL_STORAGE);
+        int permission2 = ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), READ_EXTERNAL_STORAGE);
+        return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        // requesting permissions if not provided.
+        ActivityCompat.requestPermissions(getActivity(), new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+    }
+
+
+
+
 
 }

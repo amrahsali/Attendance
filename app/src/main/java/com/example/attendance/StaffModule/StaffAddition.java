@@ -95,6 +95,8 @@ public class StaffAddition extends AppCompatActivity {
         // Initialize the spinners
         facultySpinner = findViewById(R.id.faculty_spinner);
         departmentSpinner = findViewById(R.id.department_spinner);
+        loadingPB = findViewById(R.id.idPBLoading);
+
 
         // Initialize the adapters
         facultyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
@@ -157,6 +159,8 @@ public class StaffAddition extends AppCompatActivity {
             Save = staffBiometricDialog.findViewById(R.id.add_print_save);
             Cancel = staffBiometricDialog.findViewById(R.id.add_print_cancel);
             Save.setOnClickListener(view2 -> {
+                loadingPB.setVisibility(View.VISIBLE);
+
                 // loadingPB.setVisibility(View.VISIBLE);
                 // on below line we are calling a add value event
                 // to pass data to firebase database.
@@ -199,7 +203,8 @@ public class StaffAddition extends AppCompatActivity {
 
                                 databaseReference.child(courseID).setValue(courseRVModal);
                                 // displaying a toast message.
-                                Toast.makeText(StaffAddition.this, "Staff Created..", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(StaffAddition.this, "Staff added..", Toast.LENGTH_SHORT).show();
+                                loadingPB.setVisibility(View.GONE);
                                 FragmentManager fragmentManager = getSupportFragmentManager();
                                 fragmentManager.popBackStack();
                                 staffBiometricDialog.dismiss();

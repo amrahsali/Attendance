@@ -40,6 +40,9 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull StaffAdapter.ViewHolder holder, int position) {
+
+        int reversePosition = getItemCount() - position - 1;
+
         // setting data to our recycler view item on below line.
         StaffRVModal courseRVModal = courseRVModalArrayList.get(holder.getAdapterPosition());
         holder.product_name.setText(courseRVModal.getProductName());
@@ -50,7 +53,11 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.ViewHolder> 
         holder.product_image.setImageURI(uri);
         Picasso.get().load(courseRVModal.getProductImg()).into(holder.product_image);
         // adding animation to recycler view item on below line.
-        setAnimation(holder.itemView, holder.getAdapterPosition());
+
+       // setAnimation(holder.itemView, holder.getAdapterPosition());
+
+        setAnimation(holder.itemView, reversePosition);
+
 //        holder.product_image.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {

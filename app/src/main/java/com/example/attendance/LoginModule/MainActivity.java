@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +31,11 @@ import com.example.attendance.Utility.FacultyBottomSheetDialogFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.slider.Slider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -41,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
     private FirebaseAuth mAuth;
     TextView welcomeMessage;
     ImageView profileImage;
+
+
+
 
 
     @Override
@@ -56,9 +65,15 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
         toggle.syncState();
         mAuth = FirebaseAuth.getInstance();
         // Customize the toolbar with profile image and welcome message
+
+
         profileImage = findViewById(R.id.profile_img);
         welcomeMessage = findViewById(R.id.welcome_msg);
         welcomeMessage.setText("Welcome, Admin!");
+
+
+
+
 
         // When we open the application first time, the fragment should be shown to the user
         // in this case, it is the home fragment
