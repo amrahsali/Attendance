@@ -50,6 +50,9 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull StudentAdapter.ViewHolder holder, int position) {
 
+        int reversePosition = getItemCount() - position - 1;
+
+
         StudentModal courseRVModal = courseRVModalArrayList.get(holder.getAdapterPosition());
         holder.student_name.setText(courseRVModal.getStudentName());
         holder.student_faculty.setText(courseRVModal.getStudentFaculty());
@@ -59,7 +62,11 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
         holder.student_level.setText(courseRVModal.getStudentLevel());
         Picasso.get().load(courseRVModal.getProductImg()).into(holder.student_image);
         // adding animation to recycler view item on below line.
-        setAnimation(holder.itemView, holder.getAdapterPosition());
+
+       // setAnimation(holder.itemView, holder.getAdapterPosition());
+
+        setAnimation(holder.itemView, reversePosition);
+
 
 
     }
@@ -77,6 +84,8 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
     @Override
     public int getItemCount() {
         return courseRVModalArrayList.size();
+
+
     }
 
     public void startListening() {

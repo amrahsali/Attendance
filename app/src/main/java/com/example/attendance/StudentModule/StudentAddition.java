@@ -85,6 +85,7 @@ public class StudentAddition extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_addition);
         initUI();
+        loadingPB = findViewById(R.id.idPBLoading);
 
         profileimg.setOnClickListener(v -> {
             // create an instance of the
@@ -167,7 +168,9 @@ public class StudentAddition extends AppCompatActivity {
                     // on below line we are calling a add value event
                     // to pass data to firebase database.
                    // loadingPB.setVisibility(View.VISIBLE);
-                    Save.setEnabled(false);
+                   // Save.setEnabled(false);
+                    loadingPB.setVisibility(View.VISIBLE);
+
                     final String timestamp = String.valueOf(System.currentTimeMillis());
                     String filepathname = "Student/" + "student" + timestamp;
                     Drawable drawable = profileimg.getDrawable();
@@ -210,6 +213,7 @@ public class StudentAddition extends AppCompatActivity {
                                         // displaying a toast message.
                                         //loadingPB.setVisibility(View.GONE);
                                         Toast.makeText(StudentAddition.this, "Student added..", Toast.LENGTH_SHORT).show();
+                                        loadingPB.setVisibility(View.GONE);
 
                                         studentBiometricDialog.dismiss();
                                         finish();
