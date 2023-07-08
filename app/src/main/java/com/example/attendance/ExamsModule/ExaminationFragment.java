@@ -61,8 +61,13 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -79,7 +84,7 @@ public class ExaminationFragment extends Fragment {
     DatabaseReference examsRef;
 
     Spinner coursesSpinner, staffsSpinner;
-    private Button examsTime;
+    private Button examsTime, generatePdfButton;
     private Calendar calendar;
     private SimpleDateFormat dateTimeFormat;
     FirebaseAuth mAuth;
@@ -90,16 +95,10 @@ public class ExaminationFragment extends Fragment {
 
     private LinearLayout staffListLayout;
 
-
     private Context context;
 
-    Button generatePDFbtn;
 
-    int pageHeight = 1120;
-    int pagewidth = 792;
-
-
-
+    private static final int PERMISSION_REQUEST_CODE = 1;
 
     public static ExaminationFragment newInstance() {
         return new ExaminationFragment();
@@ -119,30 +118,13 @@ public class ExaminationFragment extends Fragment {
         coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         staffsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+        generatePdfButton = view.findViewById(R.id.idBtnGntPDFExam);
+
+
         examsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
         examsRV.setAdapter(examsAdapter);
 
         examsRef = FirebaseDatabase.getInstance().getReference().child("exams");
-
-        generatePDFbtn = view.findViewById(R.id.idBtnGntPDFExam);
-
-        if (checkPermission()) {
-            Toast.makeText(getContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
-        } else {
-            requestPermission();
-        }
-
-        generatePDFbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // calling method to
-                // generate our PDF file.
-                generatePDF();
-            }
-        });
-
-
-
 
 
         loadExamsData();
@@ -153,14 +135,58 @@ public class ExaminationFragment extends Fragment {
         }else {
             view.findViewById(R.id.examsFABtn).setVisibility(View.GONE);
         }
+        context = getActivity();
 
+        generatePdfButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                generatePdf();
+            }
+        });
 
         return view;
-
-
     }
 
-    private static final int PERMISSION_REQUEST_CODE = 1;
+            private void generatePdf() {
+            // Create a new document
+                Document document = new Document();
+
+                // Get the path to the external storage directory
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/myapp";
+
+                // Create the directory if it doesn't exist
+                File dir = new File(path);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+
+                // Create a new file for the PDF
+                File file = new File(dir, "my_pdf.pdf");
+
+                try {
+                    // Create a PdfWriter instance to write the document to the file
+                    PdfWriter.getInstance(document, new FileOutputStream(file));
+
+                    // Open the document
+                    document.open();
+
+                    // Add paragraphs with data from the RecyclerView
+                    String[] data = new String[0];
+                    for (String item : data) {
+                        document.add(new Paragraph(item));
+                    }
+
+                    // Close the document
+                    document.close();
+
+                    Log.d("PdfGenerator", "PDF generated successfully!");
+                    Toast.makeText(context, "PDF generated successfully!", Toast.LENGTH_SHORT).show();
+                } catch (DocumentException | FileNotFoundException e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "PDF generation failed!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
 
     @Override
     public void
@@ -394,73 +420,8 @@ public class ExaminationFragment extends Fragment {
                 Log.e(TAG, "Failed to load courses data: " + databaseError.getMessage());
             }
         });
-    }
-
-    private void generatePDF() {
-        // creating an object variable for our PDF document.
-        PdfDocument pdfDocument = new PdfDocument();
-        int pageNumber = 1;
-
-        // creating a variable for paint "title" used for adding text in our PDF file.
-        Paint title = new Paint();
-        title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-        title.setTextSize(15);
-        title.setColor(ContextCompat.getColor(getContext(), R.color.purple_200));
-
-        // Iterate through your RecyclerView data and add it to the PDF document.
-        for (int i = 0; i < examsAdapter.getItemCount(); i++) {
-            // Get the data item from your adapter
-            AttendanceRecord item = examsAdapter.getItem(i);
-
-            // Start a new page for each item
-            PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, pageNumber).create();
-            PdfDocument.Page page = pdfDocument.startPage(pageInfo);
-            Canvas canvas = page.getCanvas();
-
-            // Draw the data from your item onto the canvas
-            // Example: Assuming your data has name and description fields
-            canvas.drawText("Name: " + item.getName1(), 50, 50, title);
-            canvas.drawText("Description: " + item.getTitle(), 50, 80, title);
-
-            // Finish the page
-            pdfDocument.finishPage(page);
-            pageNumber++;
-        }
-
-        // Define the file path and name
-        File file = new File(getActivity().getExternalFilesDir(null), "RecyclerViewRecords.pdf");
-
-        try {
-            // Write the PDF document to the file
-            pdfDocument.writeTo(new FileOutputStream(file));
-
-            // Show a toast message on successful generation
-            Toast.makeText(getActivity(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            // Handle any exceptions
-            e.printStackTrace();
-        }
-
-        // Close the PDF document
-        pdfDocument.close();
-    }
-
-
-    private boolean checkPermission() {
-
-        // checking of permissions.
-        int permission1 = ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), WRITE_EXTERNAL_STORAGE);
-        int permission2 = ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), READ_EXTERNAL_STORAGE);
-        return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermission() {
-        // requesting permissions if not provided.
-        ActivityCompat.requestPermissions(getActivity(), new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-    }
 
 
 
-
-
+}
 }
