@@ -13,6 +13,8 @@ public class StaffRVModal implements Parcelable {
     private String userID;
     private String phone;
     private String email;
+    private String leftFinger;
+    private String rightFinger;
 
 
     public String getProductId() {
@@ -36,6 +38,8 @@ public class StaffRVModal implements Parcelable {
         productImg = in.readString();
         phone = in.readString();
         email = in.readString();
+        leftFinger = in.readString();
+        rightFinger = in.readString();
     }
 
     public static final Creator<StaffRVModal> CREATOR = new Creator<StaffRVModal>() {
@@ -101,7 +105,8 @@ public class StaffRVModal implements Parcelable {
     }
 
     public StaffRVModal(String productId, String productName, String staffEmail, String staffPhone,
-                        String productImg, String userID, String faculty, String department) {
+                        String productImg, String userID, String faculty, String department, String leftFinger,
+                        String rightFinger) {
         this.productName = productName;
         this.productId = productId;
         this.department = department;
@@ -110,6 +115,24 @@ public class StaffRVModal implements Parcelable {
         this.userID = userID;
         this.phone = staffPhone;
         this.email = staffEmail;
+        this.leftFinger = leftFinger;
+        this.rightFinger = rightFinger;
+    }
+
+    public String getLeftFinger() {
+        return leftFinger;
+    }
+
+    public void setLeftFinger(String leftFinger) {
+        this.leftFinger = leftFinger;
+    }
+
+    public String getRightFinger() {
+        return rightFinger;
+    }
+
+    public void setRightFinger(String rightFinger) {
+        this.rightFinger = rightFinger;
     }
 
     @Override
@@ -125,5 +148,7 @@ public class StaffRVModal implements Parcelable {
         dest.writeString(faculty);
         dest.writeString(productImg);
         dest.writeString(userID);
+        dest.writeString(leftFinger);
+        dest.writeString(rightFinger);
     }
 }

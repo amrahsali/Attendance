@@ -31,6 +31,8 @@ import android.widget.Toast;
 import com.example.attendance.FacultyModule.FacultyModel;
 import com.example.attendance.R;
 import com.example.attendance.Utility.CustomSpinnerAdapter;
+import com.example.attendance.Utility.Fingerprint;
+import com.example.attendance.Utility.ScanUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -56,10 +58,11 @@ public class StaffAddition extends AppCompatActivity {
 
     private static final int CAMERA_IMAGE_REQUEST_CODE = -1;
     private FirebaseAuth mAuth;
+    Fingerprint fingerprint;
     Button create_staff, Cancel, Save;
     Dialog staffBiometricDialog;;
     EditText username, phoneNumber, emailad;
-    ImageView profileimg;
+    ImageView profileimg, printLeft, printRight;
     private ProgressBar loadingPB;
     int SELECT_PICTURE = 200;
     Uri selectedImageUri, imageuri;
@@ -67,7 +70,7 @@ public class StaffAddition extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase;
     private StorageReference mStorageref;
     private String courseID;
-    TextView name,email;
+    TextView name,email, student_status;
     DatabaseReference facultyRef;
     private Spinner facultySpinner;
     private Spinner departmentSpinner;
@@ -158,8 +161,23 @@ public class StaffAddition extends AppCompatActivity {
             staffBiometricDialog.show();
             Save = staffBiometricDialog.findViewById(R.id.add_print_save);
             Cancel = staffBiometricDialog.findViewById(R.id.add_print_cancel);
+            printLeft = staffBiometricDialog.findViewById(R.id.print_left);
+            student_status = staffBiometricDialog.findViewById(R.id.student_status);
+            printRight = staffBiometricDialog.findViewById(R.id.print_right);
+            ScanUtils scanUtils = new ScanUtils(this, printLeft, printRight, student_status);
+            printLeft.setOnClickListener(p->{
+                Toast.makeText(StaffAddition.this, "clicked left", Toast.LENGTH_SHORT).show();
+                scanUtils.scan(StaffAddition.this);
+            });
+
+            printRight.setOnClickListener(p->{
+                Toast.makeText(StaffAddition.this, "Right left", Toast.LENGTH_SHORT).show();
+                scanUtils.scan(StaffAddition.this);
+            });
+
             Save.setOnClickListener(view2 -> {
                 loadingPB.setVisibility(View.VISIBLE);
+                scanUtils.stopScan();
 
                 // loadingPB.setVisibility(View.VISIBLE);
                 // on below line we are calling a add value event
@@ -175,56 +193,77 @@ public class StaffAddition extends AppCompatActivity {
 
                 StorageReference storageReference1 = FirebaseStorage.getInstance().getReference().child(filepathname);
                 storageReference1.putBytes(data).addOnSuccessListener(taskSnapshot -> {
-                    // getting the url of image uploaded
+                    // Getting the download URL of the image uploaded
                     Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                    while (!uriTask.isSuccessful()) ;
-                    String downloadUri = uriTask.getResult().toString();
-                    if (uriTask.isSuccessful()) {
+                    uriTask.addOnSuccessListener(downloadUri -> {
+                        String imageUrl = downloadUri.toString();
+
                         String name = username.getText().toString();
                         String email = emailad.getText().toString();
                         String phone = phoneNumber.getText().toString();
                         String department = departmentSpinner.getSelectedItem().toString();
                         String faculty = facultySpinner.getSelectedItem().toString();
+                        byte[] leftBmpData = scanUtils.getLeftBmpData();
+                        byte[] rightBmpData = scanUtils.getRightBmpData();
 
                         Uri staffImage = imageuri;
-                        String Uid = mAuth.getUid();
+                        String uid = mAuth.getUid();
                         String staffImageUri = staffImage.toString();
                         StaffAddition.this.getContentResolver().takePersistableUriPermission(imageuri, (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
                         courseID = name;
-                        // on below line we are passing all data to our modal class.
 
+                        // Save the leftBmpData and rightBmpData to Firebase Storage and get their download URLs
+                        StorageReference leftFingerprintRef = FirebaseStorage.getInstance().getReference().child("Fingerprints/" + courseID + "/leftFingerprint.bmp");
+                        StorageReference rightFingerprintRef = FirebaseStorage.getInstance().getReference().child("Fingerprints/" + courseID + "/rightFingerprint.bmp");
 
-                        databaseReference.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                // on below line we are setting data in our firebase database.
-
-                                StaffRVModal courseRVModal = new StaffRVModal(courseID, name, email, phone, downloadUri, Uid, faculty, department);
-
-                                databaseReference.child(courseID).setValue(courseRVModal);
-                                // displaying a toast message.
-                                Toast.makeText(StaffAddition.this, "Staff added..", Toast.LENGTH_SHORT).show();
-                                loadingPB.setVisibility(View.GONE);
-                                FragmentManager fragmentManager = getSupportFragmentManager();
-                                fragmentManager.popBackStack();
-                                staffBiometricDialog.dismiss();
-                                finish();
+                        leftFingerprintRef.putBytes(leftBmpData).continueWithTask(leftTask -> {
+                            if (!leftTask.isSuccessful()) {
+                                throw leftTask.getException();
                             }
+                            return leftFingerprintRef.getDownloadUrl();
+                        }).addOnSuccessListener(leftDownloadUri -> {
+                            String leftFingerprintUrl = leftDownloadUri.toString();
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                // displaying a failure message on below line.
-                                Toast.makeText(StaffAddition.this, "Failed to add Staff..", Toast.LENGTH_SHORT).show();
-                                Log.e(TAG, "onCancelled: ", error.toException());
-                            }
+                            rightFingerprintRef.putBytes(rightBmpData).continueWithTask(rightTask -> {
+                                if (!rightTask.isSuccessful()) {
+                                    throw rightTask.getException();
+                                }
+                                return rightFingerprintRef.getDownloadUrl();
+                            }).addOnSuccessListener(rightDownloadUri -> {
+                                String rightFingerprintUrl = rightDownloadUri.toString();
+
+                                // Create the StaffRVModal object with the fingerprint URLs
+                                StaffRVModal staffRVModal = new StaffRVModal(courseID, name, email, phone, imageUrl, uid, faculty, department, leftFingerprintUrl, rightFingerprintUrl);
+
+                                databaseReference.child(courseID).setValue(staffRVModal).addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(StaffAddition.this, "Staff added successfully.", Toast.LENGTH_SHORT).show();
+                                        loadingPB.setVisibility(View.GONE);
+                                        FragmentManager fragmentManager = getSupportFragmentManager();
+                                        fragmentManager.popBackStack();
+                                        staffBiometricDialog.dismiss();
+                                        finish();
+                                    } else {
+                                        Toast.makeText(StaffAddition.this, "Failed to add Staff.", Toast.LENGTH_SHORT).show();
+                                        Log.e(TAG, "onCancelled: ", task.getException());
+                                    }
+                                });
+                            }).addOnFailureListener(e -> {
+                                Toast.makeText(StaffAddition.this, "Failed to upload right fingerprint image.", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "onFailure: ", e);
+                            });
+                        }).addOnFailureListener(e -> {
+                            Toast.makeText(StaffAddition.this, "Failed to upload left fingerprint image.", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "onFailure: ", e);
                         });
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        loadingPB.setVisibility(View.GONE);
-                        Toast.makeText(StaffAddition.this, "Failed: Server Error. Contact Admin", Toast.LENGTH_LONG).show();
-                    }
+                    }).addOnFailureListener(e -> {
+                        Toast.makeText(StaffAddition.this, "Failed to get download URL of the image.", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "onFailure: ", e);
+                    });
+                }).addOnFailureListener(e -> {
+                    loadingPB.setVisibility(View.GONE);
+                    Toast.makeText(StaffAddition.this, "Failed: Server Error. Contact Admin", Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "onFailure: ", e);
                 });
             });
             Cancel.setOnClickListener(view2 -> staffBiometricDialog.dismiss());
