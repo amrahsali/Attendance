@@ -80,7 +80,7 @@ public class ExamsAdapter extends RecyclerView.Adapter<ExamsAdapter.ExamsViewHol
             Intent intent = new Intent(context, Exams_entryActivity.class);
             intent.putExtra("examId", exam.getExamId());
             intent.putExtra("departmentName", exam.getCourseName());
-            intent.putExtra("invigilator", exam.getInvigilators().get(0));
+            intent.putExtra("invigilator", exam.getInvigilators());
             intent.putExtra("time", exam.getTime());
             context.startActivity(intent);
         }

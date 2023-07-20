@@ -5,6 +5,7 @@ import static androidx.core.content.ContentProviderCompat.requireContext;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -30,6 +31,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.attendance.R;
+import com.example.attendance.StaffModule.StaffAddition;
+import com.example.attendance.StaffModule.StaffRVModal;
+import com.example.attendance.Utility.ScanUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -58,7 +62,7 @@ public class StudentAddition extends AppCompatActivity {
     ImageButton selectCourse;
     Dialog studentBiometricDialog, courseDialog;
     EditText username, matricNumber, level;
-    ImageView profileimg;
+    ImageView profileimg, printLeft, printRight;
     private ProgressBar loadingPB;
     int SELECT_PICTURE = 200;
     Uri selectedImageUri, imageuri;
@@ -68,7 +72,7 @@ public class StudentAddition extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase;
     private StorageReference mStorageref;
     private String courseID;
-    TextView name,email;
+    TextView name,email, student_status;
 
     private Spinner facultySpinner, departmentSpinner, coursesSpinner;
 
@@ -162,15 +166,24 @@ public class StudentAddition extends AppCompatActivity {
 
                         });
                 CancelCourse.setOnClickListener(c->courseDialog.dismiss());
+                printLeft = studentBiometricDialog.findViewById(R.id.print_left);
+                student_status = studentBiometricDialog.findViewById(R.id.student_status);
+                printRight = studentBiometricDialog.findViewById(R.id.print_right);
+                ScanUtils scanUtils = new ScanUtils(this, printLeft, printRight, student_status);
+                printLeft.setOnClickListener(p->{
+                    Toast.makeText(StudentAddition.this, "clicked left", Toast.LENGTH_SHORT).show();
+                    scanUtils.scan(StudentAddition.this);
+                });
+
+                printRight.setOnClickListener(p->{
+                    Toast.makeText(StudentAddition.this, "Right left", Toast.LENGTH_SHORT).show();
+                    scanUtils.scan(StudentAddition.this);
+                });
 
                 Save.setOnClickListener(view2 -> {
-                    // loadingPB.setVisibility(View.VISIBLE);
-                    // on below line we are calling a add value event
-                    // to pass data to firebase database.
-                   // loadingPB.setVisibility(View.VISIBLE);
-                   // Save.setEnabled(false);
                     loadingPB.setVisibility(View.VISIBLE);
-
+                    scanUtils.stopScan();
+                    Save.setEnabled(false);
                     final String timestamp = String.valueOf(System.currentTimeMillis());
                     String filepathname = "Student/" + "student" + timestamp;
                     Drawable drawable = profileimg.getDrawable();
@@ -180,55 +193,86 @@ public class StudentAddition extends AppCompatActivity {
                     byte[] data = byteArrayOutputStream.toByteArray();
 
                     StorageReference storageReference1 = FirebaseStorage.getInstance().getReference().child(filepathname);
-                    storageReference1.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            // getting the url of image uploaded
-                            Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                            while (!uriTask.isSuccessful()) ;
+                    storageReference1.putBytes(data).addOnSuccessListener(taskSnapshot -> {
+                        // getting the url of image uploaded
+                        Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                        uriTask.addOnSuccessListener(download ->{
                             String downloadUri = uriTask.getResult().toString();
-                            if (uriTask.isSuccessful()) {
-                                String name = username.getText().toString();
-                                String matric = matricNumber.getText().toString();
-                                String department = departmentSpinner.getSelectedItem().toString();
-                                String faculty = facultySpinner.getSelectedItem().toString();
-                                String level1 =  level.getText().toString();
+                            String name = username.getText().toString();
+                            String matric = matricNumber.getText().toString();
+                            String department = departmentSpinner.getSelectedItem().toString();
+                            String faculty = facultySpinner.getSelectedItem().toString();
+                            String level1 =  level.getText().toString();
+                            byte[] leftBmpData = scanUtils.getLeftBmpData();
+                            byte[] rightBmpData = scanUtils.getRightBmpData();
+                            Uri staffImage = imageuri;
+                            String Uid = mAuth.getUid();
+                            String staffImageUri = staffImage.toString();
+                            StudentAddition.this.getContentResolver().takePersistableUriPermission(imageuri, (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
+                            courseID = name;
 
-                                Uri staffImage = imageuri;
-                                String Uid = mAuth.getUid();
-                                String staffImageUri = staffImage.toString();
-                                StudentAddition.this.getContentResolver().takePersistableUriPermission(imageuri, (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
-                                courseID = name;
-                                // on below line we are passing all data to our modal class.
+                            // Save the leftBmpData and rightBmpData to Firebase Storage and get their download URLs
+                            StorageReference leftFingerprintRef = FirebaseStorage.getInstance().getReference().child("Fingerprints/students/" + courseID + "/leftFingerprint.bmp");
+                            StorageReference rightFingerprintRef = FirebaseStorage.getInstance().getReference().child("Fingerprints/students/" + courseID + "/rightFingerprint.bmp");
 
+                            leftFingerprintRef.putBytes(leftBmpData).continueWithTask(leftTask -> {
+                                if (!leftTask.isSuccessful()) {
+                                    throw leftTask.getException();
+                                }
+                                return leftFingerprintRef.getDownloadUrl();
+                            }).addOnSuccessListener(leftDownloadUri -> {
+                                String leftFingerprintUrl = leftDownloadUri.toString();
 
-                                databaseReference.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        // on below line we are setting data in our firebase database.
-
-                                        StudentModal studentModal = new StudentModal(courseID, name, faculty, department, matric, Uid, level1, downloadUri, coursesList);
-
-                                        databaseReference.child(courseID).setValue(studentModal);
-                                        // displaying a toast message.
-                                        //loadingPB.setVisibility(View.GONE);
-                                        Toast.makeText(StudentAddition.this, "Student added..", Toast.LENGTH_SHORT).show();
-                                        loadingPB.setVisibility(View.GONE);
-
-                                        studentBiometricDialog.dismiss();
-                                        finish();
+                                rightFingerprintRef.putBytes(rightBmpData).continueWithTask(rightTask -> {
+                                    if (!rightTask.isSuccessful()) {
+                                        throw rightTask.getException();
                                     }
+                                    return rightFingerprintRef.getDownloadUrl();
+                                }).addOnSuccessListener(rightDownloadUri -> {
+                                    String rightFingerprintUrl = rightDownloadUri.toString();
+                                    databaseReference.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            // on below line we are setting data in our firebase database.
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-                                        // displaying a failure message on below line.
-                                        Toast.makeText(StudentAddition.this, "Failed to add Staff..", Toast.LENGTH_SHORT).show();
-                                        Log.e(TAG, "onCancelled: ", error.toException());
-                                        loadingPB.setVisibility(View.GONE);
-                                    }
+                                            StudentModal studentModal = new StudentModal(courseID, name, faculty,
+                                                    department, matric, Uid, level1, downloadUri, coursesList,
+                                                    leftFingerprintUrl, rightFingerprintUrl);
+
+                                            databaseReference.child(courseID).setValue(studentModal);
+                                            // displaying a toast message.
+                                            //loadingPB.setVisibility(View.GONE);
+                                            Toast.makeText(StudentAddition.this, "Student added..", Toast.LENGTH_SHORT).show();
+                                            loadingPB.setVisibility(View.GONE);
+
+                                            studentBiometricDialog.dismiss();
+                                            finish();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            // displaying a failure message on below line.
+                                            Toast.makeText(StudentAddition.this, "Failed to add Staff..", Toast.LENGTH_SHORT).show();
+                                            Log.e(TAG, "onCancelled: ", error.toException());
+                                            loadingPB.setVisibility(View.GONE);
+                                        }
+                                    });
+                                }).addOnFailureListener(e -> {
+                                    Toast.makeText(StudentAddition.this, "Failed to upload right fingerprint image.", Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG, "onFailure: ", e);
                                 });
-                            }
-                        }
+                            }).addOnFailureListener(e -> {
+                                Toast.makeText(StudentAddition.this, "Failed to upload left fingerprint image.", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "onFailure: ", e);
+                            });
+
+                            // on below line we are passing all data to our modal class.
+                        } ).addOnFailureListener(e -> {
+                            Toast.makeText(StudentAddition.this, "Failed to get download URL of the image.", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "onFailure: ", e);
+                        });
+
+
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {

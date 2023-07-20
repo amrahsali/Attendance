@@ -60,7 +60,6 @@ public class Exams_entryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(Exams_entryActivity.this, ScanActivity.class);
                 intent.putExtra("origin","exams");
-
                 startActivity(intent);
             }
         });

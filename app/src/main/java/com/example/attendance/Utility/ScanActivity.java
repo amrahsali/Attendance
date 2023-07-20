@@ -47,7 +47,7 @@ import java.nio.file.Paths;
 import asia.kanopi.uareu4500library.Status;
 
 public class ScanActivity extends AppCompatActivity {
-    ImageView print,  testImage1, testImaqge2;
+    ImageView print;
     TextView statusText;
     int click = 1;
     Fingerprint fingerprint;
@@ -65,8 +65,6 @@ public class ScanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scan);
         print = findViewById(R.id.print_image);
         progressBar = findViewById(R.id.idPBLoading);
-//        testImage1 = findViewById(R.id.test1);
-//        testImaqge2 = findViewById(R.id.test2);
         statusText = findViewById(R.id.status);
         fingerprint = new Fingerprint();
         scanUtils = new ScanUtils(ScanActivity.this, print, print, statusText);
@@ -108,24 +106,6 @@ public class ScanActivity extends AppCompatActivity {
 
     // Method to perform fingerprint matching
     private boolean matchFingerprints(byte[] probe, byte[] candidate) throws IOException {
-//        Bitmap rightBitmap = BitmapFactory.decodeByteArray(probe, 0, probe.length);
-//        Bitmap leftBitmap = BitmapFactory.decodeByteArray(candidate, 0, candidate.length);
-//        if (rightBitmap != null) {
-//            byte[] rightBmpData = AndroidBmpUtil.convertToBmp24bit(probe);
-//            if (rightBmpData != null) {
-//                // Save the rightBmpData to the database
-//                testImaqge2.setImageBitmap(rightBitmap);
-//
-//            }
-//        }
-//        if (leftBitmap != null) {
-//            byte[] leftBmpData = AndroidBmpUtil.convertToBmp24bit(candidate);
-//            if (leftBmpData != null) {
-//                // Save the rightBmpData to the database
-//                testImage1.setImageBitmap(leftBitmap);
-//
-//            }
-//        }
         boolean matches = false;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             FingerprintTemplate probe1 = new FingerprintTemplate(

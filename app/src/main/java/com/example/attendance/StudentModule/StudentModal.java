@@ -16,6 +16,8 @@ public class StudentModal implements Parcelable {
     private String studentImage;
     private String studentLevel;
     private String userID;
+    private String leftFinger;
+    private String rightFinger;
 
     private ArrayList<String> courses;
 
@@ -40,6 +42,8 @@ public class StudentModal implements Parcelable {
         studentLevel = in.readString();
         userID = in.readString();
         courses = in.readArrayList(getClass().getClassLoader());
+        leftFinger = in.readString();
+        rightFinger = in.readString();
     }
 
     public static final Creator<StudentModal> CREATOR = new Creator<StudentModal>() {
@@ -127,8 +131,25 @@ public class StudentModal implements Parcelable {
             this.studentLevel = studentLevel;
         }
 
+    public String getLeftFinger() {
+        return leftFinger;
+    }
+
+    public void setLeftFinger(String leftFinger) {
+        this.leftFinger = leftFinger;
+    }
+
+    public String getRightFinger() {
+        return rightFinger;
+    }
+
+    public void setRightFinger(String rightFinger) {
+        this.rightFinger = rightFinger;
+    }
+
     public StudentModal(String studentID, String studentName, String studentFaculty, String studentDepartment,
-                        String studentNumber, String uid, String studentLevel, String studentImage, ArrayList<String> courses) {
+                        String studentNumber, String uid, String studentLevel, String studentImage, ArrayList<String> courses,
+                        String leftFinger, String rightFinger) {
         this.studentName = studentName;
         this.studentFaculty = studentFaculty;
         this.studentDepartment = studentDepartment;
@@ -138,6 +159,8 @@ public class StudentModal implements Parcelable {
         this.studentLevel = studentLevel;
         this.studentImage = studentImage;
         this.courses = courses;
+        this.leftFinger = leftFinger;
+        this.rightFinger = rightFinger;
     }
 
     @Override
@@ -156,5 +179,7 @@ public class StudentModal implements Parcelable {
         dest.writeString(studentLevel);
         dest.writeString(userID);
         dest.writeList(courses);
+        dest.writeString(leftFinger);
+        dest.writeString(rightFinger);
     }
 }
