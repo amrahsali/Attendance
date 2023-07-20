@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
     private FirebaseAuth mAuth;
     TextView welcomeMessage;
     ImageView profileImage;
+    private final String WELCOME = "WELCOME ";
 
 
 
@@ -69,7 +70,12 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
 
         profileImage = findViewById(R.id.profile_img);
         welcomeMessage = findViewById(R.id.welcome_msg);
-        welcomeMessage.setText("Welcome, Admin!");
+        String staffName = getIntent().getStringExtra("staff_name");
+        if (staffName != null) {
+            welcomeMessage.setText( WELCOME + staffName );
+        } else {
+            welcomeMessage.setText("Welcome, Admin!");
+        }
 
 
 

@@ -13,6 +13,12 @@ import android.widget.TextView;
 import asia.kanopi.uareu4500library.Status;
 
 public class ScanUtils {
+
+    public interface ScanCallback {
+        void onFingerprintScanned(byte[] scannedFingerprint);
+        void onScanError(String errorMessage);
+    }
+
     private final ImageView leftPrint;
     private final ImageView rightPrint;
     private final TextView statusText;
@@ -21,6 +27,10 @@ public class ScanUtils {
 
     private byte[] leftBmpData;
     private byte[] rightBmpData;
+
+    private ScanCallback scanCallback;
+
+
 
 
     public ScanUtils(Context context, ImageView leftPrint, ImageView rightPrint, TextView statusText) {
@@ -47,6 +57,12 @@ public class ScanUtils {
     public byte[] getRightBmpData() {
         return rightBmpData;
     }
+
+    // Setter methods for scanCallback and scanErrorCallback
+    public void setScanCallback(ScanCallback callback) {
+        this.scanCallback = callback;
+    }
+
 
     private final Handler updateHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -103,10 +119,14 @@ public class ScanUtils {
                         if (rightBmpData != null) {
                             // Save the rightBmpData to the database
                             setRightBmpData(rightBmpData);
+
                         } else {
                             // Handle BMP conversion failure
                         }
                         rightPrint.setImageBitmap(rightBitmap);
+                        if (scanCallback != null) {
+                            scanCallback.onFingerprintScanned(image);
+                        }
                     } else {
                         // Handle bitmap conversion failure
                     }
@@ -121,6 +141,9 @@ public class ScanUtils {
                             // Handle BMP conversion failure
                         }
                         leftPrint.setImageBitmap(leftBitmap);
+                        if (scanCallback != null) {
+                            scanCallback.onFingerprintScanned(image);
+                        }
                     } else {
                         // Handle bitmap conversion failure
                     }
@@ -133,6 +156,9 @@ public class ScanUtils {
             } else {
                 errorMessage = msg.getData().getString("errorMessage");
                 intent.putExtra("errorMessage", errorMessage);
+                if (scanCallback != null) {
+                    scanCallback.onScanError(errorMessage);
+                }
             }
 
             // Handle the result based on your requirements

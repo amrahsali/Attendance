@@ -28,6 +28,16 @@
                 android:orientation="vertical"
                 android:padding="45dp">
 
+                <!-- Progress bar -->
+                <ProgressBar
+                    android:id="@+id/idPBLoading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:indeterminate="true"
+                    android:indeterminateDrawable="@drawable/progress_back"
+                    android:visibility="gone" />
+
                 <ImageView
                     android:id="@+id/print_image"
                     android:layout_width="150dp"
@@ -52,9 +62,28 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+<!--        <ImageView-->
+<!--            android:id="@+id/test1"-->
+<!--            android:layout_width="150dp"-->
+<!--            android:layout_height="110dp"-->
+<!--            android:src="@mipmap/printdefaultxhdpi"-->
+<!--            android:maxHeight="150dp"-->
+<!--            android:maxWidth="200dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            />-->
 
+<!--        <ImageView-->
+<!--            android:id="@+id/test2"-->
+<!--            android:layout_width="150dp"-->
+<!--            android:layout_height="110dp"-->
+<!--            android:src="@mipmap/printdefaultxhdpi"-->
+<!--            android:maxHeight="200dp"-->
+<!--            android:maxWidth="200dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            />-->
 
     </LinearLayout>
+
 
 
 
