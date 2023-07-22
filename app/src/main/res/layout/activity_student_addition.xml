@@ -25,7 +25,7 @@
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/stdntimage"
-            android:src="@drawable/person_foreground"
+            android:src="@drawable/ic_round_person_24"
             android:gravity="center"
             android:layout_width="100dp"
             android:layout_height="100dp"

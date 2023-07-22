@@ -30,7 +30,7 @@
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/person_foreground"/>
+            android:src="@drawable/ic_round_person_24"/>
 
             </androidx.cardview.widget.CardView>
 

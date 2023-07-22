@@ -138,7 +138,6 @@
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
-            android:onClick="navigateToAddFacultyFragment"
             android:padding="16dp">
 
             <LinearLayout
@@ -187,7 +186,6 @@
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
-            android:onClick="navigateToAddStaffFragment"
             android:padding="16dp">
 
             <LinearLayout

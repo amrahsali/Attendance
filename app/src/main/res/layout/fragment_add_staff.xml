@@ -32,7 +32,7 @@
             android:gravity="center">
             <ImageView
                 android:id="@+id/userprofile"
-                android:src="@drawable/person_foreground"
+                android:src="@drawable/ic_round_person_24"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"

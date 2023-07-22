@@ -83,6 +83,7 @@ public class CoursesFragment extends Fragment {
             }
         });
     }
+
     private void showDialogBox() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Add Course");
@@ -110,27 +111,6 @@ public class CoursesFragment extends Fragment {
         saveCourseToFirebase(courseName, courseCode);
 
     }
-//    private void saveCourseToFirebase(String courseName, String courseCode) {
-//        // Create a new document in the "Data" collection with the course details
-//        DatabaseReference coursesRef = db.child("courses");
-//        String courseId = coursesRef.push().getKey();
-//        if (courseId != null) {
-//            Coursemodal course = new Coursemodal(courseName, courseCode);
-//            coursesRef.child(courseId).setValue(course)
-//                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                        @Override
-//                        public void onSuccess(Void aVoid) {
-//                            // Course saved successfully
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            // Failed to save course
-//                        }
-//                    });
-//        }
-//    }
 
     private void saveCourseToFirebase(String courseName, String courseCode) {
         DatabaseReference coursesRef = db.child("courses");

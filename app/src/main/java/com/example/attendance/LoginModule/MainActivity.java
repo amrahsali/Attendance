@@ -76,11 +76,6 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
         } else {
             welcomeMessage.setText("Welcome, Admin!");
         }
-
-
-
-
-
         // When we open the application first time, the fragment should be shown to the user
         // in this case, it is the home fragment
         AdminHomeFragment fragment = new AdminHomeFragment();

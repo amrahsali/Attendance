@@ -1,5 +1,8 @@
 package com.example.attendance.FacultyModule;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Coursemodal {
 
     private String courseName;
@@ -40,5 +43,13 @@ public class Coursemodal {
 
     public void setCodeName(String codeName) {
         this.codeName = codeName;
+    }
+
+    // Method to convert the object to a Map
+    public Map<String, String> toMap() {
+        Map<String, String> map = new HashMap<>();
+        map.put("courseName", courseName);
+        map.put("codeName", codeName);
+        return map;
     }
 }

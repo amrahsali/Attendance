@@ -44,7 +44,7 @@ public class Exams_entryActivity extends AppCompatActivity {
 
         // Retrieve the values from the intent
         Intent intent = getIntent();
-        examsName = intent.getStringExtra("departmentName");
+        examsName = intent.getStringExtra("ExamsName");
         //String invigilator = intent.getStringExtra("invigilator");
         String time = intent.getStringExtra("time");
 
@@ -58,8 +58,8 @@ public class Exams_entryActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Exams_entryActivity.this, ScanActivity.class);
-                intent.putExtra("origin","exams");
+                Intent intent = new Intent(Exams_entryActivity.this, ExamsScanActivity.class);
+                intent.putExtra("ExamsName",examsName);
                 startActivity(intent);
             }
         });

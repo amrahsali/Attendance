@@ -312,22 +312,6 @@ public class ExaminationFragment extends Fragment {
         return mAuth.getCurrentUser() != null;
     }
 
-    private void showDatePickerDialog() {
-        TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                calendar.set(Calendar.MINUTE, minute);
-                updateExamsTime();
-            }
-        };
-
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-        new TimePickerDialog(getContext(), timeSetListener, hour, minute, false).show();
-    }
-
-
     private void showDateTimePickerDialog() {
         DatePickerDialog.OnDateSetListener dateSetListener = (view, year, monthOfYear, dayOfMonth) -> {
             calendar.set(Calendar.YEAR, year);
@@ -354,9 +338,6 @@ public class ExaminationFragment extends Fragment {
     private void updateExamsDateTime() {
         examsTime.setText(dateTimeFormat.format(calendar.getTime()));
     }
-
-
-
 
     private void updateExamsTime() {
         String dateFormat = "dd/MM/yyyy";
@@ -424,4 +405,20 @@ public class ExaminationFragment extends Fragment {
 
 
 }
+
+    public void showDatePickerDialog(View view) {
+        TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                calendar.set(Calendar.MINUTE, minute);
+                updateExamsTime();
+            }
+        };
+
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        new TimePickerDialog(getContext(), timeSetListener, hour, minute, false).show();
+
+    }
 }

@@ -79,7 +79,7 @@ public class ExamsAdapter extends RecyclerView.Adapter<ExamsAdapter.ExamsViewHol
         private void openAnotherActivity(ExamsModal exam) {
             Intent intent = new Intent(context, Exams_entryActivity.class);
             intent.putExtra("examId", exam.getExamId());
-            intent.putExtra("departmentName", exam.getCourseName());
+            intent.putExtra("ExamsName", exam.getCourseName());
             intent.putExtra("invigilator", exam.getInvigilators());
             intent.putExtra("time", exam.getTime());
             context.startActivity(intent);
