@@ -39,7 +39,7 @@
                         android:layout_height="wrap_content"
                         android:text="Welcome, Admin!"
                         android:textSize="18sp"
-                        android:textColor="@android:color/white"
+                        android:textColor="@android:color/black"
                         android:paddingEnd="8dp" />
 
                     <ImageView
