@@ -211,6 +211,11 @@ public class StudentAddition extends AppCompatActivity {
                             StudentAddition.this.getContentResolver().takePersistableUriPermission(imageuri, (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
                             courseID = name;
 
+                            if (leftBmpData == null || rightBmpData == null){
+                                Toast.makeText(StudentAddition.this, "please add fingerprint", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
                             // Save the leftBmpData and rightBmpData to Firebase Storage and get their download URLs
                             StorageReference leftFingerprintRef = FirebaseStorage.getInstance().getReference().child("Fingerprints/students/" + courseID + "/leftFingerprint.bmp");
                             StorageReference rightFingerprintRef = FirebaseStorage.getInstance().getReference().child("Fingerprints/students/" + courseID + "/rightFingerprint.bmp");

@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.example.attendance.FacultyModule.FacultyModel;
 import com.example.attendance.R;
+import com.example.attendance.StudentModule.StudentAddition;
 import com.example.attendance.Utility.CustomSpinnerAdapter;
 import com.example.attendance.Utility.Fingerprint;
 import com.example.attendance.Utility.ScanUtils;
@@ -166,12 +167,12 @@ public class StaffAddition extends AppCompatActivity {
             printRight = staffBiometricDialog.findViewById(R.id.print_right);
             ScanUtils scanUtils = new ScanUtils(this, printLeft, printRight, student_status);
             printLeft.setOnClickListener(p->{
-                Toast.makeText(StaffAddition.this, "clicked left", Toast.LENGTH_SHORT).show();
+                Toast.makeText(StaffAddition.this, "left finger", Toast.LENGTH_SHORT).show();
                 scanUtils.scan(StaffAddition.this);
             });
 
             printRight.setOnClickListener(p->{
-                Toast.makeText(StaffAddition.this, "Right left", Toast.LENGTH_SHORT).show();
+                Toast.makeText(StaffAddition.this, "Right finger", Toast.LENGTH_SHORT).show();
                 scanUtils.scan(StaffAddition.this);
             });
 
@@ -211,6 +212,11 @@ public class StaffAddition extends AppCompatActivity {
                         String staffImageUri = staffImage.toString();
                         StaffAddition.this.getContentResolver().takePersistableUriPermission(imageuri, (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION));
                         courseID = name;
+
+                        if (leftBmpData == null || rightBmpData == null){
+                            Toast.makeText(StaffAddition.this, "please add fingerprint", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
                         // Save the leftBmpData and rightBmpData to Firebase Storage and get their download URLs
                         StorageReference leftFingerprintRef = FirebaseStorage.getInstance().getReference().child("Fingerprints/" + courseID + "/leftFingerprint.bmp");
