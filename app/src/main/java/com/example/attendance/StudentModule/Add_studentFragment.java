@@ -93,8 +93,8 @@ public class Add_studentFragment extends Fragment {
             fab.setVisibility(View.GONE);
         }
         loadFacultyData();
-        loadLevelData();
-        spinnerListeners();
+       // loadLevelData();
+     //   spinnerListeners();
 //        facultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //            @Override
 //            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -281,9 +281,9 @@ public class Add_studentFragment extends Fragment {
     }
 
     private void onInit(View view){
-        levelSpinner = view.findViewById(R.id.level_spinner);
-        facultySpinner = view.findViewById(R.id.faculty_spinner);
-        departmentSpinner = view.findViewById(R.id.dept_spinner);
+       // levelSpinner = view.findViewById(R.id.level_spinner);
+      //  facultySpinner = view.findViewById(R.id.faculty_spinner);
+      //  departmentSpinner = view.findViewById(R.id.dept_spinner);
         loadingPB = view.findViewById(R.id.loading_pb);
         emptyTextView = view.findViewById(R.id.empty_text_view);
         studentRVModalArrayList = new ArrayList<>();
@@ -294,9 +294,9 @@ public class Add_studentFragment extends Fragment {
         facultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         departmentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         levelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        facultySpinner.setAdapter(facultyAdapter);
-        departmentSpinner.setAdapter(departmentAdapter);
-        levelSpinner.setAdapter(levelAdapter);
+      //  facultySpinner.setAdapter(facultyAdapter);
+      //  departmentSpinner.setAdapter(departmentAdapter);
+      //  levelSpinner.setAdapter(levelAdapter);
         studentRV = view.findViewById(R.id.idRVStudent);
         studentRV.setLayoutManager(new LinearLayoutManager(getContext()));
         studentRV.setHasFixedSize(true);
@@ -333,68 +333,68 @@ public class Add_studentFragment extends Fragment {
         });
     }
 
-    private void loadLevelData(){
-        List<String> levels = new ArrayList<>(Arrays.
-                asList("100", "200", "300", "400", "500"));
-        levelAdapter.addAll(levels);
-        levelAdapter.notifyDataSetChanged();
-    }
-
-    private void updateDepartmentDropdown(String faculty) {
-        departmentAdapter.clear();
-
-        if (!faculty.equals("Select Faculty")) {
-            List<String> departmentNames = facultyDepartmentsMap.get(faculty);
-            if (departmentNames != null) {
-                departmentAdapter.addAll(departmentNames);
-            }
-        }
-
-        departmentAdapter.notifyDataSetChanged();
-    }
-
-    private void spinnerListeners(){
-        levelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedLevel = (String) parent.getItemAtPosition(position);
-                getStudent();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
-            }
-        });
-
-        facultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedFaculty = (String) parent.getItemAtPosition(position);
-                updateDepartmentDropdown(selectedFaculty);
-                getStudent();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
-            }
-        });
-
-        departmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedDepartment = (String) parent.getItemAtPosition(position);
-                getStudent();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
-            }
-        });
-
-    }
+//    private void loadLevelData(){
+//        List<String> levels = new ArrayList<>(Arrays.
+//                asList("100", "200", "300", "400", "500"));
+//        levelAdapter.addAll(levels);
+//        levelAdapter.notifyDataSetChanged();
+//    }
+//
+//    private void updateDepartmentDropdown(String faculty) {
+//        departmentAdapter.clear();
+//
+//        if (!faculty.equals("Select Faculty")) {
+//            List<String> departmentNames = facultyDepartmentsMap.get(faculty);
+//            if (departmentNames != null) {
+//                departmentAdapter.addAll(departmentNames);
+//            }
+//        }
+//
+//        departmentAdapter.notifyDataSetChanged();
+//    }
+//
+//    private void spinnerListeners(){
+//        levelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                selectedLevel = (String) parent.getItemAtPosition(position);
+//                getStudent();
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//                // Do nothing
+//            }
+//        });
+//
+//        facultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                selectedFaculty = (String) parent.getItemAtPosition(position);
+//                updateDepartmentDropdown(selectedFaculty);
+//                getStudent();
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//                // Do nothing
+//            }
+//        });
+//
+//        departmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                selectedDepartment = (String) parent.getItemAtPosition(position);
+//                getStudent();
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//                // Do nothing
+//            }
+//        });
+//
+//    }
 
 
 }

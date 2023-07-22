@@ -58,12 +58,16 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 // hiding our progress bar.
                 loadingPB.setVisibility(View.VISIBLE);
+                button.setEnabled(false);
                 // getting data from our edit text on below line.
                 String email = userNameEdt.getText().toString();
                 String password = passwordEdt.getText().toString();
                 // on below line validating the text input.
                 if (TextUtils.isEmpty(email) && TextUtils.isEmpty(password)) {
                     Toast.makeText(Login.this, "Please enter your credentials..", Toast.LENGTH_SHORT).show();
+                    // Re-enable the button since the login process didn't start.
+                    loadingPB.setVisibility(View.GONE);
+                    button.setEnabled(true);
                     return;
                 }
                 // on below line we are calling a sign in method and passing email and password to it.
@@ -83,6 +87,9 @@ public class Login extends AppCompatActivity {
                             // hiding our progress bar and displaying a toast message.
                             loadingPB.setVisibility(View.GONE);
                             Toast.makeText(Login.this, "Please enter valid user credentials..", Toast.LENGTH_SHORT).show();
+
+                            button.setEnabled(true);
+
                         }
                     }
                 });
