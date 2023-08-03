@@ -73,7 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:drawableTint="@color/blue"
-                android:background="@null"
+                android:background="@drawable/boarder_bg"
                 android:inputType="text"
                 android:lines="1"
                 android:ellipsize="end"
@@ -83,13 +83,16 @@
                 android:drawableStart="@drawable/ic_round_person_24"
                 android:drawablePadding="10dp"
                 android:hint="name" />
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="10dp" />
 
             <EditText
                 android:id="@+id/mobile_np"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="50dp"
                 android:drawableTint="@color/blue"
-                android:background="@null"
+                android:background="@drawable/boarder_bg"
                 android:lines="1"
                 android:ellipsize="end"
                 android:scrollHorizontally="true"
@@ -99,6 +102,9 @@
                 android:drawableStart="@drawable/ic_sharp_local_phone_24"
                 android:drawablePadding="10dp"
                 android:hint="Mobile Number" />
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="10dp" />
 
             <EditText
                 android:id="@+id/email"
@@ -111,25 +117,31 @@
                 android:scrollHorizontally="true"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:background="@null"
+                android:background="@drawable/boarder_bg"
                 android:drawableStart="@drawable/ic_round_email_24"
                 android:drawablePadding="10dp"
                 android:hint="Email" />
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="10dp" />
 
             <Spinner
                 android:id="@+id/faculty_spinner"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="50dp"
                 android:drawableTint="@color/blue"
                 android:singleLine="true"
                 android:drawableStart="@drawable/ic_sharp_class_24"
                 android:drawablePadding="10dp"
                 android:hint="Faculty" />
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="10dp" />
 
             <Spinner
                 android:id="@+id/department_spinner"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="50dp"
                 android:drawableTint="@color/blue"
                 android:singleLine="true"
                 android:drawableStart="@drawable/ic_sharp_class_24"
