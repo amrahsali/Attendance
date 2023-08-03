@@ -84,7 +84,7 @@ public class ExaminationFragment extends Fragment {
     DatabaseReference examsRef;
 
     Spinner coursesSpinner, staffsSpinner;
-    private Button examsTime, generatePdfButton;
+    private Button examsTime, examsEndTime, generatePdfButton;
     private Calendar calendar;
     private SimpleDateFormat dateTimeFormat;
     FirebaseAuth mAuth;
@@ -118,8 +118,8 @@ public class ExaminationFragment extends Fragment {
         coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         staffsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        generatePdfButton = view.findViewById(R.id.idBtnGntPDFExam);
-
+//        generatePdfButton = view.findViewById(R.id.idBtnGntPDFExam);
+//
 
         examsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
         examsRV.setAdapter(examsAdapter);
@@ -137,12 +137,12 @@ public class ExaminationFragment extends Fragment {
         }
         context = getActivity();
 
-        generatePdfButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                generatePdf();
-            }
-        });
+//        generatePdfButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                generatePdf();
+//            }
+//        });
 
         return view;
     }
@@ -253,6 +253,7 @@ public class ExaminationFragment extends Fragment {
         View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.activity_dialogbox_examsadd, null);
 //        final EditText examNameEditText = dialogView.findViewById(R.id.edt_nameExam);
         examsTime = dialogView.findViewById(R.id.examsTime);
+        examsEndTime = dialogView.findViewById(R.id.examsEndTime);
         coursesSpinner = dialogView.findViewById(R.id.course_spinner);
         staffsSpinner = dialogView.findViewById(R.id.staff_spinner);
         staffListLayout = dialogView.findViewById(R.id.staff_list_layout);
@@ -274,23 +275,26 @@ public class ExaminationFragment extends Fragment {
 
 
         examsTime.setOnClickListener(v -> showDateTimePickerDialog());
+        examsEndTime.setOnClickListener(v -> showDateTimePickerDialog());
         builder.setView(dialogView);
         builder.setPositiveButton("Add", (dialog, which) -> {
             String examName = coursesSpinner.getSelectedItem().toString();
             String dateFormat = "dd/MM/yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
             String examTime = simpleDateFormat.format(calendar.getTime());
-            saveExamToFirebase(examName, dateTimeFormat.format(calendar.getTime()));
+            String endTime = examsEndTime.getText().toString(); // Get the selected end time from the examsEndTime TextView
+            saveExamToFirebase(examName, examTime, endTime); // Pass both start and end time to the function
         });
+
         builder.show();
     }
 
-    private void saveExamToFirebase(String departmentName, String examsTIme) {
+    private void saveExamToFirebase(String departmentName, String examsTIme, String examsEndTime) {
         DatabaseReference examsRef = FirebaseDatabase.getInstance().getReference().child("exams");
 
         String examId = examsRef.push().getKey();
         if (examId != null) {
-            ExamsModal exam = new ExamsModal(examId, departmentName, staffsList, examsTIme);
+            ExamsModal exam = new ExamsModal(examId, departmentName, staffsList, examsTIme,  examsEndTime);
             examsRef.child(departmentName).setValue(exam).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -317,22 +321,38 @@ public class ExaminationFragment extends Fragment {
             calendar.set(Calendar.YEAR, year);
             calendar.set(Calendar.MONTH, monthOfYear);
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            showTimePickerDialog();
+            showTimePickerDialog(true); // Pass true to indicate it's for the start time
         };
 
-        new DatePickerDialog(getContext(), DatePickerDialog.THEME_HOLO_DARK, dateSetListener,
-                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+        new DatePickerDialog(
+                getContext(),
+                DatePickerDialog.THEME_HOLO_DARK,
+                dateSetListener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        ).show();
     }
 
-    private void showTimePickerDialog() {
+    private void showTimePickerDialog(boolean isStartTime) {
         TimePickerDialog.OnTimeSetListener timeSetListener = (view, hourOfDay, minute) -> {
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
-            updateExamsDateTime();
+            if (isStartTime) {
+                showTimePickerDialog(false); // Show the Time Picker Dialog for the end time
+            } else {
+                updateExamsDateTime(); // Update both examsTime and examsEndTime TextViews
+            }
         };
 
-        new TimePickerDialog(getContext(), TimePickerDialog.THEME_HOLO_DARK, timeSetListener,
-                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false).show();
+        new TimePickerDialog(
+                getContext(),
+                TimePickerDialog.THEME_HOLO_DARK,
+                timeSetListener,
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                false
+        ).show();
     }
 
     private void updateExamsDateTime() {

@@ -186,9 +186,9 @@ public class ExamsScanActivity extends AppCompatActivity {
                                                 progressBar.setVisibility(View.GONE);
                                                 boolean courseEligibility = false;
                                                 Intent intent = new Intent(ExamsScanActivity.this, ExamsDialogBoxActivity.class);
-                                                Toast.makeText(ExamsScanActivity.this, "user name is "+ student.getStudentName(), Toast.LENGTH_SHORT).show();
-                                                intent.putExtra("student_name", student.getStudentName());
-                                                intent.putExtra("matricNo", student.getStudentID());
+                                                Toast.makeText(ExamsScanActivity.this, "user name is "+ student.getStudentNumber(), Toast.LENGTH_SHORT).show();
+                                                intent.putExtra("studentName", student.getStudentName());
+                                                intent.putExtra("matricNo", student.getStudentNumber());
                                                 intent.putExtra("img", student.getProductImg());
                                                 intent.putExtra("userId", student.getUserID());
                                                 intent.putExtra("examsName",examsName);

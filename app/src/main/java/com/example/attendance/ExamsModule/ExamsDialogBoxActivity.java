@@ -34,13 +34,14 @@ public class ExamsDialogBoxActivity extends AppCompatActivity {
     ImageView studentProfileImage;
     Button doneButton, nextButton;
     List<StudentExamPojo> eligibleStudentsList = new ArrayList<>();
-    Intent intent = new Intent();
+    Intent intent ;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        intent = getIntent();
         setContentView(R.layout.activity_exams_dialogbox);
         StudentNameView = findViewById(R.id.exam_std_name);
         MatricNoView = findViewById(R.id.exam_std_matric_no);
@@ -53,10 +54,10 @@ public class ExamsDialogBoxActivity extends AppCompatActivity {
         databaseReference = firebaseDatabase.getReference("Staff");
 
 
-        Toast.makeText(ExamsDialogBoxActivity.this, "got here " + studentName, Toast.LENGTH_SHORT).show();
-        if (intent.hasExtra("student_name")){
+//        Toast.makeText(ExamsDialogBoxActivity.this, "got here " + intent.getStringExtra("studentName"), Toast.LENGTH_SHORT).show();
+        if (intent.hasExtra("studentName")){
 
-            studentName = intent.getStringExtra("student_name");
+            studentName = intent.getStringExtra("studentName");
             matricNo = intent.getStringExtra("matricNo");
             courseEligibility = intent.getBooleanExtra("courseEligibility", false);
             image = intent.getStringExtra("img");
@@ -85,6 +86,12 @@ public class ExamsDialogBoxActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        eligibleStudentsList.clear();
+        super.onStop();
+    }
+
+    @Override
     protected void onStart() {
 
         super.onStart();
@@ -93,7 +100,7 @@ public class ExamsDialogBoxActivity extends AppCompatActivity {
 
     private void addToEligibleStudentsList() {
         Intent intent = getIntent();
-        studentName = intent.getStringExtra("student_name");
+        studentName = intent.getStringExtra("studentName");
         matricNo = intent.getStringExtra("matricNo");
         courseEligibility = intent.getBooleanExtra("courseEligibility", false);
         image = intent.getStringExtra("img");

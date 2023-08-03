@@ -71,9 +71,23 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/boarder_bg"
-        android:text="Select Date"
+        android:text="Start Date &amp; time"
         android:textColor="@color/black"
         android:textSize="15sp"
        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+    <Button
+        android:id="@+id/examsEndTime"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/boarder_bg"
+        android:text="End Date &amp; time"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        />
 
 </LinearLayout>

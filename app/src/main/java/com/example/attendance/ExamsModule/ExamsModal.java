@@ -10,16 +10,18 @@ public class ExamsModal {
     private String examId;
 
     private String time;
+    private String endTime;
 
     public ExamsModal() {
         // Default constructor required for Firebase
     }
 
-    public ExamsModal(String examId, String courseName,ArrayList<String> invigilators, String time) {
+    public ExamsModal(String examId, String courseName,ArrayList<String> invigilators, String time, String endTime) {
         this.examId = examId;
         this.courseName = courseName;
         this.invigilators = invigilators;
         this.time = time;
+        this.endTime = endTime;
     }
 
     public String getCourseName() {
@@ -36,6 +38,14 @@ public class ExamsModal {
 
     public void setExamId(String examId) {
         this.examId = examId;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
     public String getTime(){

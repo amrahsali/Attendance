@@ -43,14 +43,6 @@
             app:backgroundTint="#1976D2"
             app:tint="@android:color/white" />
 
-
-        <Button
-            android:id="@+id/idBtnGntPDFExam"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="Generate PDF" />
-
         <!-- Progress bar for loading indicator -->
         <ProgressBar
             android:id="@+id/loading_pb"
