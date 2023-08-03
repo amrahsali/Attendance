@@ -156,6 +156,12 @@
             android:layout_gravity="center"
             android:text="Start exams"/>
 
+    <!-- RecyclerView to display data -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/examslist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 
 
 

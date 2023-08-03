@@ -36,6 +36,7 @@
 
     <Spinner
         android:id="@+id/staff_spinner"
+
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_weight="1"

@@ -82,7 +82,6 @@
                     android:inputType="text"
                     android:drawableStart="@drawable/ic_round_person_24"
                     android:drawablePadding="10dp"
-                    android:hint="name"
                     android:autofillHints="name" />
             </LinearLayout>
             <View
