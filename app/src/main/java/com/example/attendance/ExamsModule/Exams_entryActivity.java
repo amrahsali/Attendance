@@ -4,6 +4,8 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -41,6 +43,8 @@ public class Exams_entryActivity extends AppCompatActivity {
     String time = "";
     String examsEndTime = "";
 
+    RecyclerView examsRV;
+
     Calendar currentDateTime = Calendar.getInstance();
 
 
@@ -52,6 +56,10 @@ public class Exams_entryActivity extends AppCompatActivity {
         examsTime = findViewById(R.id.exams_time);
         invList = new ArrayList<>();
         invigilatorList = findViewById(R.id.invigilator_list_layout);
+        examsRV = findViewById(R.id.examsRecordlist);
+
+        examsRV.setLayoutManager(new LinearLayoutManager(this));
+        examsRV.setAdapter(examsAdapter);
 
         // Retrieve the values from the intent
         Intent intent = getIntent();
@@ -63,10 +71,10 @@ public class Exams_entryActivity extends AppCompatActivity {
         Calendar currentDateTime = Calendar.getInstance();
 
         loadStaffData();
-        Date examsDateTime = parseDateTime(time);
+
         Date examsEndDateTime = parseDateTime(examsEndTime);
 
-        if (examsDateTime.after(currentDateTime.getTime())){
+        if (examsEndDateTime.after(currentDateTime.getTime())){
             button.setText("Download records");
         }
 
@@ -74,9 +82,8 @@ public class Exams_entryActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Date examsDateTime = parseDateTime(time);
 
-                if (examsDateTime.after(currentDateTime.getTime())) {
+                if (examsEndDateTime.after(currentDateTime.getTime())) {
                     // Generate exams record and make a query to Firebase
                     generateExamsRecordAndQueryFirebase(examsName, time);
                 } else {

@@ -82,12 +82,15 @@ public class ExamsDialogBoxActivity extends AppCompatActivity {
         });
         nextButton.setOnClickListener(v->{
             addToEligibleStudentsList();
+            Intent gotoScan = new Intent(ExamsDialogBoxActivity.this, ExamsScanActivity.class);
+            startActivity(gotoScan);
+            nextButton.setEnabled(false);
         });
     }
 
     @Override
     protected void onStop() {
-        eligibleStudentsList.clear();
+        //eligibleStudentsList.clear();
         super.onStop();
     }
 

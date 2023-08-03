@@ -163,11 +163,9 @@
 
     <!-- RecyclerView to display data -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/examslist"
+        android:id="@+id/examsRecordlist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-
 
 
     </LinearLayout>
