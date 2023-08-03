@@ -119,7 +119,7 @@ public class AdminHomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 long count = dataSnapshot.getChildrenCount();
-                countTextView4.setText("total" + count);
+                countTextView4.setText("total:" + count);
 
             }
 

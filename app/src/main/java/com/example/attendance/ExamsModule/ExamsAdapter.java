@@ -1,7 +1,10 @@
 package com.example.attendance.ExamsModule;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +65,8 @@ public class ExamsAdapter extends RecyclerView.Adapter<ExamsAdapter.ExamsViewHol
 
         public void bind(ExamsModal exam) {
             nameTextView.setText(exam.getCourseName());
-//            invigilator.setText(exam.getInvigilators().get(0));
+            Log.i(TAG, "ExamsViewHolder: "+ exam.getInvigilators().get(0));
+            invigilator.setText(exam.getInvigilators().get(0));
             time.setText(exam.getTime());
         }
 
