@@ -59,7 +59,7 @@ public class Exams_entryActivity extends AppCompatActivity {
         examsRV = findViewById(R.id.examsRecordlist);
 
         examsRV.setLayoutManager(new LinearLayoutManager(this));
-        examsRV.setAdapter(examsAdapter);
+        //examsRV.setAdapter(examsAdapter);
 
         // Retrieve the values from the intent
         Intent intent = getIntent();
