@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -47,6 +48,9 @@ public class ExamsScanActivity extends AppCompatActivity {
     private ScanUtils scanUtils;
     ProgressBar progressBar;
     String examsName = "";
+    String examsTime = "";
+
+    Button examsRetryBtn;
 
     public interface ImageLoadCallback {
         void onImageLoaded(byte[] imageData);
@@ -62,10 +66,16 @@ public class ExamsScanActivity extends AppCompatActivity {
         print = findViewById(R.id.exam_print_image);
         progressBar = findViewById(R.id.idPBLoading);
         statusText = findViewById(R.id.status);
+        examsRetryBtn = findViewById(R.id.exams_retry_btn);
         fingerprint = new Fingerprint();
         Intent intent = getIntent();
         examsName = intent.getStringExtra("ExamsName");
+        examsTime = intent.getStringExtra("time");
         scanUtils = new ScanUtils(ExamsScanActivity.this, print, print, statusText);
+
+        examsRetryBtn.setOnClickListener(x->{
+            scanUtils.scan(ExamsScanActivity.this);
+        });
 
         // Set a callback for the fingerprint scan result
         scanUtils.setScanCallback(new ScanUtils.ScanCallback() {
@@ -176,10 +186,13 @@ public class ExamsScanActivity extends AppCompatActivity {
                                                 progressBar.setVisibility(View.GONE);
                                                 boolean courseEligibility = false;
                                                 Intent intent = new Intent(ExamsScanActivity.this, ExamsDialogBoxActivity.class);
+                                                Toast.makeText(ExamsScanActivity.this, "user name is "+ student.getStudentName(), Toast.LENGTH_SHORT).show();
                                                 intent.putExtra("student_name", student.getStudentName());
                                                 intent.putExtra("matricNo", student.getStudentID());
                                                 intent.putExtra("img", student.getProductImg());
                                                 intent.putExtra("userId", student.getUserID());
+                                                intent.putExtra("examsName",examsName);
+                                                intent.putExtra("examsTime", examsTime);
                                                 for (String courses : student.getCourses()){
                                                     if(courses.equalsIgnoreCase(examsName)){
                                                         courseEligibility = true;

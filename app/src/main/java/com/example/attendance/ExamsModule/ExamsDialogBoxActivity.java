@@ -9,25 +9,34 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.attendance.R;
 import com.example.attendance.StaffModule.StudentExamPojo;
 import com.example.attendance.StudentModule.StudentModal;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExamsDialogBoxActivity extends AppCompatActivity {
 
-    String studentName, matricNo, image, userId;
+    String studentName, matricNo, image, userId, examsName, examsTime;
     boolean courseEligibility;
+
+    DatabaseReference databaseReference;
+    FirebaseDatabase firebaseDatabase;
     TextView StudentNameView, MatricNoView, EligibilityView;
     private final String ELIGIBLE = "ELIGIBLE";
     private final String NOT_ELIGIBLE = "NOT ELIGIBLE";
     ImageView studentProfileImage;
     Button doneButton, nextButton;
     List<StudentExamPojo> eligibleStudentsList = new ArrayList<>();
+    Intent intent = new Intent();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,25 +49,21 @@ public class ExamsDialogBoxActivity extends AppCompatActivity {
         doneButton = findViewById(R.id.save_exams_to_pdf);
         nextButton = findViewById(R.id.exams_next);
 
-        Intent intent = new Intent();
-        studentName = intent.getStringExtra("student_name");
-        matricNo = intent.getStringExtra("matricNo");
-        courseEligibility = intent.getBooleanExtra("courseEligibility", false);
-        image = intent.getStringExtra("img");
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference("Staff");
 
-        userId = intent.getStringExtra("userId");
 
-        doneButton.setOnClickListener(v -> {
+        Toast.makeText(ExamsDialogBoxActivity.this, "got here " + studentName, Toast.LENGTH_SHORT).show();
+        if (intent.hasExtra("student_name")){
 
-        });
-        nextButton.setOnClickListener(v->{
+            studentName = intent.getStringExtra("student_name");
+            matricNo = intent.getStringExtra("matricNo");
+            courseEligibility = intent.getBooleanExtra("courseEligibility", false);
+            image = intent.getStringExtra("img");
+            userId = intent.getStringExtra("userId");
+            examsName = intent.getStringExtra("examsName");
+            examsTime = intent.getStringExtra("examsTime");
 
-        });
-    }
-
-    @Override
-    protected void onStart() {
-        if (!studentName.isEmpty()){
             StudentNameView.setText(studentName);
             MatricNoView.setText(matricNo);
             if (courseEligibility){
@@ -70,6 +75,18 @@ public class ExamsDialogBoxActivity extends AppCompatActivity {
             }
             Glide.with(ExamsDialogBoxActivity.this).load(image).into(studentProfileImage);
         }
+
+        doneButton.setOnClickListener(v -> {
+            saveEligibleStudentsToFirebase();
+        });
+        nextButton.setOnClickListener(v->{
+            addToEligibleStudentsList();
+        });
+    }
+
+    @Override
+    protected void onStart() {
+
         super.onStart();
     }
 
@@ -92,4 +109,33 @@ public class ExamsDialogBoxActivity extends AppCompatActivity {
             eligibleStudentsList.add(student);
         }
     }
+
+    private void saveEligibleStudentsToFirebase() {
+        // Check if the eligibleStudentsList is not empty
+        if (!eligibleStudentsList.isEmpty()) {
+            DatabaseReference examsRecordRef = firebaseDatabase.getReference("ExamsRecord");
+            DatabaseReference examRef = examsRecordRef.child(examsName + "-" + examsTime);
+
+            for (StudentExamPojo student : eligibleStudentsList) {
+                // Generate a unique key for each student in the EligibleStudents node
+                String key = examRef.push().getKey();
+                if (key != null) {
+                    // Save the student object to Firebase with the generated key
+                    examRef.child(key).setValue(student);
+                }
+            }
+            // Show a success message
+            Toast.makeText(ExamsDialogBoxActivity.this, "Exams Record Saved.", Toast.LENGTH_SHORT).show();
+            // Clear the eligibleStudentsList after saving to Firebase
+            eligibleStudentsList.clear();
+        } else {
+            // Show a message if there are no eligible students to save
+            Toast.makeText(ExamsDialogBoxActivity.this, "No student to save.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
+
+
 }

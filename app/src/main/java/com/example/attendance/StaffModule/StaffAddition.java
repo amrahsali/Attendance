@@ -215,6 +215,7 @@ public class StaffAddition extends AppCompatActivity {
 
                         if (leftBmpData == null || rightBmpData == null){
                             Toast.makeText(StaffAddition.this, "please add fingerprint", Toast.LENGTH_SHORT).show();
+                            loadingPB.setVisibility(View.GONE);
                             return;
                         }
 

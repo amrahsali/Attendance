@@ -23,7 +23,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class Exams_entryActivity extends AppCompatActivity {
 
@@ -32,6 +38,7 @@ public class Exams_entryActivity extends AppCompatActivity {
     LinearLayout invigilatorList;
     private ArrayList<String> invList;
     String examsName = "";
+    String time = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,21 +53,31 @@ public class Exams_entryActivity extends AppCompatActivity {
         Intent intent = getIntent();
         examsName = intent.getStringExtra("ExamsName");
         //String invigilator = intent.getStringExtra("invigilator");
-        String time = intent.getStringExtra("time");
+        time = intent.getStringExtra("time");
 
-        // Set the retrieved values to the TextViews
-//        examsTitle.setText(examsName);
-//        //invigilator.setText(invigilator);
-//        examsTime.setText(time);
         loadStaffData();
+        Date examsDateTime = parseDateTime(time);
+
+        if (isAfterThreeHours(examsDateTime)){
+            button.setText("Download records");
+        }
 
         button = findViewById(R.id.savebtnExams);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Exams_entryActivity.this, ExamsScanActivity.class);
-                intent.putExtra("ExamsName",examsName);
-                startActivity(intent);
+                Date examsDateTime = parseDateTime(time);
+
+                if (isAfterThreeHours(examsDateTime)) {
+                    // Generate exams record and make a query to Firebase
+                    generateExamsRecordAndQueryFirebase(examsName, time);
+                } else {
+                    // If it's not yet 3 hours after the exams datetime, simply start the ExamsScanActivity
+                    Intent intent = new Intent(Exams_entryActivity.this, ExamsScanActivity.class);
+                    intent.putExtra("ExamsName", examsName);
+                    intent.putExtra("ExamsTime", time);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -109,6 +126,44 @@ public class Exams_entryActivity extends AppCompatActivity {
                 Log.e(TAG, "Failed to load exams data: " + databaseError.getMessage());
             }
         });
+    }
+
+    // Method to check if the current datetime is 3 hours after the exams datetime
+    private boolean isAfterThreeHours(Date examsDateTime) {
+        if (examsDateTime == null) {
+            return false; // Return false if there's an error parsing the exams datetime
+        }
+
+        // Get the current datetime
+        Date currentDateTime = Calendar.getInstance().getTime();
+
+        // Calculate the difference in milliseconds between the current datetime and the exams datetime
+        long timeDifference = examsDateTime.getTime() - currentDateTime.getTime();
+
+        // Convert the time difference to hours
+        long hoursDifference = TimeUnit.MILLISECONDS.toHours(timeDifference);
+
+        // Return true if the difference is greater than or equal to 3, false otherwise
+        return hoursDifference >= 1;
+    }
+
+
+    // Method to parse the datetime string into a Date object
+    private Date parseDateTime(String dateTimeString) {
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.US);
+        try {
+            return format.parse(dateTimeString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void generateExamsRecordAndQueryFirebase(String examsName, String time) {
+        // Code to generate the exams record and make a query to Firebase here.
+        // You can use examsName and time to create the exams record and make the query.
+        // Once you have the list from the query, you can proceed accordingly.
+        // You can use Firebase Realtime Database or Firestore to store and query the data.
     }
 
 }
