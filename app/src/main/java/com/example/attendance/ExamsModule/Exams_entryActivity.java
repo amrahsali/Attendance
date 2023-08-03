@@ -39,6 +39,10 @@ public class Exams_entryActivity extends AppCompatActivity {
     private ArrayList<String> invList;
     String examsName = "";
     String time = "";
+    String examsEndTime = "";
+
+    Calendar currentDateTime = Calendar.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +58,15 @@ public class Exams_entryActivity extends AppCompatActivity {
         examsName = intent.getStringExtra("ExamsName");
         //String invigilator = intent.getStringExtra("invigilator");
         time = intent.getStringExtra("time");
+        examsEndTime = intent.getStringExtra("examsEndTime");
+
+        Calendar currentDateTime = Calendar.getInstance();
 
         loadStaffData();
         Date examsDateTime = parseDateTime(time);
+        Date examsEndDateTime = parseDateTime(examsEndTime);
 
-        if (isAfterThreeHours(examsDateTime)){
+        if (examsDateTime.after(currentDateTime.getTime())){
             button.setText("Download records");
         }
 
@@ -68,7 +76,7 @@ public class Exams_entryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Date examsDateTime = parseDateTime(time);
 
-                if (isAfterThreeHours(examsDateTime)) {
+                if (examsDateTime.after(currentDateTime.getTime())) {
                     // Generate exams record and make a query to Firebase
                     generateExamsRecordAndQueryFirebase(examsName, time);
                 } else {

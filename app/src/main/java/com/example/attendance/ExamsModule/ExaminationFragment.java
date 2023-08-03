@@ -118,8 +118,8 @@ public class ExaminationFragment extends Fragment {
         coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         staffsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-//        generatePdfButton = view.findViewById(R.id.idBtnGntPDFExam);
-//
+        //generatePdfButton = view.findViewById(R.id.idBtnGntPDFExam);
+
 
         examsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
         examsRV.setAdapter(examsAdapter);
@@ -275,17 +275,15 @@ public class ExaminationFragment extends Fragment {
 
 
         examsTime.setOnClickListener(v -> showDateTimePickerDialog());
-        examsEndTime.setOnClickListener(v -> showDateTimePickerDialog());
+        examsEndTime.setOnClickListener(v -> showDateTimePickerDialogEnd());
         builder.setView(dialogView);
         builder.setPositiveButton("Add", (dialog, which) -> {
             String examName = coursesSpinner.getSelectedItem().toString();
             String dateFormat = "dd/MM/yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
             String examTime = simpleDateFormat.format(calendar.getTime());
-            String endTime = examsEndTime.getText().toString(); // Get the selected end time from the examsEndTime TextView
-            saveExamToFirebase(examName, examTime, endTime); // Pass both start and end time to the function
+            saveExamToFirebase(examName, dateTimeFormat.format(calendar.getTime()), dateTimeFormat.format(calendar.getTime()));
         });
-
         builder.show();
     }
 
@@ -321,38 +319,45 @@ public class ExaminationFragment extends Fragment {
             calendar.set(Calendar.YEAR, year);
             calendar.set(Calendar.MONTH, monthOfYear);
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            showTimePickerDialog(true); // Pass true to indicate it's for the start time
+            showTimePickerDialog();
         };
 
-        new DatePickerDialog(
-                getContext(),
-                DatePickerDialog.THEME_HOLO_DARK,
-                dateSetListener,
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-        ).show();
+        new DatePickerDialog(getContext(), DatePickerDialog.THEME_HOLO_DARK, dateSetListener,
+                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
-    private void showTimePickerDialog(boolean isStartTime) {
+    private void showDateTimePickerDialogEnd() {
+        DatePickerDialog.OnDateSetListener dateSetListener = (view, year, monthOfYear, dayOfMonth) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, monthOfYear);
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            showTimePickerDialogEnd();
+        };
+
+        new DatePickerDialog(getContext(), DatePickerDialog.THEME_HOLO_DARK, dateSetListener,
+                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    private void showTimePickerDialog() {
         TimePickerDialog.OnTimeSetListener timeSetListener = (view, hourOfDay, minute) -> {
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
-            if (isStartTime) {
-                showTimePickerDialog(false); // Show the Time Picker Dialog for the end time
-            } else {
-                updateExamsDateTime(); // Update both examsTime and examsEndTime TextViews
-            }
+            updateExamsDateTime();
         };
 
-        new TimePickerDialog(
-                getContext(),
-                TimePickerDialog.THEME_HOLO_DARK,
-                timeSetListener,
-                calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE),
-                false
-        ).show();
+        new TimePickerDialog(getContext(), TimePickerDialog.THEME_HOLO_DARK, timeSetListener,
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false).show();
+    }
+
+    private void showTimePickerDialogEnd() {
+        TimePickerDialog.OnTimeSetListener timeSetListener = (view, hourOfDay, minute) -> {
+            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            calendar.set(Calendar.MINUTE, minute);
+            examsEndTime.setText(dateTimeFormat.format(calendar.getTime()));
+        };
+
+        new TimePickerDialog(getContext(), TimePickerDialog.THEME_HOLO_DARK, timeSetListener,
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false).show();
     }
 
     private void updateExamsDateTime() {

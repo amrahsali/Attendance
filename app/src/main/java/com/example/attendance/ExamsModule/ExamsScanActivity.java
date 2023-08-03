@@ -49,6 +49,7 @@ public class ExamsScanActivity extends AppCompatActivity {
     ProgressBar progressBar;
     String examsName = "";
     String examsTime = "";
+    String examsEndTime = "";
 
     Button examsRetryBtn;
 
@@ -71,6 +72,7 @@ public class ExamsScanActivity extends AppCompatActivity {
         Intent intent = getIntent();
         examsName = intent.getStringExtra("ExamsName");
         examsTime = intent.getStringExtra("time");
+        examsEndTime = intent.getStringExtra("examsEndTime");
         scanUtils = new ScanUtils(ExamsScanActivity.this, print, print, statusText);
 
         examsRetryBtn.setOnClickListener(x->{
@@ -193,6 +195,7 @@ public class ExamsScanActivity extends AppCompatActivity {
                                                 intent.putExtra("userId", student.getUserID());
                                                 intent.putExtra("examsName",examsName);
                                                 intent.putExtra("examsTime", examsTime);
+                                                intent.putExtra("examsEndTime", examsEndTime);
                                                 for (String courses : student.getCourses()){
                                                     if(courses.equalsIgnoreCase(examsName)){
                                                         courseEligibility = true;

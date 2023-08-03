@@ -82,6 +82,7 @@ public class ExamsAdapter extends RecyclerView.Adapter<ExamsAdapter.ExamsViewHol
             intent.putExtra("ExamsName", exam.getCourseName());
             intent.putExtra("invigilator", exam.getInvigilators());
             intent.putExtra("time", exam.getTime());
+            intent.putExtra("examsEndTime", exam.getEndTime());
             context.startActivity(intent);
         }
     }
