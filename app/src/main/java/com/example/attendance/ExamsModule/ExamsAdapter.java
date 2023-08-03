@@ -36,7 +36,7 @@ public class ExamsAdapter extends RecyclerView.Adapter<ExamsAdapter.ExamsViewHol
     @Override
     public void onBindViewHolder(@NonNull ExamsViewHolder holder, int position) {
         ExamsModal exam = examsModals.get(position);
-       // holder.bind(exam);
+       holder.bind(exam);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ExamsAdapter extends RecyclerView.Adapter<ExamsAdapter.ExamsViewHol
 
         public void bind(ExamsModal exam) {
             nameTextView.setText(exam.getCourseName());
-            invigilator.setText(exam.getInvigilators().get(0));
+//            invigilator.setText(exam.getInvigilators().get(0));
             time.setText(exam.getTime());
         }
 

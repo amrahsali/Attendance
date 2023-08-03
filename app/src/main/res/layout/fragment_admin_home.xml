@@ -210,12 +210,13 @@
                     android:layout_marginTop="8dp" />
 
                 <TextView
+                    android:id="@+id/total_exams"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Total: 5"
-                    android:textSize="14sp"
                     android:textColor="@android:color/darker_gray"
-                    android:layout_marginTop="4dp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
