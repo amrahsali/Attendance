@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -36,7 +37,7 @@ public class AdminHomeFragment extends Fragment {
 
     private ViewPager imageViewPager;
     private FirebaseAuth mAuth;
-    TextView countTextView1,countTextView2,countTextView3;
+    TextView countTextView1,countTextView2,countTextView3,countTextView4;
 
     DatabaseReference databaseReference;
 
@@ -61,6 +62,7 @@ public class AdminHomeFragment extends Fragment {
         countTextView1 = view.findViewById(R.id.total_std);
         countTextView2 = view.findViewById(R.id.total_staffs);
         countTextView3 = view.findViewById(R.id.total_faculty);
+        countTextView4 = view.findViewById(R.id.total_exams);
 
 
         databaseReference.child("Student").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -110,6 +112,21 @@ public class AdminHomeFragment extends Fragment {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Handle any errors
+            }
+        });
+
+        databaseReference.child("exams").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long count = dataSnapshot.getChildrenCount();
+                countTextView4.setText("total" + count);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle any errors
+
             }
         });
 
