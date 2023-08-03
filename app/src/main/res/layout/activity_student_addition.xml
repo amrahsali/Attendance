@@ -80,6 +80,7 @@
                     android:drawableTint="@color/blue"
                     android:background="@drawable/boarder_bg"
                     android:inputType="text"
+                    android:paddingStart="5dp"
                     android:drawableStart="@drawable/ic_round_person_24"
                     android:drawablePadding="10dp"
                     android:autofillHints="name" />
@@ -95,6 +96,7 @@
                     android:id="@+id/stdntNumber"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:paddingStart="5dp"
                     android:drawableTint="@color/blue"
                     android:background="@drawable/boarder_bg"
                     android:drawableStart="@drawable/ic_round_library_books_24"
@@ -113,6 +115,7 @@
                     android:id="@+id/student_level"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:paddingStart="5dp"
                     android:drawableTint="@color/blue"
                     android:background="@drawable/boarder_bg"
                     android:drawableStart="@drawable/ic_round_arrow_upward_24"
