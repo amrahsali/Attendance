@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20sp"
+    android:gravity="center"
     android:background="@color/lightBlue"
     tools:context=".StudentModule.StudentAddition">
 
@@ -18,9 +18,16 @@
         android:hint="@string/student_profile"/>
 
 
-
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        android:elevation="6dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="10dp">
     <LinearLayout
         android:gravity="center"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
@@ -31,13 +38,22 @@
             android:layout_height="100dp"
             android:layout_gravity="center"
             android:scaleType="fitCenter"
-            android:contentDescription="@string/student_profile"
-             />
+            android:contentDescription="@string/student_profile"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="10dp"
+            android:hint="Add staff image "/>
 
     </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="30dp" />
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="360dp"
+        android:layout_width="320dp"
         android:layout_height="400dp"
         android:elevation="6dp"
         android:layout_gravity="center"
@@ -61,6 +77,7 @@
                     android:layout_height="50dp"
                     android:drawableTint="@color/blue"
                     android:background="@null"
+
                     android:inputType="text"
                     android:drawableStart="@drawable/ic_round_person_24"
                     android:drawablePadding="10dp"
