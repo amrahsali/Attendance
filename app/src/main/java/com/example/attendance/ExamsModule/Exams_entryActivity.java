@@ -3,21 +3,25 @@ package com.example.attendance.ExamsModule;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.attendance.R;
 import com.example.attendance.Utility.ScanActivity;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,11 +44,17 @@ public class Exams_entryActivity extends AppCompatActivity {
     TextView examsTitle, examsTime;
     LinearLayout invigilatorList;
     private ArrayList<String> invList;
+
+    ArrayList<ExamsStudentRecordModal> examsModalsArrayList;
     String examsName = "";
     String time = "";
     String examsEndTime = "";
 
     RecyclerView examsRV;
+
+    DatabaseReference examsRecordRef;
+
+    ExamsStudentRecordAdapter examsRecordAdapter;
 
     Calendar currentDateTime = Calendar.getInstance();
 
@@ -57,9 +68,10 @@ public class Exams_entryActivity extends AppCompatActivity {
         invList = new ArrayList<>();
         invigilatorList = findViewById(R.id.invigilator_list_layout);
         examsRV = findViewById(R.id.examsRecordlist);
+        examsRecordAdapter = new ExamsStudentRecordAdapter(examsModalsArrayList, Exams_entryActivity.this);
 
         examsRV.setLayoutManager(new LinearLayoutManager(this));
-        //examsRV.setAdapter(examsAdapter);
+        examsRV.setAdapter(examsRecordAdapter);
 
         // Retrieve the values from the intent
         Intent intent = getIntent();
@@ -74,10 +86,16 @@ public class Exams_entryActivity extends AppCompatActivity {
 
         Date examsEndDateTime = parseDateTime(examsEndTime);
 
-        if (examsEndDateTime.after(currentDateTime.getTime())){
-            button.setText("Download records");
+        if (examsEndDateTime != null){
+            if (examsEndDateTime.after(currentDateTime.getTime())){
+                button.setText(R.string.download_records);
+            }
         }
 
+        Log.i(TAG, "onCreate: exams time is: " + examsEndDateTime);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.i(TAG, "onCreate: current time is: " + currentDateTime.getTime());
+        }
 
 
         button = findViewById(R.id.savebtnExams);
@@ -145,26 +163,6 @@ public class Exams_entryActivity extends AppCompatActivity {
         });
     }
 
-    // Method to check if the current datetime is 3 hours after the exams datetime
-    private boolean isAfterThreeHours(Date examsDateTime) {
-        if (examsDateTime == null) {
-            return false; // Return false if there's an error parsing the exams datetime
-        }
-
-        // Get the current datetime
-        Date currentDateTime = Calendar.getInstance().getTime();
-
-        // Calculate the difference in milliseconds between the current datetime and the exams datetime
-        long timeDifference = examsDateTime.getTime() - currentDateTime.getTime();
-
-        // Convert the time difference to hours
-        long hoursDifference = TimeUnit.MILLISECONDS.toHours(timeDifference);
-
-        // Return true if the difference is greater than or equal to 3, false otherwise
-        return hoursDifference >= 1;
-    }
-
-
     // Method to parse the datetime string into a Date object
     private Date parseDateTime(String dateTimeString) {
         SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.US);
@@ -178,9 +176,41 @@ public class Exams_entryActivity extends AppCompatActivity {
 
     private void generateExamsRecordAndQueryFirebase(String examsName, String time) {
         // Code to generate the exams record and make a query to Firebase here.
-        // You can use examsName and time to create the exams record and make the query.
-        // Once you have the list from the query, you can proceed accordingly.
-        // You can use Firebase Realtime Database or Firestore to store and query the data.
+
+    }
+
+    private void loadExamsRecordData() {
+        //DatabaseReference examsRef = FirebaseDatabase.getInstance().getReference("exams");
+        examsRecordRef = FirebaseDatabase.getInstance().getReference("ExamsRecord");
+        Query query = examsRecordRef.orderByChild("courseName").equalTo(examsName);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // ArrayList<String> invList = new ArrayList<>();
+                for (DataSnapshot examSnapshot : dataSnapshot.getChildren()) {
+                    String examId = examSnapshot.child("examId").getValue(String.class);
+                    String courseName = examSnapshot.child("courseName").getValue(String.class);
+                    String time = examSnapshot.child("time").getValue(String.class);
+                    DataSnapshot invigilatorsSnapshot = examSnapshot.child("invigilators");
+                    ArrayList<String> invigilators = new ArrayList<>();
+                    for (DataSnapshot invigilatorSnapshot : invigilatorsSnapshot.getChildren()) {
+                        String invigilator = invigilatorSnapshot.getValue(String.class);
+                        invigilators.add(invigilator);
+                        addStaffToLayout(invigilator);
+                    }
+                    invList.addAll(invigilators);
+                    examsTitle.setText(courseName);
+                    examsTime.setText(time);
+                }
+                // Do something with the invList ArrayList
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle any errors
+                Log.e(TAG, "Failed to load exams data: " + databaseError.getMessage());
+            }
+        });
     }
 
 }

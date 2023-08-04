@@ -79,6 +79,8 @@ public class ExamsDialogBoxActivity extends AppCompatActivity {
 
         doneButton.setOnClickListener(v -> {
             saveEligibleStudentsToFirebase();
+            Intent gotoList = new Intent(ExamsDialogBoxActivity.this, Exams_entryActivity.class);
+            startActivity(gotoList);
         });
         nextButton.setOnClickListener(v->{
             addToEligibleStudentsList();
