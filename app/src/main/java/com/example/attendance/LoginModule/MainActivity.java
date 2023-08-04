@@ -83,9 +83,9 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
         fragmentTransaction.replace(R.id.content, fragment, "");
         fragmentTransaction.commit();
 
-        if (savedInstanceState == null) {
-            vNV.setCheckedItem(R.id.navigation_record);
-        }
+//        if (savedInstanceState == null) {
+//            vNV.setCheckedItem(R.id.navigation_record);
+//        }
         NavClick();
 
         Menu navMenu = vNV.getMenu();
@@ -116,13 +116,13 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
             Fragment frag = null;
             switch (item.getItemId()) {
 
-                case R.id.navigation_record:
-                        toolbar.setTitle("Records");
-                        RecordFragment fragment = new RecordFragment();
-                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.content, fragment, "");
-                        fragmentTransaction.commit();
-                    break;
+//                case R.id.navigation_record:
+//                        toolbar.setTitle("Records");
+//                        RecordFragment fragment = new RecordFragment();
+//                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//                        fragmentTransaction.replace(R.id.content, fragment, "");
+//                        fragmentTransaction.commit();
+//                    break;
                 case R.id.add_staff:
                     if (isUserLoggedIn()) {
                         toolbar.setTitle("Add Staff");

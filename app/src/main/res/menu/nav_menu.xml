@@ -36,10 +36,10 @@
         android:id="@+id/navigation_courses"
         android:icon="@drawable/ic_round_library_books_24"
         android:title="Courses " />
-    <item
-        android:iconTint="@color/blue"
-        android:id="@+id/navigation_record"
-        android:icon="@drawable/ic_round_event_note_24"
-        android:title="records" />
+<!--    <item-->
+<!--        android:iconTint="@color/blue"-->
+<!--        android:id="@+id/navigation_record"-->
+<!--        android:icon="@drawable/ic_round_event_note_24"-->
+<!--        android:title="records" />-->
 </menu>
 

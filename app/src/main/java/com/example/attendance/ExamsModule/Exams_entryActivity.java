@@ -67,6 +67,7 @@ public class Exams_entryActivity extends AppCompatActivity {
         examsTime = findViewById(R.id.exams_time);
         invList = new ArrayList<>();
         invigilatorList = findViewById(R.id.invigilator_list_layout);
+        examsModalsArrayList = new ArrayList<>();
         examsRV = findViewById(R.id.examsRecordlist);
         examsRecordAdapter = new ExamsStudentRecordAdapter(examsModalsArrayList, Exams_entryActivity.this);
 
@@ -115,6 +116,8 @@ public class Exams_entryActivity extends AppCompatActivity {
                 }
             }
         });
+
+        loadExamsRecordData();
 
     }
 
@@ -180,29 +183,50 @@ public class Exams_entryActivity extends AppCompatActivity {
     }
 
     private void loadExamsRecordData() {
-        //DatabaseReference examsRef = FirebaseDatabase.getInstance().getReference("exams");
-        examsRecordRef = FirebaseDatabase.getInstance().getReference("ExamsRecord");
-        Query query = examsRecordRef.orderByChild("courseName").equalTo(examsName);
+        DatabaseReference examsRef = FirebaseDatabase.getInstance().getReference("ExamsRecord");
+
+        Query query = examsRef.orderByKey(); // Assuming you want to order by the keys (coursetitle+date)
+
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // ArrayList<String> invList = new ArrayList<>();
-                for (DataSnapshot examSnapshot : dataSnapshot.getChildren()) {
-                    String examId = examSnapshot.child("examId").getValue(String.class);
-                    String courseName = examSnapshot.child("courseName").getValue(String.class);
-                    String time = examSnapshot.child("time").getValue(String.class);
-                    DataSnapshot invigilatorsSnapshot = examSnapshot.child("invigilators");
-                    ArrayList<String> invigilators = new ArrayList<>();
-                    for (DataSnapshot invigilatorSnapshot : invigilatorsSnapshot.getChildren()) {
-                        String invigilator = invigilatorSnapshot.getValue(String.class);
-                        invigilators.add(invigilator);
-                        addStaffToLayout(invigilator);
+
+                for (DataSnapshot courseSnapshot : dataSnapshot.getChildren()) {
+                    String courseKey = courseSnapshot.getKey();
+                    if (courseKey.startsWith(examsName + "-" + null)) {
+                        for (DataSnapshot studentSnapshot : courseSnapshot.getChildren()) {
+                            String studentId = studentSnapshot.getKey();
+                            String studentName = studentSnapshot.child("student-name").getValue(String.class);
+                            String studentMatNum = studentSnapshot.child("matNumber").getValue(String.class);
+
+                            examsModalsArrayList.add(new ExamsStudentRecordModal(studentName, studentMatNum));
+                            examsModalsArrayList.add(new ExamsStudentRecordModal("amrah sali", "studentMatNum"));
+
+                        }
                     }
-                    invList.addAll(invigilators);
-                    examsTitle.setText(courseName);
-                    examsTime.setText(time);
                 }
-                // Do something with the invList ArrayList
+
+
+
+//                for (DataSnapshot courseSnapshot : dataSnapshot.getChildren()) {
+//                    String xcourseKey = courseSnapshot.getKey();
+//                    Toast.makeText(Exams_entryActivity.this, "exams is: " + courseSnapshot.getKey(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(Exams_entryActivity.this, "exams is: " + examsName + "-" + null, Toast.LENGTH_SHORT).show();
+//
+//                    if (xcourseKey.startsWith(examsName + "-" + null)) {
+//                        for (DataSnapshot studentRecordSnapshot : dataSnapshot.getChildren()) {
+//                            String courseKey = courseSnapshot.getKey();
+//                            if (courseKey.startsWith(desiredCourseName)) {
+//                                for (DataSnapshot studentSnapshot : courseSnapshot.getChildren()) {
+//                                    String studentId = studentSnapshot.getKey();
+//                                    String studentName = studentSnapshot.child("student-name").getValue(String.class);
+//
+//                                    studentList.add(new Student(studentId, studentName));
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
             }
 
             @Override
@@ -211,6 +235,7 @@ public class Exams_entryActivity extends AppCompatActivity {
                 Log.e(TAG, "Failed to load exams data: " + databaseError.getMessage());
             }
         });
+
     }
 
 }

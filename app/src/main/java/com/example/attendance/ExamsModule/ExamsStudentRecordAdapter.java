@@ -14,69 +14,59 @@ import com.example.attendance.AttendanceModule.AttendanceRecord;
 import com.example.attendance.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class ExamsStudentRecordAdapter extends RecyclerView.Adapter<ExamsStudentRecordAdapter.ExamsViewHolder> {
+public class ExamsStudentRecordAdapter extends RecyclerView.Adapter<ExamsStudentRecordAdapter.ExamsRecordViewHolder> {
 
     private Context context;
     private ArrayList<ExamsStudentRecordModal> examsModals;
+
+    private List<ExamsStudentRecordModal> studentList;
+
+//    public ExamsStudentRecordAdapter(List<ExamsStudentRecordModal> studentList) {
+//        this.studentList = studentList;
+//    }
+
+    @NonNull
+    @Override
+    public ExamsRecordViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.exams_student_record_cardview, parent, false);
+        return new ExamsRecordViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ExamsRecordViewHolder holder, int position) {
+        ExamsStudentRecordModal student = studentList.get(position);
+        holder.bind(student);
+    }
+
+    @Override
+    public int getItemCount() {
+        return studentList.size();
+    }
+
 
     public ExamsStudentRecordAdapter(ArrayList<ExamsStudentRecordModal> examsModals, Context context) {
         this.examsModals = examsModals;
         this.context = context;
     }
 
-    @NonNull
-    @Override
-    public ExamsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.exams_student_record_cardview, parent, false);
-        return new ExamsViewHolder(view);
-    }
+    public static class ExamsRecordViewHolder extends RecyclerView.ViewHolder {
+        private TextView studentNameTextView;
+        private TextView studentMatNoTextView;
 
-    @Override
-    public void onBindViewHolder(@NonNull ExamsViewHolder holder, int position) {
-        ExamsStudentRecordModal exam = examsModals.get(position);
-       // holder.bind(exam);
-    }
-
-    @Override
-    public int getItemCount() {
-        return 0;
-    }
-
-//    @Override
-//    public int getItemCount() {
-//        return examsModals.size();
-//    }
-
-    public AttendanceRecord getItem(int i) {
-        return null;
-    }
-
-    public class ExamsViewHolder extends RecyclerView.ViewHolder {
-        private TextView nameView, matricNoView;
-
-        public ExamsViewHolder(@NonNull View itemView) {
+        public ExamsRecordViewHolder(@NonNull View itemView) {
             super(itemView);
-            nameView = itemView.findViewById(R.id.record_student_name);
-            matricNoView = itemView.findViewById(R.id.record_student_mat_no);
+            studentNameTextView = itemView.findViewById(R.id.record_student_name);
+            studentMatNoTextView = itemView.findViewById(R.id.record_student_mat_no);
         }
 
-        public void bind(ExamsStudentRecordModal exam) {
-            nameView.setText(exam.getStudentName());
-            matricNoView.setText(exam.getStudentMatricNo());
+        public void bind(ExamsStudentRecordModal student) {
+            studentNameTextView.setText(student.getStudentName());
+            studentMatNoTextView.setText(student.getStudentMatricNo());
+        }
         }
 
-
-
-//        @Override
-//        public void onClick(View v) {
-//            int position = getAdapterPosition();
-//            if (position != RecyclerView.NO_POSITION) {
-//                ExamsModal exam = examsModals.get(position);
-//                openAnotherActivity(exam);
-//            }
-//        }
 
     }
-}
