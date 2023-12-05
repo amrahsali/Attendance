@@ -20,13 +20,12 @@ import java.util.List;
 public class ExamsStudentRecordAdapter extends RecyclerView.Adapter<ExamsStudentRecordAdapter.ExamsRecordViewHolder> {
 
     private Context context;
-    private ArrayList<ExamsStudentRecordModal> examsModals;
+    private List<ExamsStudentRecordModal> studentList; // Use List<> instead of ArrayList<>
 
-    private List<ExamsStudentRecordModal> studentList;
-
-//    public ExamsStudentRecordAdapter(List<ExamsStudentRecordModal> studentList) {
-//        this.studentList = studentList;
-//    }
+    public ExamsStudentRecordAdapter(List<ExamsStudentRecordModal> examsModals, Context context) {
+        this.studentList = examsModals; // Initialize the studentList using examsModals
+        this.context = context;
+    }
 
     @NonNull
     @Override
@@ -46,11 +45,6 @@ public class ExamsStudentRecordAdapter extends RecyclerView.Adapter<ExamsStudent
         return studentList.size();
     }
 
-
-    public ExamsStudentRecordAdapter(ArrayList<ExamsStudentRecordModal> examsModals, Context context) {
-        this.examsModals = examsModals;
-        this.context = context;
-    }
 
     public static class ExamsRecordViewHolder extends RecyclerView.ViewHolder {
         private TextView studentNameTextView;

@@ -169,12 +169,6 @@ public class MainActivity extends AppCompatActivity implements FacultyBottomShee
                     fragmentTransaction6.commit();
                     break;
             }
-
-
-
-
-
-
             layDL.closeDrawer(GravityCompat.START);
             return true;
         });
