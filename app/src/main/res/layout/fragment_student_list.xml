@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
-    android:background="@color/lightBlue"
     android:layout_height="match_parent">
 
 <LinearLayout
@@ -20,7 +19,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textStyle="bold"
-        android:textSize="20sp"
+        android:textSize="30sp"
         android:text="Student List" />
 
 <!--    <LinearLayout-->

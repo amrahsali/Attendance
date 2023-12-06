@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Add Courses"
-        android:textColor="@color/black"
         android:textSize="30sp"
         android:textStyle="bold" />
 
@@ -84,6 +83,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Cancel"
+                    android:paddingBottom="10dp"
                     android:textColor="@color/white" />
 
                 <View
@@ -94,6 +94,8 @@
                     android:id="@+id/add_stn_course_save"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingBottom="10dp"
+
                     android:text="Save"
                     android:textColor="@color/white" />
             </LinearLayout>

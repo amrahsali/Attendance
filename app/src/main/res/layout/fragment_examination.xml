@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/lightBlue"
+    android:padding="10dp"
     tools:context=".ExamsModule.ExaminationFragment">
     <TextView
         android:paddingTop="10dp"
@@ -40,7 +40,7 @@
             android:layout_marginBottom="16dp"
             android:contentDescription="@string/add"
             android:src="@drawable/baseline_add_24"
-            app:backgroundTint="#1976D2"
+            app:backgroundTint="@color/blue"
             app:tint="@android:color/white" />
 
         <!-- Progress bar for loading indicator -->

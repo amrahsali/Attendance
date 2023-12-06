@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="330dp"
-    android:layout_height="300dp"
+    android:layout_height="350dp"
     android:orientation="vertical"
     android:layout_gravity="center"
     android:padding="20dp"
@@ -13,10 +13,11 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Setup Examination"
-        android:textSize="20sp"
+        android:textSize="30sp"
         android:textStyle="bold" />
 
     <Spinner
+        android:background="@drawable/boarder_bg"
         android:layout_marginTop="16dp"
         android:id="@+id/course_spinner"
         android:layout_width="match_parent"
@@ -30,6 +31,7 @@
         android:layout_height="10dp" />
 
     <LinearLayout
+        android:background="@drawable/boarder_bg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -73,7 +75,7 @@
         android:layout_height="50dp"
         android:background="@drawable/boarder_bg"
         android:text="Start Date &amp; time"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="15sp"
        />
 
@@ -87,7 +89,7 @@
         android:layout_height="50dp"
         android:background="@drawable/boarder_bg"
         android:text="End Date &amp; time"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="15sp"
         />
 

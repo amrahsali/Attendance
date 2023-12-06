@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Update Faculty"
-            android:textColor="@color/black"
             android:textSize="30sp"
             android:textStyle="bold" />
 
@@ -31,7 +30,6 @@
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:text="Faculty Name"
-            android:textColor="@color/black"
             android:textSize="20sp" />
 
         <EditText
@@ -47,14 +45,12 @@
             android:maxLines="1"
             android:singleLine="true"
             android:paddingStart="5dp"
-            android:textColor="@color/black"
             android:textSize="15sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:text="Department Names"
-            android:textColor="@color/black"
             android:textSize="20sp" />
 
         <LinearLayout

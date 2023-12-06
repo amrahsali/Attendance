@@ -17,6 +17,7 @@
             android:elevation="50dp"
             app:cardCornerRadius="10dp"
             android:padding="10dp"
+            android:backgroundTint="@color/lightBlue"
             app:cardPreventCornerOverlap="true"
             android:layout_height="100dp">
 
