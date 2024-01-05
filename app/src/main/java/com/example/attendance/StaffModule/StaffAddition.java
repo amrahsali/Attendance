@@ -168,7 +168,15 @@ public class StaffAddition extends AppCompatActivity {
             ScanUtils scanUtils = new ScanUtils(this, printLeft, printRight, student_status);
             printLeft.setOnClickListener(p->{
                 Toast.makeText(StaffAddition.this, "left finger", Toast.LENGTH_SHORT).show();
-                scanUtils.scan(StaffAddition.this);
+                Log.d(TAG, "onCreate: before scan call");
+                try {
+                    scanUtils.scan(StaffAddition.this);
+                    Log.d(TAG, "onCreate: made scan call");
+                }catch (Exception exception){
+                    Log.d(TAG, "onCreate: cant connect to OTG device");
+                    Toast.makeText(StaffAddition.this, "cant connect to OTG device", Toast.LENGTH_SHORT).show();
+                }
+                
             });
 
             printRight.setOnClickListener(p->{

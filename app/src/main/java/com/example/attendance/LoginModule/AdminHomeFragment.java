@@ -38,9 +38,7 @@ public class AdminHomeFragment extends Fragment {
     private ViewPager imageViewPager;
     private FirebaseAuth mAuth;
     TextView countTextView1,countTextView2,countTextView3,countTextView4;
-
     DatabaseReference databaseReference;
-
 
     CardView addStudentCard, addStaffCard, facultyCard, departmentCard;
 
@@ -182,6 +180,11 @@ public class AdminHomeFragment extends Fragment {
         return view;
 
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     private void navigateToDepartmentFragment() {

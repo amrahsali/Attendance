@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,6 +43,8 @@ public class ScanUtils {
     }
 
     public void scan(Context context) {
+        Log.d("TAG", "scan: called scan utils");
+        System.out.println("scan: called scan utils");
         fingerprint.scan(context, printHandler, updateHandler);
     }
 

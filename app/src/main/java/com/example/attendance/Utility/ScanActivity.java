@@ -1,21 +1,14 @@
 package com.example.attendance.Utility;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -28,23 +21,16 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.attendance.LoginModule.MainActivity;
 import com.example.attendance.R;
 import com.example.attendance.StaffModule.StaffRVModal;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 import com.machinezoo.sourceafis.FingerprintImage;
 import com.machinezoo.sourceafis.FingerprintMatcher;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import asia.kanopi.uareu4500library.Status;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ScanActivity extends AppCompatActivity {
     ImageView print;
@@ -161,66 +147,125 @@ public class ScanActivity extends AppCompatActivity {
 
 
     private void compareFingerprint(byte[] scannedFingerprint) {
-        FirebaseDatabase.getInstance().getReference().child("Staff")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+
+        List<StaffRVModal> staffList = retrieveStaffDataFromLocalStorage();
+
+        for (StaffRVModal staff : staffList) {
+            if (staff.getRightFinger() != null || staff.getLeftFinger() != null) {
+                ImageLoadCallback callback = new ImageLoadCallback() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot staffSnapshot : snapshot.getChildren()) {
-                            StaffRVModal staff = staffSnapshot.getValue(StaffRVModal.class);
-                            Log.i(TAG, "onDataChange: " + staff.getRightFinger());
+                    public void onImageLoaded(byte[] imageData) {
+                        // Perform fingerprint matching using the loaded imageData
+                        try {
+                            boolean leftMatch = matchFingerprints(scannedFingerprint, imageData);
+                            boolean rightMatch = matchFingerprints(scannedFingerprint, imageData);
 
-                            if (staff.getRightFinger() != null || staff.getLeftFinger() != null) {
-                                ImageLoadCallback callback = new ImageLoadCallback() {
-                                    @Override
-                                    public void onImageLoaded(byte[] imageData) {
-                                        // Perform fingerprint matching using the loaded imageData
-                                        try {
-                                            boolean leftMatch = matchFingerprints(scannedFingerprint, imageData);
-                                            boolean rightMatch = matchFingerprints(scannedFingerprint, imageData);
-
-                                            if (leftMatch || rightMatch) {
-                                                progressBar.setVisibility(View.GONE);
-                                                Intent intent = new Intent(ScanActivity.this, MainActivity.class);
-                                                intent.putExtra("staff_name", staff.getProductName());
-                                                startActivity(intent);
-                                            } else {
-                                                // No matching fingerprint found, perform your action here
-                                                // For example, show an error message
-                                                progressBar.setVisibility(View.GONE);
-                                                Toast.makeText(ScanActivity.this, "Fingerprint not recognized.", Toast.LENGTH_SHORT).show();
-                                            }
-                                        } catch (IOException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onImageLoadFailed(Exception e) {
-                                        // Handle the case where image loading failed
-                                        progressBar.setVisibility(View.GONE);
-                                        Toast.makeText(ScanActivity.this, "Failed to load image from URL.", Toast.LENGTH_SHORT).show();
-                                    }
-                                };
-
-                                if (staff.getRightFinger() != null) {
-                                    loadImageFromUrl(staff.getRightFinger(), callback);
-                                } else {
-                                    loadImageFromUrl(staff.getLeftFinger(), callback);
-                                }
+                            if (leftMatch || rightMatch) {
+                                progressBar.setVisibility(View.GONE);
+                                Intent intent = new Intent(ScanActivity.this, MainActivity.class);
+                                intent.putExtra("staff_name", staff.getProductName());
+                                startActivity(intent);
+                            } else {
+                                // No matching fingerprint found, perform your action here
+                                // For example, show an error message
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(ScanActivity.this, "Fingerprint not recognized.", Toast.LENGTH_SHORT).show();
                             }
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
                         }
-
-//                        // No matching fingerprint found, perform your action here
-//                        // For example, show an error message
-//                        Toast.makeText(ScanActivity.this, "Fingerprint not recognized end.", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        // Error occurred while fetching staff data
-                        Toast.makeText(ScanActivity.this, "Failed to retrieve staff data.", Toast.LENGTH_SHORT).show();
+                    public void onImageLoadFailed(Exception e) {
+                        // Handle the case where image loading failed
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(ScanActivity.this, "Failed to load image from URL.", Toast.LENGTH_SHORT).show();
                     }
-                });
+                };
+
+                if (staff.getRightFinger() != null) {
+                    loadImageFromUrl(staff.getRightFinger(), callback);
+                } else {
+                    loadImageFromUrl(staff.getLeftFinger(), callback);
+                }
+            }
+        }
+
+        progressBar.setVisibility(View.GONE);
+        Toast.makeText(ScanActivity.this, "Fingerprint not recognized.", Toast.LENGTH_SHORT).show();
+
+//        FirebaseDatabase.getInstance().getReference().child("Staff")
+//                .addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        for (DataSnapshot staffSnapshot : snapshot.getChildren()) {
+//                            StaffRVModal staff = staffSnapshot.getValue(StaffRVModal.class);
+//                            Log.i(TAG, "onDataChange: " + staff.getRightFinger());
+//
+//                            if (staff.getRightFinger() != null || staff.getLeftFinger() != null) {
+//                                ImageLoadCallback callback = new ImageLoadCallback() {
+//                                    @Override
+//                                    public void onImageLoaded(byte[] imageData) {
+//                                        // Perform fingerprint matching using the loaded imageData
+//                                        try {
+//                                            boolean leftMatch = matchFingerprints(scannedFingerprint, imageData);
+//                                            boolean rightMatch = matchFingerprints(scannedFingerprint, imageData);
+//
+//                                            if (leftMatch || rightMatch) {
+//                                                progressBar.setVisibility(View.GONE);
+//                                                Intent intent = new Intent(ScanActivity.this, MainActivity.class);
+//                                                intent.putExtra("staff_name", staff.getProductName());
+//                                                startActivity(intent);
+//                                            } else {
+//                                                // No matching fingerprint found, perform your action here
+//                                                // For example, show an error message
+//                                                progressBar.setVisibility(View.GONE);
+//                                                Toast.makeText(ScanActivity.this, "Fingerprint not recognized.", Toast.LENGTH_SHORT).show();
+//                                            }
+//                                        } catch (IOException e) {
+//                                            throw new RuntimeException(e);
+//                                        }
+//                                    }
+//
+//                                    @Override
+//                                    public void onImageLoadFailed(Exception e) {
+//                                        // Handle the case where image loading failed
+//                                        progressBar.setVisibility(View.GONE);
+//                                        Toast.makeText(ScanActivity.this, "Failed to load image from URL.", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                };
+//
+//                                if (staff.getRightFinger() != null) {
+//                                    loadImageFromUrl(staff.getRightFinger(), callback);
+//                                } else {
+//                                    loadImageFromUrl(staff.getLeftFinger(), callback);
+//                                }
+//                            }
+//                        }
+//
+//                        progressBar.setVisibility(View.GONE);
+//                        Toast.makeText(ScanActivity.this, "Fingerprint not recognized.", Toast.LENGTH_SHORT).show();
+//
+////
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
+//                        // Error occurred while fetching staff data
+//                        Toast.makeText(ScanActivity.this, "Failed to retrieve staff data.", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+    }
+
+    public List<StaffRVModal> retrieveStaffDataFromLocalStorage() {
+        List<StaffRVModal> staffList = new ArrayList<>();
+        SharedPreferences sharedPreferences = getSharedPreferences("system_staff_data", MODE_PRIVATE);
+        String staffDataJson = sharedPreferences.getString("staff_data", "");
+        if (!staffDataJson.isEmpty()) {
+            staffList = new Gson().fromJson(staffDataJson, new TypeToken<List<StaffRVModal>>(){}.getType());
+        }
+        return staffList;
     }
 
 }

@@ -1,8 +1,11 @@
 package com.example.attendance.StaffModule;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,7 +25,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.attendance.R;
+import com.example.attendance.Utility.ScanActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.common.reflect.TypeToken;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -32,8 +37,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class StaffListFragment extends Fragment {
@@ -153,6 +160,26 @@ public class StaffListFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void retrieveStaffDataFromLocalStorage() {
+
+        ScanActivity scanActivity = new ScanActivity();
+
+        List<StaffRVModal> staffList  = scanActivity.retrieveStaffDataFromLocalStorage();
+
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("your_staff_pref_name", MODE_PRIVATE);
+        String staffDataJson = sharedPreferences.getString("staff_data", "");
+
+        if (!staffDataJson.isEmpty()) {
+            // Convert the JSON string to a list of StaffRVModal objects using Gson
+            staffRVModalArrayList = new Gson().fromJson(staffDataJson, new TypeToken<List<StaffRVModal>>() {}.getType());
+            staffAdapter.notifyDataSetChanged();
+        } else {
+            // Handle the case where no data is found in local storage
+            emptyTextView.setVisibility(View.VISIBLE);
+            emptyTextView.setText("No Staff Found");
+        }
     }
 
     private void getStaff() {
