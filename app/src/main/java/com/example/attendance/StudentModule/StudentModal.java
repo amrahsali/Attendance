@@ -21,6 +21,7 @@ public class StudentModal implements Parcelable {
 
     private ArrayList<String> courses;
 
+    private String studentID;
 
 
 
@@ -29,7 +30,7 @@ public class StudentModal implements Parcelable {
 
     }
 
-    private String studentID;
+
 
 
     protected StudentModal(Parcel in) {

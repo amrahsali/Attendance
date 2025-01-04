@@ -1,44 +1,55 @@
 package com.example.attendance.Utility;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.attendance.LoginModule.Login;
 import com.example.attendance.LoginModule.MainActivity;
 import com.example.attendance.R;
 import com.example.attendance.StaffModule.StaffRVModal;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.machinezoo.sourceafis.FingerprintImage;
 import com.machinezoo.sourceafis.FingerprintMatcher;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ScanActivity extends AppCompatActivity {
+
+    private static final int MAX_RETRIES = 3;
     ImageView print;
     TextView statusText;
     int click = 1;
     Fingerprint fingerprint;
     private ScanUtils scanUtils;
     ProgressBar progressBar;
+
+    Button retryButton;
+
+    private int retryCount = 0;
+
 
     public interface ImageLoadCallback {
         void onImageLoaded(byte[] imageData);
@@ -52,6 +63,7 @@ public class ScanActivity extends AppCompatActivity {
         print = findViewById(R.id.print_image);
         progressBar = findViewById(R.id.idPBLoading);
         statusText = findViewById(R.id.status);
+        retryButton = findViewById(R.id.retry_button);
         fingerprint = new Fingerprint();
         scanUtils = new ScanUtils(ScanActivity.this, print, print, statusText);
 
@@ -62,6 +74,7 @@ public class ScanActivity extends AppCompatActivity {
                 // Fingerprint scan result received, call compareFingerprint method
                 compareFingerprint(scannedFingerprint);
                 progressBar.setVisibility(View.VISIBLE);
+                retryButton.setVisibility(View.GONE);
                 //Toast.makeText(ScanActivity.this, "got results", Toast.LENGTH_SHORT).show();
             }
 
@@ -70,6 +83,17 @@ public class ScanActivity extends AppCompatActivity {
                 // Handle scan errors if needed
                 progressBar.setVisibility(View.GONE);
                 Toast.makeText(ScanActivity.this, "Scan Error: " + errorMessage, Toast.LENGTH_SHORT).show();
+                retryButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                retryCount = 0;
+                progressBar.setVisibility(View.VISIBLE);
+                retryButton.setVisibility(View.GONE);
+                scanUtils.scan(ScanActivity.this);
             }
         });
 
@@ -148,52 +172,55 @@ public class ScanActivity extends AppCompatActivity {
 
     private void compareFingerprint(byte[] scannedFingerprint) {
 
-        List<StaffRVModal> staffList = retrieveStaffDataFromLocalStorage();
+        List<StaffRVModal> staffList = LocalStorageUtil.retrieveStaffDataFromLocalStorage(this);
+        if (staffList != null){
+            for (StaffRVModal staff : staffList) {
+                if (staff.getRightFinger() != null || staff.getLeftFinger() != null) {
+                    ImageLoadCallback callback = new ImageLoadCallback() {
+                        @Override
+                        public void onImageLoaded(byte[] imageData) {
+                            // Perform fingerprint matching using the loaded imageData
+                            try {
+                                boolean leftMatch = matchFingerprints(scannedFingerprint, imageData);
+                                boolean rightMatch = matchFingerprints(scannedFingerprint, imageData);
 
-        for (StaffRVModal staff : staffList) {
-            if (staff.getRightFinger() != null || staff.getLeftFinger() != null) {
-                ImageLoadCallback callback = new ImageLoadCallback() {
-                    @Override
-                    public void onImageLoaded(byte[] imageData) {
-                        // Perform fingerprint matching using the loaded imageData
-                        try {
-                            boolean leftMatch = matchFingerprints(scannedFingerprint, imageData);
-                            boolean rightMatch = matchFingerprints(scannedFingerprint, imageData);
-
-                            if (leftMatch || rightMatch) {
-                                progressBar.setVisibility(View.GONE);
-                                Intent intent = new Intent(ScanActivity.this, MainActivity.class);
-                                intent.putExtra("staff_name", staff.getProductName());
-                                startActivity(intent);
-                            } else {
-                                // No matching fingerprint found, perform your action here
-                                // For example, show an error message
-                                progressBar.setVisibility(View.GONE);
-                                Toast.makeText(ScanActivity.this, "Fingerprint not recognized.", Toast.LENGTH_SHORT).show();
+                                if (leftMatch || rightMatch) {
+//                                    String customToken = LocalStorageUtil.generateCustomToken(staff.getUserID()); // Use staff UID or any unique identifier
+//                                    signInWithCustomToken(customToken);
+                                    Intent intent = new Intent(ScanActivity.this, MainActivity.class);
+                                    intent.putExtra("staff_name", staff.getProductName());
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    Toast.makeText(ScanActivity.this, "matching fingerprint....", Toast.LENGTH_SHORT).show();
+                                    retryButton.setVisibility(View.VISIBLE);
+                                }
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
                             }
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                            progressBar.setVisibility(View.GONE);
                         }
-                    }
 
-                    @Override
-                    public void onImageLoadFailed(Exception e) {
-                        // Handle the case where image loading failed
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(ScanActivity.this, "Failed to load image from URL.", Toast.LENGTH_SHORT).show();
-                    }
-                };
+                        @Override
+                        public void onImageLoadFailed(Exception e) {
+                            // Handle the case where image loading failed
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(ScanActivity.this, "Failed to load image from URL.", Toast.LENGTH_SHORT).show();
+                            retryButton.setVisibility(View.VISIBLE);
+                        }
+                    };
 
-                if (staff.getRightFinger() != null) {
-                    loadImageFromUrl(staff.getRightFinger(), callback);
-                } else {
-                    loadImageFromUrl(staff.getLeftFinger(), callback);
+                    if (staff.getRightFinger() != null) {
+                        loadImageFromUrl(staff.getRightFinger(), callback);
+                    } else {
+                        loadImageFromUrl(staff.getLeftFinger(), callback);
+                    }
                 }
             }
         }
 
         progressBar.setVisibility(View.GONE);
-        Toast.makeText(ScanActivity.this, "Fingerprint not recognized.", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(ScanActivity.this, "Fingerprint not recognized.", Toast.LENGTH_SHORT).show();
 
 //        FirebaseDatabase.getInstance().getReference().child("Staff")
 //                .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -258,14 +285,39 @@ public class ScanActivity extends AppCompatActivity {
 //                });
     }
 
-    public List<StaffRVModal> retrieveStaffDataFromLocalStorage() {
-        List<StaffRVModal> staffList = new ArrayList<>();
-        SharedPreferences sharedPreferences = getSharedPreferences("system_staff_data", MODE_PRIVATE);
-        String staffDataJson = sharedPreferences.getString("staff_data", "");
-        if (!staffDataJson.isEmpty()) {
-            staffList = new Gson().fromJson(staffDataJson, new TypeToken<List<StaffRVModal>>(){}.getType());
+
+    private void handleFingerprintMismatch() {
+        retryCount++;
+        if (retryCount < MAX_RETRIES) {
+            Toast.makeText(ScanActivity.this, "Matching failed, retrying... (" + retryCount + ")", Toast.LENGTH_SHORT).show();
+            scanUtils.scan(ScanActivity.this);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            retryButton.setVisibility(View.VISIBLE);
+            Toast.makeText(ScanActivity.this, "Fingerprint not recognized after multiple attempts.", Toast.LENGTH_SHORT).show();
         }
-        return staffList;
+    }
+
+    private void signInWithCustomToken(String customToken) {
+        FirebaseAuth.getInstance().signInWithCustomToken(customToken)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success
+
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            Toast.makeText(ScanActivity.this, "fire success: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(ScanActivity.this, MainActivity.class);
+                            intent.putExtra("staff_name", user.getDisplayName()); // Pass the staff name or email
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(ScanActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
 }

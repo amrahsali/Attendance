@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -26,6 +27,7 @@ import com.example.attendance.R;
 import com.example.attendance.StaffModule.StaffRVModal;
 import com.example.attendance.StudentModule.StudentModal;
 import com.example.attendance.Utility.Fingerprint;
+import com.example.attendance.Utility.LocalStorageUtil;
 import com.example.attendance.Utility.ScanActivity;
 import com.example.attendance.Utility.ScanUtils;
 import com.google.firebase.database.DataSnapshot;
@@ -38,6 +40,7 @@ import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class ExamsScanActivity extends AppCompatActivity {
 
@@ -65,6 +68,8 @@ public class ExamsScanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_exams_scan);
 
         print = findViewById(R.id.exam_print_image);
+        LottieAnimationView animationView = findViewById(R.id.print_animation);
+        animationView.playAnimation();
         progressBar = findViewById(R.id.idPBLoading);
         statusText = findViewById(R.id.status);
         examsRetryBtn = findViewById(R.id.exams_retry_btn);
@@ -167,81 +172,66 @@ public class ExamsScanActivity extends AppCompatActivity {
 
 
     private void compareFingerprint(byte[] scannedFingerprint) {
-        FirebaseDatabase.getInstance().getReference().child("Student")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+
+        List<StudentModal> students = LocalStorageUtil.retrieveStudentDataFromLocalStorage(this);
+
+
+        for (StudentModal student : students) {
+            Log.i(TAG, "Comparing fingerprint for student: " + student.getStudentName());
+
+
+            if (student.getRightFinger() != null || student.getLeftFinger() != null) {
+                ImageLoadCallback callback = new ImageLoadCallback() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot studentSnapshot : snapshot.getChildren()) {
-                            StudentModal student = studentSnapshot.getValue(StudentModal.class);
-                            Log.i(TAG, "onDataChange: " + student.getRightFinger());
+                    public void onImageLoaded(byte[] imageData) {
+                        // Perform fingerprint matching using the loaded imageData
+                        try {
+                            boolean leftMatch = matchFingerprints(scannedFingerprint, imageData);
+                            boolean rightMatch = matchFingerprints(scannedFingerprint, imageData);
 
-                            if (student.getRightFinger() != null || student.getLeftFinger() != null) {
-                                ImageLoadCallback callback = new ImageLoadCallback() {
-                                    @Override
-                                    public void onImageLoaded(byte[] imageData) {
-                                        // Perform fingerprint matching using the loaded imageData
-                                        try {
-                                            boolean leftMatch = matchFingerprints(scannedFingerprint, imageData);
-                                            boolean rightMatch = matchFingerprints(scannedFingerprint, imageData);
+                            progressBar.setVisibility(View.GONE);
 
-                                            if (leftMatch || rightMatch) {
-                                                progressBar.setVisibility(View.GONE);
-                                                boolean courseEligibility = false;
-                                                Intent intent = new Intent(ExamsScanActivity.this, ExamsDialogBoxActivity.class);
-                                                Toast.makeText(ExamsScanActivity.this, "user name is "+ student.getStudentNumber(), Toast.LENGTH_SHORT).show();
-                                                intent.putExtra("studentName", student.getStudentName());
-                                                intent.putExtra("matricNo", student.getStudentNumber());
-                                                intent.putExtra("img", student.getProductImg());
-                                                intent.putExtra("userId", student.getUserID());
-                                                intent.putExtra("examsName",examsName);
-                                                intent.putExtra("examsTime", examsTime);
-                                                intent.putExtra("examsEndTime", examsEndTime);
-                                                for (String courses : student.getCourses()){
-                                                    if(courses.equalsIgnoreCase(examsName)){
-                                                        courseEligibility = true;
-                                                    }else {
-                                                        courseEligibility = false;
-                                                    }
-                                                }
-                                                intent.putExtra("courseEligibility", courseEligibility);
-                                                startActivity(intent);
-                                            } else {
-                                                // No matching fingerprint found, perform your action here
-                                                // For example, show an error message
-                                                progressBar.setVisibility(View.GONE);
-                                                Toast.makeText(ExamsScanActivity.this, "Fingerprint not recognized.", Toast.LENGTH_SHORT).show();
-                                            }
-                                        } catch (IOException e) {
-                                            throw new RuntimeException(e);
-                                        }
+                            if (leftMatch || rightMatch) {
+                                boolean courseEligibility = false;
+                                Intent intent = new Intent(ExamsScanActivity.this, ExamsDialogBoxActivity.class);
+                                intent.putExtra("studentName", student.getStudentName());
+                                intent.putExtra("matricNo", student.getStudentNumber());
+                                intent.putExtra("img", student.getProductImg());
+                                intent.putExtra("userId", student.getUserID());
+                                intent.putExtra("examsName",examsName);
+                                intent.putExtra("examsTime", examsTime);
+                                intent.putExtra("examsEndTime", examsEndTime);
+                                for (String courses : student.getCourses()){
+                                    if(courses.equalsIgnoreCase(examsName)){
+                                        courseEligibility = true;
+                                    }else {
+                                        courseEligibility = false;
                                     }
-
-                                    @Override
-                                    public void onImageLoadFailed(Exception e) {
-                                        // Handle the case where image loading failed
-                                        progressBar.setVisibility(View.GONE);
-                                        Toast.makeText(ExamsScanActivity.this, "Failed to load image from URL.", Toast.LENGTH_SHORT).show();
-                                    }
-                                };
-
-                                if (student.getRightFinger() != null) {
-                                    loadImageFromUrl(student.getRightFinger(), callback);
-                                } else {
-                                    loadImageFromUrl(student.getLeftFinger(), callback);
                                 }
+                                intent.putExtra("courseEligibility", courseEligibility);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(ExamsScanActivity.this, "Fingerprint not recognized in exams.", Toast.LENGTH_SHORT).show();
                             }
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
                         }
-
-//                        // No matching fingerprint found, perform your action here
-//                        // For example, show an error message
-                        }
+                    }
 
                     @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        // Error occurred while fetching staff data
-                        Toast.makeText(ExamsScanActivity.this, "Failed to retrieve staff data.", Toast.LENGTH_SHORT).show();
+                    public void onImageLoadFailed(Exception e) {
+                        // Handle the case where image loading failed
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(ExamsScanActivity.this, "Failed to load image from URL.", Toast.LENGTH_SHORT).show();
                     }
-                });
+                };
+
+                String fingerUrlToMatch = student.getRightFinger() != null ? student.getRightFinger() : student.getLeftFinger();
+                loadImageFromUrl(fingerUrlToMatch, callback);
+            }
+
+
+        }
     }
 
 }

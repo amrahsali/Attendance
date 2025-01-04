@@ -8,13 +8,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -23,8 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -33,34 +25,24 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.attendance.AttendanceModule.AttendanceRecord;
-import com.example.attendance.ExamsModule.ExamsAdapter;
-
 //import com.example.attendance.FacultyModule.CourseAdapter;
-import com.example.attendance.FacultyModule.CourseAdapter;
+import com.example.attendance.FacultyModule.CourseModal;
 import com.example.attendance.R;
-import com.example.attendance.StudentModule.StudentAddition;
+import com.example.attendance.StaffModule.StaffRVModal;
+import com.example.attendance.Utility.LocalStorageUtil;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
@@ -69,7 +51,6 @@ import com.itextpdf.text.pdf.PdfWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -127,7 +108,7 @@ public class ExaminationFragment extends Fragment {
         examsRef = FirebaseDatabase.getInstance().getReference().child("exams");
 
 
-        loadExamsData();
+        loadExamsFromLocalStorage();
 
         if (isUserLoggedIn()){
             view.findViewById(R.id.examsFABtn).setOnClickListener(v -> showDialogBox());
@@ -137,17 +118,10 @@ public class ExaminationFragment extends Fragment {
         }
         context = getActivity();
 
-//        generatePdfButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                generatePdf();
-//            }
-//        });
-
         return view;
     }
 
-            private void generatePdf() {
+    private void generatePdf() {
             // Create a new document
                 Document document = new Document();
 
@@ -188,64 +162,32 @@ public class ExaminationFragment extends Fragment {
             }
 
 
-    @Override
-    public void
-    onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0) {
-
-                // after requesting permissions we are showing
-                // users a toast message of permission granted.
-                boolean writeStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                boolean readStorage = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-
-                if (writeStorage && readStorage) {
-                    Toast.makeText(getActivity(), "Permission Granted..", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), "Permission Denied.", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            }
-        }
-    }
+//    @Override
+//    public void
+//    onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == PERMISSION_REQUEST_CODE) {
+//            if (grantResults.length > 0) {
+//
+//                // after requesting permissions we are showing
+//                // users a toast message of permission granted.
+//                boolean writeStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+//                boolean readStorage = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+//
+//                if (writeStorage && readStorage) {
+//                    Toast.makeText(getActivity(), "Permission Granted..", Toast.LENGTH_SHORT).show();
+//
+//                } else {
+//                    Toast.makeText(getActivity(), "Permission Denied.", Toast.LENGTH_SHORT).show();
+//                    finish();
+//                }
+//            }
+//        }
+//    }
 
     private void finish() {
     }
 
-
-    private void loadExamsData() {
-        examsRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String previousChildName) {
-                ExamsModal exam = dataSnapshot.getValue(ExamsModal.class);
-                examsModalsArrayList.add(exam);
-                examsAdapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            // Other overridden methods...
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Failed to load exams data", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     private void showDialogBox() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -297,6 +239,9 @@ public class ExaminationFragment extends Fragment {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(getActivity(), "Exam added successfully", Toast.LENGTH_SHORT).show();
+                            LocalStorageUtil.updateLastUpdatedTimestamp();
+                            updateLocalStorageAfterExamAdded();
+                            loadExamsFromLocalStorage();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -382,54 +327,39 @@ public class ExaminationFragment extends Fragment {
         staffListLayout.addView(coursesTextView);
     }
 
-    private void loadCoursesData(){
+   private void loadCoursesData() {
+        coursesAdapter.clear();
         coursesAdapter.add("Select course");
-        DatabaseReference coursesRef = FirebaseDatabase.getInstance().getReference("courses");
-        coursesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<String> courseNames = new ArrayList<>();
-                for (DataSnapshot courseSnapshot : dataSnapshot.getChildren()) {
-                    String courseName = courseSnapshot.child("courseName").getValue(String.class);
-                    courseNames.add(courseName);
-                }
-                coursesAdapter.addAll(courseNames);
-                coursesAdapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle any errors
-                Log.e(TAG, "Failed to load course data: " + databaseError.getMessage());
+        List<CourseModal> courses = LocalStorageUtil.retrieveCourseDataFromLocalStorage(getContext());
+        if (courses != null) {
+            for (CourseModal course : courses) {
+                coursesAdapter.add(course.getCourseName());
             }
-        });
+        } else {
+            Log.e(TAG, "No course data found in local storage");
+        }
+
+        coursesAdapter.notifyDataSetChanged();
     }
 
-    private void loadStaffData(){
+    private void loadStaffData() {
+        staffsAdapter.clear();
         staffsAdapter.add("Select Invigilator");
-        DatabaseReference coursesRef = FirebaseDatabase.getInstance().getReference("Staff");
-        coursesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<String> staffs = new ArrayList<>();
-                for (DataSnapshot courseSnapshot : dataSnapshot.getChildren()) {
-                    String staff = courseSnapshot.child("productName").getValue(String.class);
-                    staffs.add(staff);
-                }
-                staffsAdapter.addAll(staffs);
-                staffsAdapter.notifyDataSetChanged();
+
+        List<StaffRVModal> staffList = LocalStorageUtil.retrieveStaffDataFromLocalStorage(getContext());
+        if (staffList != null) {
+            for (StaffRVModal staff : staffList) {
+                staffsAdapter.add(staff.getProductName());
             }
+        } else {
+            Toast.makeText(getActivity(), "No staffs", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "No staff data found in local storage");
+        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle any errors
-                Log.e(TAG, "Failed to load courses data: " + databaseError.getMessage());
-            }
-        });
+        staffsAdapter.notifyDataSetChanged();
+    }
 
-
-
-}
 
     public void showDatePickerDialog(View view) {
         TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
@@ -446,4 +376,37 @@ public class ExaminationFragment extends Fragment {
         new TimePickerDialog(getContext(), timeSetListener, hour, minute, false).show();
 
     }
+
+    private void loadExamsFromLocalStorage() {
+        List<ExamsModal> exams = LocalStorageUtil.retrieveExamDataFromLocalStorage(getContext());
+        if (exams != null && !exams.isEmpty()) {
+            examsModalsArrayList.clear();
+            examsModalsArrayList.addAll(exams);
+            examsAdapter.notifyDataSetChanged();
+        } else {
+            Toast.makeText(getActivity(), "No exams data found in Local Storage", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void updateLocalStorageAfterExamAdded() {
+        examsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<ExamsModal> examList = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    ExamsModal exam = snapshot.getValue(ExamsModal.class);
+                    if (exam != null) {
+                        examList.add(exam);
+                    }
+                }
+                String examsDataJson = new Gson().toJson(examList);
+                LocalStorageUtil.saveAndApply(examsDataJson, "exam_data", "system_exam_data", getActivity() );
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "Failed to load exams data: " + databaseError.getMessage());
+            }
+        });
+    }
+
 }

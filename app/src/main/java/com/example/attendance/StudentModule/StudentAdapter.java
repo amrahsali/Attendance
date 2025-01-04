@@ -20,7 +20,6 @@ import java.util.ArrayList;
 
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHolder> {
 
-    // creating variables for our list, context, interface and position.
     private ArrayList<StudentModal> courseRVModalArrayList;
     private Context context;
     int lastPos = -1;
@@ -52,7 +51,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
 
         int reversePosition = getItemCount() - position - 1;
 
-
         StudentModal courseRVModal = courseRVModalArrayList.get(holder.getAdapterPosition());
         holder.student_name.setText(courseRVModal.getStudentName());
         holder.student_faculty.setText(courseRVModal.getStudentFaculty());
@@ -61,9 +59,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
         holder.student_image.setImageURI(uri);
         holder.student_level.setText(courseRVModal.getStudentLevel());
         Picasso.get().load(courseRVModal.getProductImg()).into(holder.student_image);
-        // adding animation to recycler view item on below line.
 
-       // setAnimation(holder.itemView, holder.getAdapterPosition());
 
         setAnimation(holder.itemView, reversePosition);
 

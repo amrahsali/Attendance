@@ -3,14 +3,14 @@ package com.example.attendance.FacultyModule;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Coursemodal {
+public class CourseModal {
 
     private String courseName;
     private String codeName;
 
     private String codeNameLowerCase;
 
-    public Coursemodal() {
+    public CourseModal() {
         // empty constructor required for firebase.
     }
 
@@ -24,7 +24,7 @@ public class Coursemodal {
 
 
 
-    public Coursemodal(String courseName, String codeName) {
+    public CourseModal(String courseName, String codeName) {
         this.courseName = courseName;
         this.codeName = codeName;
     }

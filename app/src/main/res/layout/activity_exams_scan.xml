@@ -51,15 +51,26 @@ tools:context=".ExamsModule.ExamsScanActivity">
                 android:indeterminateDrawable="@drawable/progress_back"
                 android:visibility="gone" />
 
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/print_animation"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/finger_animation"
+                />
+
             <ImageView
                 android:id="@+id/exam_print_image"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:src="@mipmap/printdefaultxhdpi"
                 android:maxHeight="200dp"
                 android:maxWidth="200dp"
                 android:layout_gravity="center"
-                />
+                android:contentDescription="TODO" />
+
+
             <TextView
                 android:id="@+id/status"
                 android:layout_marginTop="20dp"

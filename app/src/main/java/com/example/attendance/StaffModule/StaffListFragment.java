@@ -2,6 +2,8 @@ package com.example.attendance.StaffModule;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -17,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.attendance.R;
+import com.example.attendance.StudentModule.StudentModal;
+import com.example.attendance.Utility.LocalStorageUtil;
 import com.example.attendance.Utility.ScanActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.reflect.TypeToken;
@@ -35,6 +40,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
@@ -95,7 +101,7 @@ public class StaffListFragment extends Fragment {
         staffRV.setHasFixedSize(true);
         staffRV.setAdapter(staffAdapter);
         emptyTextView = view.findViewById(R.id.empty_text_view);
-        getStaff();
+        loadStaffFromLocalStorage();
 
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -124,22 +130,13 @@ public class StaffListFragment extends Fragment {
             }
         }). attachToRecyclerView(staffRV);
 
-
-
-                // adding on click listener for floating action button.
         fab.setOnClickListener((View v) -> {
-            // starting a new activity for adding a new course
-            // and passing a constant value in it.
             Intent intent1 = new Intent(getActivity(), StaffAddition.class);
             startActivity(intent1);
-
-
         });
 
-        // Find the SwipeRefreshLayout in the layout
         SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
 
-        // Set the listener for the swipe-to-refresh action
         swipeRefreshLayout.setOnRefreshListener(() -> {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -147,13 +144,7 @@ public class StaffListFragment extends Fragment {
                     // Stop the refreshing animation
                     refreshData();
                     swipeRefreshLayout.setRefreshing(false);
-                    // Check if there is data available
-                    if (hasData) {
-                        emptyTextView.setVisibility(View.GONE);
-                    } else {
-                        emptyTextView.setVisibility(View.VISIBLE);
-                        emptyTextView.setText("No Staff Found");
-                    }
+
                 }
             }, 100); // 10 seconds delay
 
@@ -162,114 +153,53 @@ public class StaffListFragment extends Fragment {
         return view;
     }
 
-    private void retrieveStaffDataFromLocalStorage() {
-
-        ScanActivity scanActivity = new ScanActivity();
-
-        List<StaffRVModal> staffList  = scanActivity.retrieveStaffDataFromLocalStorage();
-
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("your_staff_pref_name", MODE_PRIVATE);
-        String staffDataJson = sharedPreferences.getString("staff_data", "");
-
-        if (!staffDataJson.isEmpty()) {
-            // Convert the JSON string to a list of StaffRVModal objects using Gson
-            staffRVModalArrayList = new Gson().fromJson(staffDataJson, new TypeToken<List<StaffRVModal>>() {}.getType());
-            staffAdapter.notifyDataSetChanged();
-        } else {
-            // Handle the case where no data is found in local storage
-            emptyTextView.setVisibility(View.VISIBLE);
-            emptyTextView.setText("No Staff Found");
-        }
-    }
-
-    private void getStaff() {
-        handler = new Handler();
-        //on below line clearing our list.
-        loadingPB.setVisibility(View.VISIBLE);
-        emptyTextView.setVisibility(View.GONE);
-        staffRVModalArrayList.clear();
-//        Query query = databaseReference.get();
-        startTimeoutRunnable(databaseReference);
-        //on below line we are calling add child event listener method to read the data.
-        databaseReference.addChildEventListener(childEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                //on below line we are hiding our progress bar.
-                loadingPB.setVisibility(View.GONE);
-                emptyTextView.setVisibility(View.GONE);
-                //adding snapshot to our array list on below line.
-                staffRVModalArrayList.add(snapshot.getValue(StaffRVModal.class));
-                //notifying our adapter that data has changed.
-                staffAdapter.notifyDataSetChanged();
-
-                hasData = true;
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                //this method is called when new child is added we are notifying our adapter and making progress bar visibility as gone.
-                loadingPB.setVisibility(View.GONE);
-
-                staffAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                //notifying our adapter when child is removed.
-                staffAdapter.notifyDataSetChanged();
-                loadingPB.setVisibility(View.GONE);
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                //notifying our adapter when child is moved.
-                staffAdapter.notifyDataSetChanged();
-                loadingPB.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                stopTimeoutRunnable();
-                loadingPB.setVisibility(View.GONE);
-                emptyTextView.setVisibility(View.VISIBLE);
-                emptyTextView.setText("Error: " + error.getMessage());
-            }
-        });
-    }
-
-    private void startTimeoutRunnable(Query query) {
-        // Initialize the timeout runnable
-        timeoutRunnable = () -> {
-            // Hide the loading progress bar
-            loadingPB.setVisibility(View.GONE);
-
-            if (staffRVModalArrayList.isEmpty()) {
-                emptyTextView.setVisibility(View.VISIBLE);
-                emptyTextView.setText("No Staff Found");
-            }
-
-            // Remove the child event listener
-            databaseReference.removeEventListener(childEventListener);
-        };
-
-        // Schedule the runnable after 10 seconds
-        handler.postDelayed(timeoutRunnable, 10000);
-    }
-
-    // Method to stop the timeout runnable
-    private void stopTimeoutRunnable() {
-        // Remove the timeout runnable callbacks
-        handler.removeCallbacks(timeoutRunnable);
-    }
-
     private void refreshData() {
         // Clear the existing data
         staffRVModalArrayList.clear();
         staffAdapter.notifyDataSetChanged();
+        fetchAndUpdateData();
+    }
 
-        // Call the method to fetch the updated data
-        getStaff();
+    private void fetchAndUpdateData() {
+        DatabaseReference staffRef = FirebaseDatabase.getInstance().getReference("Staff");
+        staffRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<StaffRVModal> staffList = new ArrayList<>();
+                for (DataSnapshot staffSnapshot : dataSnapshot.getChildren()) {
+                    StaffRVModal staff = staffSnapshot.getValue(StaffRVModal.class);
+                    if (staff != null) {
+                        staffList.add(staff);
+                    }
+                }
+                updateLocalStorage(staffList);
+                loadStaffFromLocalStorage();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "Failed to fetch student data: " + databaseError.getMessage());
+            }
+        });
+    }
+
+    private void updateLocalStorage(List<StaffRVModal> staffList) {
+        String staffDataJson = new Gson().toJson(staffList);
+        LocalStorageUtil.saveAndApply(staffDataJson, "staff_data", "system_staff_data", getActivity() );
+    }
+
+    private void loadStaffFromLocalStorage() {
+        List<StaffRVModal> staffs = LocalStorageUtil.retrieveStaffDataFromLocalStorage(getContext());
+
+        if (staffs != null && !staffs.isEmpty()) {
+            staffRVModalArrayList.clear();
+            staffRVModalArrayList.addAll(staffs);
+            Log.d("Staffs Fragment", "loaded values from localStorage");
+            staffAdapter.notifyDataSetChanged();
+        } else {
+            emptyTextView.setVisibility(View.VISIBLE);
+            emptyTextView.setText("No Staff Found");
+        }
     }
 
 

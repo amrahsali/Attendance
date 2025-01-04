@@ -11,7 +11,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".StudentModule.Add_studentFragment">
+    tools:context=".StudentModule.StudentFragment">
 
     <TextView
         android:paddingTop="10dp"

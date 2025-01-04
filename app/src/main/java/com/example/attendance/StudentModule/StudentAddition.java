@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.example.attendance.R;
 import com.example.attendance.StaffModule.StaffAddition;
 import com.example.attendance.StaffModule.StaffRVModal;
+import com.example.attendance.Utility.LocalStorageUtil;
 import com.example.attendance.Utility.ScanUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -249,6 +250,9 @@ public class StudentAddition extends AppCompatActivity {
                                             //loadingPB.setVisibility(View.GONE);
                                             Toast.makeText(StudentAddition.this, "Student added..", Toast.LENGTH_SHORT).show();
                                             loadingPB.setVisibility(View.GONE);
+
+                                            LocalStorageUtil storageUtil = new LocalStorageUtil();
+                                            storageUtil.updateLastUpdatedTimestamp();
 
                                             studentBiometricDialog.dismiss();
                                             finish();

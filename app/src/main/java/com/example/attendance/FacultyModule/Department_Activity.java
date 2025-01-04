@@ -27,7 +27,7 @@ public class Department_Activity extends AppCompatActivity {
             public void onClick(View v) {
 //                Intent intent = new Intent(Department_Activity.this, Swe_levelActivity.class);
 //                startActivity(intent);
-                Toast.makeText(Department_Activity.this, "Item clicked", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(Department_Activity.this, "Item clicked", Toast.LENGTH_SHORT).show();
             }
         });
 

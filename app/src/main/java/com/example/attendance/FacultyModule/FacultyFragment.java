@@ -26,7 +26,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.attendance.R;
+import com.example.attendance.StudentModule.StudentModal;
 import com.example.attendance.Utility.FacultyBottomSheetDialogFragment;
+import com.example.attendance.Utility.LocalStorageUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -36,6 +38,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,7 +91,7 @@ public class FacultyFragment extends Fragment {
 
 
         FloatingActionButton fab = view.findViewById(R.id.facultyFABtn);
-        loadFacultyData();
+        loadFacultyDataFromLocalStorage();
 
         if (isUserLoggedIn()) {
             fab.setOnClickListener(v -> showFacultyDialog());
@@ -106,13 +109,6 @@ public class FacultyFragment extends Fragment {
                 // Stop the refreshing animation
                 refreshData();
                 swipeRefreshLayout.setRefreshing(false);
-                // Check if there is data available
-                if (hasData) {
-                    emptyTextView.setVisibility(View.GONE);
-                } else {
-                    emptyTextView.setVisibility(View.VISIBLE);
-                    emptyTextView.setText("No faculty Found");
-                }
             }, 100); // 10 seconds delay
 
         });
@@ -229,6 +225,9 @@ public class FacultyFragment extends Fragment {
             }
             Toast.makeText(getContext(), "Faculty added successfully", Toast.LENGTH_SHORT).show();
 
+            LocalStorageUtil storageUtil = new LocalStorageUtil();
+            storageUtil.updateLastUpdatedTimestamp();
+
         }
     }
 
@@ -243,10 +242,7 @@ public class FacultyFragment extends Fragment {
         facultyRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                loadingPB.setVisibility(View.GONE);
-                Log.d("FirebaseData", "Snapshot Key: " + snapshot.getKey());
-                Log.d("FirebaseData", "Snapshot Value: " + snapshot.getValue());
-
+                List<FacultyModel> facultyList = new ArrayList<>();
                 for (DataSnapshot facultySnapshot : snapshot.getChildren()) {
                     String facultyId = facultySnapshot.getKey();
                     String facultyName = facultySnapshot.child("name").getValue(String.class);
@@ -257,20 +253,15 @@ public class FacultyFragment extends Fragment {
                         departmentNames.add(departmentName);
                     }
 
-                    FacultyModel faculty = new FacultyModel(facultyId, facultyName, departmentNames);
-                    facultyModelArrayList.add(faculty);
+                    facultyList.add(new FacultyModel(facultyId, facultyName, departmentNames));
                 }
-
-                adapter.notifyDataSetChanged();
-                hasData = true;
+                updateLocalStorage(facultyList);
+                loadFacultyDataFromLocalStorage();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                stopTimeoutRunnable();
-                loadingPB.setVisibility(View.GONE);
-                emptyTextView.setVisibility(View.VISIBLE);
-                emptyTextView.setText("Error: " + error.getMessage());
+                Log.e(TAG, "Error fetching faculty data: " + error.getMessage());
             }
         });
     }
@@ -292,23 +283,35 @@ public class FacultyFragment extends Fragment {
         handler.postDelayed(timeoutRunnable, 10000);
     }
 
-    // Method to stop the timeout runnable
-    private void stopTimeoutRunnable() {
-        // Remove the timeout runnable callbacks
-        handler.removeCallbacks(timeoutRunnable);
-    }
-
     private void refreshData() {
         // Clear the existing data
         facultyModelArrayList.clear();
         adapter.notifyDataSetChanged();
-
-        // Call the method to fetch the updated data
         loadFacultyData();
     }
 
+    private void updateLocalStorage(List<FacultyModel> facultyList) {
+        String facultyDataJson = new Gson().toJson(facultyList);
+        LocalStorageUtil.saveAndApply(facultyDataJson, "faculty_data", "system_faculty_data", getActivity() );
+    }
+
+
+
     private boolean isUserLoggedIn() {
         return mAuth.getCurrentUser() != null;
+    }
+
+
+    private void loadFacultyDataFromLocalStorage() {
+        List<FacultyModel> facultyList = LocalStorageUtil.retrieveFacultyDataFromLocalStorage(getContext());
+        if (facultyList != null && !facultyList.isEmpty()) {
+            facultyModelArrayList.clear();
+            facultyModelArrayList.addAll(facultyList);
+            adapter.notifyDataSetChanged();
+        } else {
+            emptyTextView.setVisibility(View.VISIBLE);
+            emptyTextView.setText("No faculty Found");
+        }
     }
 
 

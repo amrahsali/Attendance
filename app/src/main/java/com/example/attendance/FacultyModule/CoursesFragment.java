@@ -9,16 +9,13 @@ import androidx.fragment.app.Fragment;
 
 
 import com.example.attendance.R;
+import com.example.attendance.Utility.LocalStorageUtil;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 
 
@@ -32,13 +29,14 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
 public class CoursesFragment extends Fragment {
 
     GridView courseGV;
-    ArrayList<Coursemodal> coursemodalArrayList;
+    ArrayList<CourseModal> coursemodalArrayList;
     DatabaseReference db;
     CourseAdapter adapter; // Declare adapter as an instance variable
 
@@ -54,34 +52,14 @@ public class CoursesFragment extends Fragment {
         coursemodalArrayList = new ArrayList<>();
 
         db = FirebaseDatabase.getInstance().getReference();
-        loadDataFromFirebase();
+
+        loadCoursesFromLocalStorage();
 
         FloatingActionButton addButton = view.findViewById(R.id.courseFABtn);
         addButton.setOnClickListener(v -> showDialogBox());
         adapter = new CourseAdapter(getActivity(), coursemodalArrayList);
         courseGV.setAdapter(adapter);
         return view;
-    }
-    private void loadDataFromFirebase() {
-        db.child("courses").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Coursemodal course = snapshot.getValue(Coursemodal.class);
-                        coursemodalArrayList.add(course);
-                    }
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(getActivity(), "No data found in Database", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Fail to load data..", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void showDialogBox() {
@@ -103,7 +81,7 @@ public class CoursesFragment extends Fragment {
     }
     private void collectDataAndDisplay(String courseName, String courseCode) {
         // Create a new Coursemodal object and set the course name and course code
-        Coursemodal course = new Coursemodal();
+        CourseModal course = new CourseModal();
         course.setCourseName(courseName);
         course.setCodeName(courseCode);
 
@@ -114,11 +92,7 @@ public class CoursesFragment extends Fragment {
 
     private void saveCourseToFirebase(String courseName, String courseCode) {
         DatabaseReference coursesRef = db.child("courses");
-
-        // Convert the course code to lowercase
         String lowercaseCourseCode = courseCode.toLowerCase();
-
-        // Check if the course code already exists (case-insensitive)
         coursesRef.orderByChild("codeName").equalTo(lowercaseCourseCode).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -129,7 +103,7 @@ public class CoursesFragment extends Fragment {
                     // Course does not exist, proceed with saving
                     String courseId = coursesRef.push().getKey();
                     if (courseId != null) {
-                        Coursemodal course = new Coursemodal(courseName, courseCode);
+                        CourseModal course = new CourseModal(courseName, courseCode);
                         course.setCodeNameLowerCase(lowercaseCourseCode); // Set the lowercase codeName
                         coursesRef.child(courseId).setValue(course)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -141,6 +115,11 @@ public class CoursesFragment extends Fragment {
                                         // Notify the adapter that the data has changed
                                         adapter.notifyDataSetChanged();
                                         Toast.makeText(getActivity(), "Course saved successfully", Toast.LENGTH_SHORT).show();
+
+                                        LocalStorageUtil.updateLastUpdatedTimestamp();
+                                        updateLocalStorage();
+                                        loadCoursesFromLocalStorage();
+
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -160,6 +139,39 @@ public class CoursesFragment extends Fragment {
             }
         });
     }
+
+
+    private void loadCoursesFromLocalStorage() {
+        List<CourseModal> courses = LocalStorageUtil.retrieveCourseDataFromLocalStorage(getContext());
+        if (courses != null && !courses.isEmpty()) {
+            coursemodalArrayList.clear();
+            coursemodalArrayList.addAll(courses);
+            adapter.notifyDataSetChanged();
+        } else {
+            Toast.makeText(getActivity(), "No data found in Local Storage", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateLocalStorage() {
+        db.child("courses").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<CourseModal> courseList = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    CourseModal course = snapshot.getValue(CourseModal.class);
+                    courseList.add(course);
+                }
+                String courseDataJson = new Gson().toJson(courseList);
+                LocalStorageUtil.saveAndApply(courseDataJson, "course_data", "system_course_data", getActivity() );
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getContext(),"Failed to load course data", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
 
 

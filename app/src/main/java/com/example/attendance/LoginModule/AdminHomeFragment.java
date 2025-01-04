@@ -1,15 +1,12 @@
 package com.example.attendance.LoginModule;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -21,7 +18,7 @@ import com.example.attendance.ExamsModule.ExaminationFragment;
 import com.example.attendance.FacultyModule.FacultyFragment;
 import com.example.attendance.StaffModule.StaffListFragment;
 import com.example.attendance.R;
-import com.example.attendance.StudentModule.Add_studentFragment;
+import com.example.attendance.StudentModule.StudentFragment;
 import com.example.attendance.Utility.ImagePagerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -140,7 +137,7 @@ public class AdminHomeFragment extends Fragment {
         
         facultyCard.setOnClickListener(v -> navigateToFacultyFragment());
                 
-        departmentCard.setOnClickListener(v -> navigateToDepartmentFragment());
+        departmentCard.setOnClickListener(v -> navigateToExamFragment());
 
         // Get reference to the ViewPager
         imageViewPager = view.findViewById(R.id.imageViewPager);
@@ -187,7 +184,7 @@ public class AdminHomeFragment extends Fragment {
         super.onStart();
     }
 
-    private void navigateToDepartmentFragment() {
+    private void navigateToExamFragment() {
         Fragment fragment = new ExaminationFragment();
         FragmentTransaction fragmentTransaction = requireActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content, fragment, "");
@@ -202,7 +199,7 @@ public class AdminHomeFragment extends Fragment {
     }
 
     private void navigateToStudentFragment() {
-        Fragment fragment = new Add_studentFragment();
+        Fragment fragment = new StudentFragment();
         FragmentTransaction fragmentTransaction = requireActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content, fragment, "");
         fragmentTransaction.commit();

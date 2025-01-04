@@ -33,6 +33,7 @@ import com.example.attendance.R;
 import com.example.attendance.StudentModule.StudentAddition;
 import com.example.attendance.Utility.CustomSpinnerAdapter;
 import com.example.attendance.Utility.Fingerprint;
+import com.example.attendance.Utility.LocalStorageUtil;
 import com.example.attendance.Utility.ScanUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -130,11 +131,6 @@ public class StaffAddition extends AppCompatActivity {
 
         });
 
-//        profileimg.setOnClickListener(v -> {
-//            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//            startActivityForResult(cameraIntent, SELECT_PICTURE);
-//        });
-
         loadFacultyData();
         facultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -148,7 +144,6 @@ public class StaffAddition extends AppCompatActivity {
                 // Do nothing
             }
         });
-
 
 
         create_staff.setOnClickListener(v -> {
@@ -188,9 +183,6 @@ public class StaffAddition extends AppCompatActivity {
                 loadingPB.setVisibility(View.VISIBLE);
                 scanUtils.stopScan();
 
-                // loadingPB.setVisibility(View.VISIBLE);
-                // on below line we are calling a add value event
-                // to pass data to firebase database.
                 Save.setEnabled(false);
                 final String timestamp = String.valueOf(System.currentTimeMillis());
                 String filepathname = "Staff/" + "staff" + timestamp;
@@ -254,6 +246,8 @@ public class StaffAddition extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(StaffAddition.this, "Staff added successfully.", Toast.LENGTH_SHORT).show();
                                         loadingPB.setVisibility(View.GONE);
+                                        LocalStorageUtil storageUtil = new LocalStorageUtil();
+                                        storageUtil.updateLastUpdatedTimestamp();
                                         FragmentManager fragmentManager = getSupportFragmentManager();
                                         fragmentManager.popBackStack();
                                         staffBiometricDialog.dismiss();
@@ -318,50 +312,23 @@ public class StaffAddition extends AppCompatActivity {
         }
     }
 
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//          // Match the request 'pic id with requestCode
-//        if (requestCode == SELECT_PICTURE) {
-//            // BitMap is data structure of image file which store the image in memory
-//            selectedImageUri = data.getData();
-//            Toast.makeText(StaffAddition.this, "code is: "+ selectedImageUri, Toast.LENGTH_SHORT).show();
-//            if (selectedImageUri != null) {
-//                imageuri = selectedImageUri;
-//                Picasso.get().load(imageuri).into(profileimg);
-//            }
-//        }
-//    }
     private void loadFacultyData() {
-    DatabaseReference facultyRef = FirebaseDatabase.getInstance().getReference("Faculty");
-    facultyRef.addListenerForSingleValueEvent(new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            facultyDepartmentsMap = new HashMap<>(); // Initialize the map
-            for (DataSnapshot facultySnapshot : dataSnapshot.getChildren()) {
-                String facultyName = facultySnapshot.child("name").getValue(String.class);
-                List<String> departmentNames = new ArrayList<>();
-                for (DataSnapshot deptSnapshot : facultySnapshot.child("dept").getChildren()) {
-                    String departmentName = deptSnapshot.child("name").getValue(String.class);
-                    if (departmentName != null) {
-                        departmentNames.add(departmentName);
-                    }
-                }
-                if (facultyName != null && !departmentNames.isEmpty()) {
-                    facultyDepartmentsMap.put(facultyName, departmentNames);
-                }
+
+        List<FacultyModel> facultyList = LocalStorageUtil.retrieveFacultyDataFromLocalStorage(this);
+        facultyDepartmentsMap = new HashMap<>();
+        for (FacultyModel faculty : facultyList) {
+            String facultyName = faculty.getName();
+            List<String> departmentNames = faculty.getDept(); // Assuming FacultyModel has a method getDept()
+
+            if (facultyName != null && departmentNames != null && !departmentNames.isEmpty()) {
+                facultyDepartmentsMap.put(facultyName, departmentNames);
             }
-            facultyAdapter.addAll(facultyDepartmentsMap.keySet());
-            facultyAdapter.notifyDataSetChanged();
         }
 
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-            Log.e(TAG, "Failed to load faculty data: " + databaseError.getMessage());
-        }
-    });
-}
-
-
+        facultyAdapter.clear();
+        facultyAdapter.addAll(facultyDepartmentsMap.keySet());
+        facultyAdapter.notifyDataSetChanged();
+    }
 
     private void updateDepartmentDropdown(String faculty) {
         departmentAdapter.clear();

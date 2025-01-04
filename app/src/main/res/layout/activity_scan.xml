@@ -38,23 +38,43 @@
                     android:indeterminateDrawable="@drawable/progress_back"
                     android:visibility="gone" />
 
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/print_animation"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/finger_animation"
+                    />
+
                 <ImageView
                     android:id="@+id/print_image"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-                    android:src="@mipmap/printdefaultxhdpi"
                     android:maxHeight="200dp"
                     android:maxWidth="200dp"
                     android:layout_gravity="center"
                     />
+
                 <TextView
                     android:id="@+id/status"
                     android:layout_marginTop="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="place Finger"
+                    android:text="place Finger on device"
                     android:textStyle="bold"
                     android:layout_gravity="center"/>
+
+                <Button
+                    android:id="@+id/retry_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/status"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:text="Retry"
+                    android:visibility="gone" />
 
             </LinearLayout>
 

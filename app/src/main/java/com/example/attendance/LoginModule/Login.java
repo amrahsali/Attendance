@@ -1,10 +1,20 @@
 package com.example.attendance.LoginModule;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
+import static com.google.android.material.internal.ContextUtils.getActivity;
+
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -24,6 +34,8 @@ public class Login extends AppCompatActivity {
 
     Button button, staffLogin;
     private EditText userNameEdt, passwordEdt;
+
+    private static final int PERMISSION_REQUEST_CODE = 1;
     private FirebaseAuth mAuth;
     private ProgressBar loadingPB;
 
@@ -48,9 +60,10 @@ public class Login extends AppCompatActivity {
                 Intent i = new Intent(Login.this, ScanActivity.class);
                 i.putExtra("origin","login");
                 startActivity(i);
-              //  finish();
             }
         });
+
+        checkAndRequestPermissions();
 
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +127,40 @@ public class Login extends AppCompatActivity {
            // onDestroy();
         }
     }
+
+    private void checkAndRequestPermissions() {
+        if (ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(this, READ_EXTERNAL_STORAGE)) {
+
+                new AlertDialog.Builder(this)
+                        .setTitle("Permission needed")
+                        .setMessage("This permission is needed because of this and that")
+                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(Login.this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+                            }
+                        })
+                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create().show();
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(Login.this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+            }
+        } else {
+            // Permission has already been granted
+        }
+    }
+
 
 
     // ...

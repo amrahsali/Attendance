@@ -13,10 +13,10 @@ import com.example.attendance.R;
 
 import java.util.ArrayList;
 
-public class CourseAdapter  extends ArrayAdapter<Coursemodal> {
+public class CourseAdapter  extends ArrayAdapter<CourseModal> {
 
     // constructor for our list view adapter.
-    public CourseAdapter(@NonNull Context context, ArrayList<Coursemodal> dataModalArrayList) {
+    public CourseAdapter(@NonNull Context context, ArrayList<CourseModal> dataModalArrayList) {
         super(context, 0, dataModalArrayList);
     }
 
@@ -39,7 +39,7 @@ public class CourseAdapter  extends ArrayAdapter<Coursemodal> {
         // after inflating an item of listview item
         // we are getting data from array list inside
         // our modal class.
-        Coursemodal dataModal = getItem(position);
+        CourseModal dataModal = getItem(position);
 
         // initializing our UI components of list view item.
         TextView nameTV = listitemView.findViewById(R.id.course_name);

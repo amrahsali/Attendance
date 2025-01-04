@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId "com.example.attendance"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -44,8 +44,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:20.1.0'
     implementation 'androidx.navigation:navigation-fragment:2.4.1'
     implementation 'androidx.navigation:navigation-ui:2.4.1'
-  //  implementation files("C:\\Users\\GEORGE\\AndroidStudioProjects\\Attendance\\app\\src\\main\\java\\asia\\kanopi\\uareu4500library\\fingerscan-0.1-javadoc.jar")
-   // implementation files("C:\\Users\\GEORGE\\AndroidStudioProjects\\Attendance\\app\\src\\main\\java\\asia\\kanopi\\uareu4500library\\fingerscan-0.1-javadoc.jar")
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -61,11 +59,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore'
     implementation 'com.google.firebase:firebase-database:20.0.0'
     implementation 'com.machinezoo.sourceafis:sourceafis:3.17.1'
-//    implementation 'asia.kanopi.tools:fingerscan:0.1'
+    implementation 'com.airbnb.android:lottie:4.2.2'
     apply plugin: 'com.google.gms.google-services'
-    // https://mvnrepository.com/artifact/asia.kanopi.tools/fingerscan
-//    implementation group: 'asia.kanopi.tools', name: 'fingerscan', version: '0.1'
-
     implementation 'com.itextpdf:itextg:5.5.10'
 
 }
